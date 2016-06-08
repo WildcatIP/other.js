@@ -30,35 +30,20 @@ function findAndDisplayMapResults( options, done ){
     .search({ query: options.query, centeredAt: options.center })
     .then( function( results ){
 
-      // VERSION A: WITH PLACE RESULT TYPE
-
       results = results.map( function(place){
-        return oc.types.placeChatComplete({
+        return oc.types.mapChatComplete({
           title: place.name,
           rating: place.rating,
           location: place.latLng
         })
       })
 
-      // VERSION B: WITH TWO LINE RESULT TYPE
-
-      results = results.map(function(place){
-        return oc.types.twoLineChatComplete({
-          title: place.name,
-          detail: [ place.distance, place.vicinity ].join(' '),
-          rating: place.rating,
-          actionName: 'more',
-          info: {href: place.href },
-          action: function( item ){
-            // Open a fullscreen web page with appropriate chrome for chat complete action
-            client.browser.open( selected.info.href )
-          }
-        })
-      })
-
-      // FINALLY
-      done( results )
+      // When a single map chat complete object is passed to done the map chat
+      // complete shows just that item. When a list is passed, it shows all
+      // items on the map
       
+      done( results )
+
     }
   )
 
