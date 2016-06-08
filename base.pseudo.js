@@ -144,11 +144,11 @@ var kick = client.register({
 
 kick.on('done', function(context, done){
 
-  var kickedUser = context.user
+  var kickedUser = context.user,
+      theChannel = server.channel( client.currentChannel )
 
-  client.currentChannel.removeAsMember( user )
-
-  server.channel( client.currentChannel ).blacklist.append( kickedUser, {
+  theChannel.removeAsMember( user )
+  theChannel.blacklist.append( kickedUser, {
     duration: otherchat.types.timeDuration('2 minutes')
   })
 
