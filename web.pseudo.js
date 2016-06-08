@@ -4,7 +4,8 @@ var otherchat = new Otherchat(),
 
 var cmd = client.register({
   tokens: ['web'],
-  version: 'web.0.1'
+  version: 'web.0.1',
+  scope: [ client.me, Web ]
 })
 
 cmd.on('query', function(context, done){

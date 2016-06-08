@@ -4,7 +4,8 @@ var oc = new Otherchat(),
 
 var command = client.register({
     tokens: ['map'],
-    version: 'map.0.1'
+    version: 'map.0.1',
+    scope: [client.me, otherchat.scope.location]
 })
 
 command.on('query', function(context, done){
@@ -25,12 +26,11 @@ command.on('query', function(context, done){
 
 function findAndDisplayMapResults( options, done ){
 
-  Places.search({
-    query: options.query,
-    centeredAt: options.center },
-    function( results ){
-    
-      // VERSION WITH A PLACE RESULT TYPE
+  Places
+    .search({ query: options.query, centeredAt: options.center })
+    .then( function( results ){
+
+      // VERSION A: WITH PLACE RESULT TYPE
 
       results = results.map( function(place){
         return oc.types.placeChatComplete({
@@ -40,12 +40,12 @@ function findAndDisplayMapResults( options, done ){
         })
       })
 
-      // ALT VERSION WITH GENERIC RESULT TYPE
+      // VERSION B: WITH TWO LINE RESULT TYPE
 
       results = results.map(function(place){
         return oc.types.twoLineChatComplete({
           title: place.name,
-          detail: [place.distance, place.vicinity].join(' '),
+          detail: [ place.distance, place.vicinity ].join(' '),
           rating: place.rating,
           actionName: 'more',
           info: {href: place.href },
@@ -58,6 +58,7 @@ function findAndDisplayMapResults( options, done ){
 
       // FINALLY
       done( results )
+      
     }
   )
 

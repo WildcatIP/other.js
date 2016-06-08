@@ -9,12 +9,13 @@ var otherchat = new Otherchat(),
 
 var mention = client.registerCommand({
   tokens: ['@'],
-  version: 'user.0.1'
+  version: 'user.0.1',
+  scope: client.me
 })
 
 mention.on('query', function(context, done){
 
-  client.users.find({ query: context.query, scope:client.me }).then(function( users ){
+  client.users.find(context.query).then(function( users ){
 
     users = users.sortBy(function(u){
       // .relevance is server calculated
@@ -44,12 +45,13 @@ mention.on('query', function(context, done){
 
 var hash = client.registerCommand({
   tokens: ['#'],
-  version: 'channel.0.1'
+  version: 'channel.0.1',
+  scope: client.me
 })
 
 hash.on('query', function(context, done){
 
-  client.channels.find({ query: context.query, scope:client.me }).then( function(channels){
+  client.channels.find(context.query).then( function(channels){
 
     channels = channels.map(function(channel){
 
@@ -77,11 +79,12 @@ hash.on('query', function(context, done){
 var invite = client.register({
   tokens: ['invite'],
   version: 'invite.0.1',
+  scope: client.me
 })
 
 invite.on('query', function(context, done){
   
-  client.users.find({ query: context.query }).then( function(users){
+  client.users.find(context.query).then( function(users){
 
     users = users.map(function(user){
 
@@ -112,7 +115,7 @@ invite.on('done', function(context, done){
 
   context.users.each(function( user ){
   
-    user.join( client.currentChannel )
+    client.currentChannel.addAsMember( user )
 
     client.currentChannel.send(
       otherchat.types.systemMessage({
@@ -136,13 +139,14 @@ var kick = client.register({
   tokens: ['kick'],
   version: 'kick.0.1',
   accepts: otherchat.types.user, // for an array of users: [otherchat.types.user]
+  scope: [client.me, otherchat.scope.blacklist] // or maybe otherchat.scope.all?
 })
 
 kick.on('done', function(context, done){
 
   var kickedUser = context.user
 
-  kickedUser.unjoin( client.currentChannel )
+  client.currentChannel.removeAsMember( user )
 
   server.channel( client.currentChannel ).blacklist.append( kickedUser, {
     duration: otherchat.types.timeDuration('2 minutes')
