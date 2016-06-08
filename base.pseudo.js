@@ -155,9 +155,10 @@ kick.on('done', function(context, done){
 })
 
 // TODO: Add increasing length of kick in kick.0.2
+// TODO: Should think about how black list is implemented? Is that also in Otherscript?
 
 // TODO:
-// Ignore, Mute
+// Mute
 
 
 // NOTES:

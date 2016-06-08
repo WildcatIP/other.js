@@ -28,6 +28,7 @@ Implementing much of Other Chat in Otherscript has some benefits:
 ## Examples
 
 * [Base Behavior Commands](base.pseudo.js)
+* [Find Command](find.pseudo.js)
 * [Map Command](map.pseudo.js)
 * [Web Command](web.pseudo.js)
 
