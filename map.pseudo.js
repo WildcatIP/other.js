@@ -15,7 +15,8 @@ command.on('query', function(context, done){
   // "map sushi" displays a list of sushi places
     
   if( ['me', 'here'].contains(query) ){
-    var map = oc.types.mapChatComplete({ centerOnUser: true, zoom: 17 })
+    // Centering on a user continually updates the map with the user's location
+    var map = oc.types.mapChatComplete({ center: client.me, zoom: 17 })
     done( map )
   }
 
@@ -41,10 +42,12 @@ function findAndDisplayMapResults( options, done ){
       // When a single map chat complete object is passed to done the map chat
       // complete shows just that item. When a list is passed, it shows all
       // items on the map
-      
+
       done( results )
 
     }
   )
 
 }
+
+// TODO: Maybe make the ETA command?
