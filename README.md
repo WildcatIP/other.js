@@ -1,6 +1,6 @@
 # Otherscript
 
-Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatter Net. It's goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust][#inspirations].
+Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatter Net. It's goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
 
 A particular Chatternet feature set might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild governance's, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature set is written in a single file, which can be run both on the server and in the client.
 
