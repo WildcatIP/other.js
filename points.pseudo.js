@@ -4,21 +4,18 @@
 // view the points with the 'points' command
 //
 
-var feature = new OtherchatFeatureSet({
+var feature = new OtherchatFeature({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-  version: 'points.0.1',
-  server: {
-    abilities: /* read messages, post system messages as user */
-  }
+  version: 'points.0.1'
 })
 
 //
-// SERVER
+// CLIENT
 //
 
 var suffixToPoints = { '++': 1, '+-': 0.5, '-+': -0.5, '--': -1 }
 
-feature.server.channel('*').on('messageDidPost', function( message ){
+feature.client.on('messageDidPost', function( message ){
 
   // For each user mention, see if the next two characters match any of the
   // suffixes which gives points
@@ -54,11 +51,6 @@ feature.server.channel('*').on('messageDidPost', function( message ){
   }
 
 })
-
-
-//
-// CLIENT
-//
 
 var pointsCommand = feature.client.registerCommand({
   tokens: ['points'],
@@ -96,13 +88,73 @@ pointsCommand.on('query', function(context, done){
 
 })
 
+//
+// HOW DO FEATURES SPREAD?
+// 
+// The points feature is installed per user, meaning that if I have it installed
+// and you don't, I can give you points but you can't give me points.
+// 
+// The question is, how do you find out how I gave you points and gain the
+// ability if desired?
+// 
+// One way is for any message posted by an app to include attribution (say via
+// info/link shown on long-hold). This lets you easily find out how I did it,
+// install or find out more. This way a feature can spread organically
+// via usage
+// 
+// In addition, another way might be the following:
+// 
+
+
+//
+// SELF-TEACHING BEHAVIOR
+//
+// If someone who doesn't have the points app tries the syntax while you are
+// in the channel, the app sends them a system message that gives a link
+// that lets them install
+//
+
+feature.client.currentChannel.on('message', function(message){
+  var didUseSyntax = message.userMentions.filter( function(mention){
+    var mentionSuffix = message.text.substr( mention.range.end, 2 )
+    return mentionSuffix.match(/[+-]{2}/)
+  })
+
+  if( didUseSyntax ) postHintIfNeeded( message.author )
+})
+
+function postHintIfNeeded( user ){
+
+  if( user == client.me ) return
+
+  // You can only check if features that share your api key are installed
+  user.getIsFeatureInstalled( feature ).then( function( isFeatureInstalled ){
+
+    if( !isFeatureInstalled ){
+
+      var hint = otherchat.types.systemMessage({
+        text: ['Psst', user, 'you need', feature, 'to do that'],
+        author: feature,
+        visibleTo: [user, client.me]
+      })
+
+      message.channel.send( hint )
+
+    }
+
+  })
+}
+
+
+
 
 /*
 
-FURTHER THOUGHTS
+THOUGHTS ON PREVIOUS VERSION
 
-The channel scope for the points app is interesting. Are points specific to a
-channel, to a domain (i.e., a private channel plus its subchannels), global?
+Previously, it was feature.server.channel('*').on('messageDidPost', ...) which
+raised some interesting questions: Are points specific to a channel, to a domain
+(i.e., a private channel plus its subchannels), global?
 
 If we are deploying it, we may want to add it as default behavior to every
 channel. But for a normal person, they'd be able to install it only on channels
