@@ -31,7 +31,7 @@ feature.on('install', function(){
     navIcon: 'bird.png',
     whoCanPost: [ twitterIdentity ]
   })
-
+ 
 })
 
 
@@ -39,20 +39,25 @@ feature.on('install', function(){
 // APP CHANNEL STRUCTURE
 //
 
-var app = feature.channel({home: '#/twitter', twitterName: /@(.+)/, hashtag: /#(.+)/})
+var app = feature.channel({ routes:{
+  home: '#/twitter',
+  twitterName: /@(.+)/,
+  hashtag: /#(.+)/}
+})
 
 app.on( 'didNavigate', function(channel, context, done){
 
   channel.data.get( 'lastFetchTimestamp' ).then( function( lastFetchTimestamp ){
 
-    var twitterApiCall
+    var twitterApiCall,
+        route = context.route
 
-    if( context.home )
+    if( route.name == 'home' )
       twitterApiCall = Twitter.fetchTimeline({ since: lastFetchTimestamp })
-    else if( context.twitterName )
-      twitterApiCall = Twitter.fetchTweets({ user: context.twitterName, since: lastFetchTimestamp })
-    else if( context.hashtag )
-      twitterApiCall = Twitter.search({ query: context.hashtag, since: lastFetchTimestamp })
+    else if( route.name == 'twitterName' )
+      twitterApiCall = Twitter.fetchTweets({ user: route.value, since: lastFetchTimestamp })
+    else if( route.name == 'hashtag' )
+      twitterApiCall = Twitter.search({ query: route.value, since: lastFetchTimestamp })
     
     twitterApiCall.then( function( tweets ){
       
@@ -78,9 +83,9 @@ function addTweetToChannel(channel, tweet){
     text: tweet.text,
     time: tweet.time,
     avatar: tweet.user.avatar_profile_url,
-    linkHandler: function( link, done ){
+    linkHandler: function( link ){
       otherchat.client.navigateTo( app.path.home + '/' + link.text )
-      done( false ) // prevent default navigation
+      link.preventDefault() // prevent default navigation
     }
   })
 
