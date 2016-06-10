@@ -82,7 +82,7 @@ mapCmd.on('query', function(context, done){
     return
   }
 
-  done( oc.types.mapChatComplete{
+  done( oc.types.mapChatComplete({
     from: client.me,
     to: context.user || context.place,
     showTravelTime: true
