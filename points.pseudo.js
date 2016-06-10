@@ -9,13 +9,16 @@ var feature = new OtherchatFeature({
   version: 'points.0.1'
 })
 
+// scope access to otherchat via the feature's permissions 
+var otherchat = new Otherchat( feature )
+
 //
 // CLIENT
 //
 
 var suffixToPoints = { '++': 1, '+-': 0.5, '-+': -0.5, '--': -1 }
 
-feature.client.on('messageDidPost', function( message ){
+otherchat.client.on('messageDidPost', function( message ){
 
   // For each user mention, see if the next two characters match any of the
   // suffixes which gives points
@@ -52,7 +55,7 @@ feature.client.on('messageDidPost', function( message ){
 
 })
 
-var pointsCommand = feature.client.registerCommand({
+var pointsCommand = otherchat.client.registerCommand({
   tokens: ['points'],
   // The accepts field tells the client what kind of arguments the command is
   // expecting and how it is called in the context object. In this case,
@@ -114,7 +117,7 @@ pointsCommand.on('query', function(context, done){
 // that lets them install
 //
 
-feature.client.currentChannel.on('message', function(message){
+otherchat.client.currentChannel.on('message', function(message){
   var didUseSyntax = message.userMentions.filter( function(mention){
     var mentionSuffix = message.text.substr( mention.range.end, 2 )
     return mentionSuffix.match(/[+-]{2}/)
@@ -152,7 +155,7 @@ function postHintIfNeeded( user ){
 
 THOUGHTS ON PREVIOUS VERSION
 
-Previously, it was feature.server.channel('*').on('messageDidPost', ...) which
+Previously, it was otherchat.server.channel('*').on('messageDidPost', ...) which
 raised some interesting questions: Are points specific to a channel, to a domain
 (i.e., a private channel plus its subchannels), global?
 
