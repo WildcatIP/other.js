@@ -19,7 +19,7 @@ feature.on('install', function(){
   
   /* TODO: oAuth setup here */
 
-  var twitterIdentity = otherchat.client.identities.create( otherchat.types.identity({
+  var twitterIdentity = feature.addIdentity( otherchat.types.identity({
       id: 'me',
       name: Twitter.me.name,
       avatar: Twitter.me.profile_image_url
@@ -94,5 +94,16 @@ function addTweetToChannel(channel, tweet){
 }
 
 //
-// TODO: Add posting in home to tweet
+// POSTING IN BASE CHANNEL TWEETS
 //
+
+app.routes.home.on( 'willPostMessage', function( message, done ){
+  Twitter
+    .tweet( message )
+    .then( function(){
+      message.author = feature.identity['me']
+      message.channel.post(message)
+      done(true)
+    })
+    .error( function(){ done(false) })
+})
