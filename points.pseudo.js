@@ -45,7 +45,7 @@ otherchat.client.on('messageDidPost', function( message ){
       var newPoints = suffixToPoints[suffixText]
       user.data.set( 'points', points + newPoints )
 
-      message.channel.send( otherchat.types.systemMessage({
+      message.channel.post( otherchat.types.systemMessage({
         body: [ message.user, 'gave', newPoints, 'points to', user ],
         author: message.user
       })
@@ -141,7 +141,7 @@ function postHintIfNeeded( user ){
         visibleTo: [user, client.me]
       })
 
-      message.channel.send( hint )
+      message.channel.post( hint )
 
     }
 

@@ -117,7 +117,7 @@ invite.on('done', function(context, done){
   
     client.currentChannel.addAsMember( user )
 
-    client.currentChannel.send(
+    client.currentChannel.post(
       otherchat.types.systemMessage({
         body: [ client.me,  'invited', user ],
         from: client.me
