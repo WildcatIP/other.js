@@ -45,7 +45,7 @@ var app = feature.channel({ routes:{
   hashtag: /#(.+)/}
 })
 
-app.on( 'didNavigate', function(channel, context, done){
+app.on( 'willView', function(channel, context, done){
 
   channel.data.get( 'lastFetchTimestamp' ).then( function( lastFetchTimestamp ){
 

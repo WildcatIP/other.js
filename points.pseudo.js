@@ -37,15 +37,19 @@ otherchat.client.on('messageDidPost', function( message ){
   
   function givePointsToUser( user, suffixText ){
 
-    // By default, extensions can only read/write data with other extensions
-    // that share an API key.
+    // Behind the scenes, this is essentially a key-value store with a key
+    // tuple of (apiKey, userId, propertyName). This lets all extensions that
+    // share an API key share data.
+    //
+    // You can also channel.data to store data on a channel. Or
+    // feature.data to store feature-wide data.
 
     user.data.getWithDefault( 'points', 0 ).then( function( points ){
 
       var newPoints = suffixToPoints[suffixText]
       user.data.set( 'points', points + newPoints )
 
-      message.channel.post( otherchat.types.systemMessage({
+      message.channel.post( otherchat.types.extensionMessage({
         body: [ message.user, 'gave', newPoints, 'points to', user ],
         author: message.user
       })
@@ -118,6 +122,7 @@ pointsCommand.on('query', function(context, done){
 //
 
 otherchat.client.currentChannel.on('message', function(message){
+  
   var didUseSyntax = message.userMentions.filter( function(mention){
     var mentionSuffix = message.text.substr( mention.range.end, 2 )
     return mentionSuffix.match(/[+-]{2}/)
