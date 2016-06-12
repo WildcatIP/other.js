@@ -1,44 +1,41 @@
 var oc = new Otherchat(),
-    client = oc.client,
-    Places = require('other-places')
+    Places = require('other-places') // our extended-local place search
 
-var command = client.register({
+var findCommand = OtherchatFeature({
     tokens: ['find'],
     version: 'find.0.1',
-    scope: [client.me, otherchat.scope.location]
+    apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
 })
 
-command.on('query', function(context, done){
-  var query = context.query
+findCommand.on('query', (context, promise) => {
 
-  client.location().then( function(loc){
-    findAndDisplayPlaceResults({ center: loc.latLng, query: query }, done )
+  client.location().then( loc => {
+    findAndDisplayPlaceResults({ center: loc.latLng, query: context.query }, promise )
   })
 
 })
 
-function findAndDisplayPlaceResults( options, done ){
+function findAndDisplayPlaceResults( options, promise ){
 
   Places
     .search({ query: options.query, centeredAt: options.center })
-    .then( function( results ){
+    .then( results => {
 
-      results = results.map(function(place){
+      results = results.map( place => {
         return oc.types.twoLineChatComplete({
           title: place.name,
           detail: [ place.distance, place.vicinity ].join(' '),
           rating: place.rating,
-          actionName: 'more',
           info: {href: place.href },
-          action: function( item ){
+          actionName: 'more',
+          action: selected => {
             // Open a fullscreen web page with appropriate chrome for chat complete action
             client.browser.open( selected.info.href )
           }
         })
       })
 
-      // FINALLY
-      done( results )
+      promise.resolve( results )
       
     }
   )

@@ -1,6 +1,5 @@
-var oc = new Otherchat(),
-    client = oc.client,
-    Places = require('other-places')
+var otherchat = Otherchat(),
+    Places = require('other-places') // our extended-local place search
 
 
 //
@@ -8,38 +7,38 @@ var oc = new Otherchat(),
 // map me, map sushi, map active club
 //
 
-
-var mapCmd = client.register({
-    tokens: ['map'],
-    version: 'map.0.1',
-    scope: [client.me, otherchat.scope.location]
+var mapCmd = OtherchatFeature({
+  tokens: ['map'],
+  version: 'map.0.1',
+  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
 })
 
-mapCmd.on('query', function(context, done){
+mapCmd.on('query', (context, promise) => {
   var query = context.query
 
   // "map me" displays the map of where you are
   // "map sushi" displays a list of sushi places
     
   if( ['me', 'here'].contains(query) ){
-    // Centering on a user continually updates the map with the user's location
-    var map = oc.types.mapChatComplete({ center: client.me, zoom: 17 })
-    done( map )
+    // Centering on a user object continually updates the map with the
+    // user's location
+    var map = otherchat.types.mapChatComplete({ center: client.me, zoom: 17 })
+    promise.resolve( map )
   }
 
-  client.location().then( function(loc){
-    findAndDisplayMapResults({ center: loc.latLng, query: query }, done )
+  otherchat.client.location().then( loc => {
+    findAndDisplayMapResults({ center: loc.latLng, query: query }, promise )
   })
 })
 
-function findAndDisplayMapResults( options, done ){
+function findAndDisplayMapResults( options, promise ){
 
   Places
     .search({ query: options.query, centeredAt: options.center })
-    .then( function( results ){
+    .then( results => {
 
-      results = results.map( function(place){
-        return oc.types.mapChatComplete({
+      results = results.map( place => {
+        return otherchat.types.mapChatComplete({
           title: place.name,
           rating: place.rating,
           location: place.latLng
@@ -50,7 +49,7 @@ function findAndDisplayMapResults( options, done ){
       // complete shows just that item. When a list is passed, it shows all
       // items on the map
 
-      done( results )
+      promise.resolve( results )
 
     }
   )
@@ -67,22 +66,19 @@ function findAndDisplayMapResults( options, done ){
 // as a member of the context object.
 //
 
-var mapCmd = client.register({
-    tokens: ['eta'],
-    version: 'eta.0.1',
-    scope: [client.me, otherchat.scope.location],
-    accepts: { user: otherchat.types.user, place: Place }
+var etaCmd = OtherchatFeature({
+  tokens: ['eta'],
+  version: 'eta.0.1',
+  accepts: { user: otherchat.types.user, place: Place }
 })
 
-mapCmd.on('query', function(context, done){
-  var query = context.query
+etaCmd.on('query', (context, promise) => {
 
   if( !context.user && !context.place ){
-    done( otherchat.types.singeLineChatComplete('Keep typing to map your eta to a person or place...') )
-    return
+    return promise.reject( 'Keep typing to map your eta to a person or place...' )
   }
 
-  done( oc.types.mapChatComplete({
+  promise.resolve( oc.types.mapChatComplete({
     from: client.me,
     to: context.user || context.place,
     showTravelTime: true
