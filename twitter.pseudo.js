@@ -118,11 +118,12 @@ function addTweetToChannel(channel, tweet){
   let msg = otherchat.types.userMessage({
     text: tweet.text,
     time: tweet.time,
-    avatar: tweet.user.avatar_profile_url,
-    linkHandler: (link) => {
-      otherchat.client.navigateTo( app.path + '/' + link.text )
-      link.preventDefault() // prevent default navigation
-    }
+    avatar: tweet.user.avatar_profile_url
+  })
+
+  msg.on( 'linkWasTapped', (link){
+    otherchat.client.navigateTo( app.path + '/' + link.text )
+    link.preventDefault() // prevent default navigation
   })
 
   channel.post( msg )
