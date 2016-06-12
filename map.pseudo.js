@@ -1,5 +1,9 @@
-var otherchat = Otherchat(),
-    Places = require('other-places') // our extended-local place search
+var feature = new OtherchatFeature({
+    apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
+    version: 'mapping-and-finding.0.1'
+  }),
+  otherchat = new Otherchat( feature ),
+  Places = require('other-places') // our extended-local place search
 
 
 //
@@ -7,10 +11,9 @@ var otherchat = Otherchat(),
 // map me, map sushi, map active club
 //
 
-var mapCmd = OtherchatFeature({
+var mapCmd = feature.command({
   tokens: ['map'],
-  version: 'map.0.1',
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
+  version: 'map.0.2' // can be separately versioned from the feature
 })
 
 mapCmd.on('query', (context, promise) => {
@@ -23,7 +26,7 @@ mapCmd.on('query', (context, promise) => {
     // Centering on a user object continually updates the map with the
     // user's location
     var map = otherchat.types.mapChatComplete({ center: client.me, zoom: 17 })
-    promise.resolve( map )
+    return promise.resolve( map )
   }
 
   otherchat.client.location().then( loc => {
@@ -61,12 +64,14 @@ function findAndDisplayMapResults( options, promise ){
 // ETA COMMAND
 // eta @alien, eta active club
 // 
+
+//
 // Playing with calling out the type of objects a command can accept. In this
 // case either a user or place. If there's a match to a type, it gets passed
 // as a member of the context object.
 //
 
-var etaCmd = OtherchatFeature({
+var etaCmd = feature.command({
   tokens: ['eta'],
   version: 'eta.0.1',
   accepts: { user: otherchat.types.user, place: Place }
@@ -97,3 +102,49 @@ etaCmd.on('query', (context, promise) => {
   // line chat complete with just the estimated time/distance.
 
 })
+
+
+//
+// FIND COMMAND
+// find aburaya, find coffee near sf
+//
+// An open question is how we do more natural language parsing for things like:
+//  - coffee near sf
+//  - coffee in oakland
+//  - sushi open now
+//  - sushi open at 10pm near me
+//
+// wit.ai has some inspiration, and perhaps the Place library can handle this
+// kind of parsing
+
+var findCommand = feature.command({
+  tokens: ['find'],
+  version: 'find.0.3',
+  accepts: { place: Place, query: String }
+})
+
+findCommand.on('query', (context, promise) => {
+  try{
+    
+    var places = await Places.search({ query:options.query, centeredAt: options.center })
+
+    var results = places.map( place => otherchat.types.chatComplete({
+        title: place.name,
+        detail: `${place.distance} ${place.vicinity}`,
+        rating: place.rating,
+        info: { href: place.href },
+        actionName: 'more',
+        action: selected => {
+          // Open a fullscreen web page with appropriate chrome for chat complete action
+          client.browser.open( selected.info.href ) 
+        }
+      })
+    )
+
+    promise.resolve( results )
+
+  }
+  catch(error) promise.reject( error )
+})
+
+
