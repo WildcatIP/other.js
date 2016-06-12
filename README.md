@@ -32,6 +32,12 @@ Implementing much of Other Chat in Otherscript has some benefits:
 * [Map Command](map.pseudo.js)
 * [Web Command](web.pseudo.js)
 
+## Extensible Community
+
+Imagine you start a channel around #mantatees. A vibrant community starts to grow around it, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on #manatees. You start #manatees/news and install a blog feature, so you and the other mods can compose posts on the web, and pull stuff in with a bookmarklet. You install a store feature to sell your #manateeshirts, and swap your mod feature for a better one.
+
+Otherscript lets you attach new functionality to any community, upgrading it's abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
+
 ---
 
 ## Inspirations
