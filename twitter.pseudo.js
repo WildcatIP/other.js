@@ -1,6 +1,11 @@
 //
 // TWITTER APP
-// Using https://tc39.github.io/ecmascript-asyncawait/ and ECMAScript 6
+//
+// Using https://tc39.github.io/ecmascript-asyncawait/ and ECMAScript 6:
+//
+// See:
+// - https://github.com/google/traceur-compiler
+// - https://github.com/facebook/regenerator
 //
 
 let feature = new OtherchatFeature({

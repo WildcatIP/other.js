@@ -4,21 +4,35 @@
 // view the points with the 'points' command
 //
 
-var feature = new OtherchatFeature({
+// Where this feature gets installed is an interesting question:
+//
+// The first time I tried writing it, I installed behavior on the channel so
+// that the server could listen for new messages with the right syntax and
+// giveth or taketh points away.
+//
+// But, you don't control every channel, so in those channels points wouldn't
+// work which frusterates habit formation and hence the use of the command.
+// 
+// This implementation instead is run by the client, and the behavior installed
+// on a user.
+
+let feature = new OtherchatFeature({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
   version: 'points.0.1'
 })
 
 // scope access to otherchat via the feature's permissions 
-var otherchat = new Otherchat( feature )
+let otherchat = new Otherchat( feature )
 
 //
 // CLIENT
 //
 
-var suffixToPoints = { '++': 1, '+-': 0.5, '-+': -0.5, '--': -1 }
+let suffixToPoints = { '++': 1, '+-': 0.5, '-+': -0.5, '--': -1 }
 
-otherchat.client.on('messageDidPost', function( message ){
+// Installs the listener on the client
+
+otherchat.client.on('messageDidPost', (message) => {
 
   // For each user mention, see if the next two characters match any of the
   // suffixes which gives points
@@ -26,16 +40,16 @@ otherchat.client.on('messageDidPost', function( message ){
   // Message objects contain handy-dandy common things, like lists of users
   // or channels mentioned in the message text.
 
-  message.userMentions.each( function(mention){
+  message.userMentions.each( (mention) => {
     
-    var mentionSuffix = message.text.substr( mention.range.end, 2 )
+    let mentionSuffix = message.text.substr( mention.range.end, 2 )
     if( mentionSuffix.match(/[+-]{2}/) ){
       givePointsToUser( mention.user, mentionSuffix )
     }
 
   })
   
-  function givePointsToUser( user, suffixText ){
+  async function givePointsToUser( user, suffixText ){
 
     // Behind the scenes, this is essentially a key-value store with a key
     // tuple of (apiKey, userId, propertyName). This lets all extensions that
@@ -44,22 +58,30 @@ otherchat.client.on('messageDidPost', function( message ){
     // You can also channel.data to store data on a channel. Or
     // feature.data to store feature-wide data.
 
-    user.data.getWithDefault( 'points', 0 ).then( function( points ){
+    try {
 
-      var newPoints = suffixToPoints[suffixText]
-      user.data.set( 'points', points + newPoints )
+      let points = user.data.get( 'points' ) || 0
+      user.data.set( 'points', points + suffixToPoints[suffixText] )
 
       message.channel.post( otherchat.types.extensionMessage({
-        body: [ message.user, 'gave', newPoints, 'points to', user ],
-        author: message.user
+        type: 'system',
+        body: `${message.user} gave ${newPoints} points to ${user}`,
       })
 
-    })
-  }
+    }
+    catch (error) {
+      
+      message.channel.post( otherchat.types.extensionMessage({
+        type: 'error',
+        body: `Could not give points: ${error}`,
+        whoCanSee: [client.me]
+      }))
+
+    }
 
 })
 
-var pointsCommand = otherchat.client.registerCommand({
+let pointsCommand = otherchat.client.registerCommand({
   tokens: ['points'],
   // The accepts field tells the client what kind of arguments the command is
   // expecting and how it is called in the context object. In this case,
@@ -68,30 +90,38 @@ var pointsCommand = otherchat.client.registerCommand({
   accepts: { users: [otherchat.types.user] }
 })
 
-pointsCommand.on('query', function(context, done){
+pointsCommand.on('query', (context, promise) => {
 
-  var users = context.users
+  let users = context.users
   
   // Default is to show points for all members of the channel.
   if( users.length == 0 ){
     users = client.currentChannel.members
   }
 
-  var results = users.map( function( user ){
+  let results = users.map( async (user) => {
 
-    var points = user.data.getWithDefault( 'points', 0 )
+    try{
 
-    // For deferreds that haven't completed, the client shows some sort of
-    // inline throbber in the chat complete results indicating a piece of data
-    // is loading. This lets completes show immediately, even for long lists.
-     
-    return otherchat.types.singleLineChatComplete({
-      text: [ result.user, 'has', points, 'points']
-    })
+      let points = user.data.get( 'points' ) ||  0
+      
+      return otherchat.types.singleLineChatComplete({
+        text: `${result.user} has ${points} points`
+      })
+
+    }
+
+    catch (error) {
+      
+      return otherchat.types.singleLineChatComplete({
+        text: `${result.user} has ? points`
+      })
+
+    }
 
   })
 
-  done( results )
+  promise.resolve( results )
 
 })
 
@@ -121,10 +151,10 @@ pointsCommand.on('query', function(context, done){
 // that lets them install
 //
 
-otherchat.client.currentChannel.on('message', function(message){
-  
-  var didUseSyntax = message.userMentions.filter( function(mention){
-    var mentionSuffix = message.text.substr( mention.range.end, 2 )
+otherchat.client.currentChannel.on('message', (message) => {
+
+  let didUseSyntax = message.userMentions.filter( (mention) => {
+    let mentionSuffix = message.text.substr( mention.range.end, 2 )
     return mentionSuffix.match(/[+-]{2}/)
   })
 
@@ -140,10 +170,11 @@ function postHintIfNeeded( user ){
 
     if( !isFeatureInstalled ){
 
-      var hint = otherchat.types.systemMessage({
-        text: ['Psst', user, 'you need', feature, 'to do that'],
+      let hint = otherchat.types.extensionMessage({
+        type: 'system',
+        text: `Psst ${user}, you need ${feature} to do that`,
         author: feature,
-        visibleTo: [user, client.me]
+        whoCanSee: [user, client.me]
       })
 
       message.channel.post( hint )
