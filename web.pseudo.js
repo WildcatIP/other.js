@@ -1,18 +1,18 @@
 var otherchat = new Otherchat(),
-    client = otherchat.client,
-    Web = require('other-web')
+    Web = require('other-web') // Extended-local web search?
 
-var cmd = client.register({
+var cmd = OtherchatFeature({
   tokens: ['web'],
   version: 'web.0.1',
-  scope: [ client.me, Web ]
+  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
 })
 
-cmd.on('query', function(context, done){
-  
-  Web.search( context.query ).then(function( results ){
+cmd.on('query', (context, promise) => {
 
-    results = results.map( function(page){
+  try{
+
+    var results = await Web.search( context.query )
+    results = results.map( page => {
       return oc.types.twoLineChatComplete({
         title: page.title,
         detail: page.href,
@@ -23,7 +23,12 @@ cmd.on('query', function(context, done){
       })
     })
 
-    done( results )
+    promise.resolve( results )
 
-  })
+  }
+
+  catch (error) {
+    promise.reject( `Something went wrong: ${error}` )
+  }
+  
 })
