@@ -1,5 +1,0 @@
-  * Where does the data get stored and who can access it?
-    - perhaps use Firebase-style permissioning?
-    - by default commands can only access their own data, but can choose
-      to share
-    - how does versioning of db work/migrations?
