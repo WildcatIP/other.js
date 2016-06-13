@@ -1,12 +1,8 @@
 //
-// TWITTER APP
+// TWITTER FEATURE
 //
-// Using https://tc39.github.io/ecmascript-asyncawait/ and ECMAScript 6:
-//
-// See:
-// - https://github.com/google/traceur-compiler
-// - https://github.com/facebook/regenerator
-//
+
+let Twitter = require('http://...')
 
 let feature = new OtherchatFeatureSet({
   apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
@@ -16,9 +12,6 @@ let feature = new OtherchatFeatureSet({
   description: 'Give points to people with @user++, take them away with @user--.'
 })
 
-
-let otherchat = new Otherchat( feature ),
-    Twitter = require('http://...')
 
 //
 // TWITTER IDENTITY
@@ -31,8 +24,9 @@ let twitterIdentity = feature.identity({
 })
 
 
+
 //
-// APP CHANNEL STRUCTURE
+// CHANNEL STRUCTURE
 //
 
 let baseChannel = feature.channel({
@@ -57,6 +51,7 @@ let baseChannel = feature.channel({
 })
 
 
+
 //
 // INSTALLATION
 //
@@ -68,13 +63,14 @@ feature.on('install', () => {
 })
 
 
+
 //
 // BEHAVIOR
 //
 
 feature.runOnServer( () => {
 
-  feature.channels('*').on( 'shouldUpdate', (context, promise) => {
+  feature.channels('*').on( 'shouldUpdate', (context, update) => {
 
     try {
       var channel = context.channel
@@ -105,38 +101,43 @@ feature.runOnServer( () => {
         })
 
         await channel.data.set( 'lastFetchTime', since )
-        promise.resolve( messages ) // Adds the new tweets to the channel
+
+        // Does the default action with the passed value, so adds the new
+        // tweets to the channel
+
+        update.resolve( messages )
 
       })
 
     }
 
-    catch( error ) promise.reject( error )
+    catch( reason ) update.reject( reason )
 
   })
 
 })
 
 
+
 //
-// TURN OFF POSTING FOR SUB CHANNELS, AND SET LINK DESTINATION
+// TURN OFF POSTING FOR SUB CHANNELS, AND SET LINK BEHAVIOR
 //
 
 feature.channels( '.twitterUserChannel, .twitterHashtagChannel' ).set({
   whoCanPost: null
 })
 
-feature.channels('*').on( 'didTapLink', (context, promise) => {
-  otherchat.client.navigateTo( baseChannel.path + '/' + context.link.text )
-  promise.resolve( false ) // prevent default behavior
+feature.channels('*').on( 'didTapLink', (context, navigate) => {
+  navigate.resolve( baseChannel.path + '/' + context.link.text )
 })
+
 
 
 //
 // POSTING IN BASE CHANNEL TWEETS
 //
 
-baseChannel.on( 'willPostMessage', (context, promise) => {
+baseChannel.on( 'willPostMessage', (context, post) => {
   var msg = context.message
 
   Twitter
@@ -144,9 +145,7 @@ baseChannel.on( 'willPostMessage', (context, promise) => {
     .then( () => {
       msg.author = twitterIdentity
       msg.channel.post( msg )
-      promise.resolve( false ) // cancel default action
+      post.resolve( msg )
     })
-    .error( () => promise.reject() )
+    .catch( reason => promise.reject(reason) )
 })
-
-
