@@ -1,75 +1,158 @@
+//
 // This sketch of Otherscript is centered around trying to build as much of
 // Otherchat's features in Otherscript as possible. It focuses on the base
 // commands. While thinking forward to 3rd party extensions and their permission
-// model, this exploration focuses on letting us build.
+// model, this exploration focuses on letting us build quickly.
 //
-// Otherscript uses the latest in ecmascript 6 (and sometimes 7!). While
-// not all of these features are [supported](http://kangax.github.io/compat-table/es6/)
-// by JavascriptCore on iOS, both [Google](https://github.com/google/traceur-compiler) and
-// [Facebook](http://facebook.github.io/regenerator/) have open-source code regenerators
-// that converts the future into complaint ECMAScript 5.
+// Otherscript uses some ES6 and ES7. While not all of these features are
+// supported[1] by JavascriptCore on iOS, both Google[2] and Facebook[3] have
+// open-source code regenerators that converts future ES* into standard ES5.
 //
-// In particular, these features are awesome:
-// - [async/await](https://github.com/tc39/ecmascript-asyncawait)
-// - [arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
-// - [string literals that allow embedded expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
-// - [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+// In particular, Otherscript uses these features:
 //
+// - Async/await: https://github.com/tc39/ecmascript-asyncawait
+// - Arrow functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+// - String literals with embedded expressions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+// - Promises: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+//
+// [1] http://kangax.github.io/compat-table/es6/
+// [2] https://github.com/google/traceur-compiler
+// [3] http://facebook.github.io/regenerator/
 
-var Time = require('other-time') // Legendary time utilities from the future
+//
+// As per usual, imports at the top of the file.
 
-// All features that share an API key can share data. Perhaps permissions can
-// be set for an api key via a web interface.
+var Time = require('other-time') // Legendary time utils from the future
 
-var feature = new OtherchatFeature({
+//
+// Otherscript is used to install new features on the Chatternet + browser. A
+// collection of features is, in code, called a FeatureSet, and this is the
+// base unit of Otherscript.
+//
+// The API key is tied to the developer and dictates the overall permissions of
+// the Otherscript. Permissions for specific feature sets and commands can be
+// set from a web interface and/or in code.
+//
+// Data storage is built-in to Other Script. Both user and channel objects have
+// a .data property, and can be written to and read from via .set(key, value)
+// and .get(key).
+//
+// Behind the scenes, this is backed by a key-value store. The tuple
+// (apiKey, userOrChannelId, key) makes a convinient key, and allows for
+// features that share an API key to share data.
+//
+// Further data security measures are, without a doubt, needed.
+
+var feature = new FeatureSet({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
-  version: 'base.0.1'
+  id: 'base',
+  version: 'base.0.1',
+  name: 'Other Chat Base Behaviors'
+  description: 'The basic behaviors of Other Chat'
 })
 
-// Scoped access to Other Chat via the feature's permissions
+//
+// This is the object used to script the Other Chat client. It's permissions
+// are scoped by the feature passed in. Many of the features used in this file
+// would not be available in this unguarded fashion to extension authors.
+
 var otherchat = new Otherchat( feature )
+
+
+
+
 
 
 // 
 // AT MESSAGE COMPLETE
 //
 
+//
+// The most basic of all chat completes is the @mention. It also shows the
+// basics of writing a chat complete command. This command, runs entirely
+// on the client.
+//
+//   token - what the user types to get the command
+//   accepts - the kinds of things the command for input
+//
+// accepts is a dictionary that maps a type to the property it is accessible by
+// in the context argument of a handler. For example, in this command the string
+// containing what the user typed after the command token will accessible
+// in context.query. Generally speaking, all commands accept at least this type.
+
 var mentionCommand = feature.command({
   tokens: ['@'],
   version: 'user.0.1',
-  accepts: {query: String} // this is the default
+  name: '@mention complete',
+  accepts: {query: String}
 })
 
+//
+// The didQuery event handler is trigger when the user enters something after
+// the command token. The handler is passed two arguments:
+//
+//   context - all the things the event handler needs to do its thing
+//   promise - how the handler communnicates with the caller
 
 mentionCommand.on('didQuery', (context, promise) => {
 
+  // Find all users the client knows that match the query
+
   otherchat.client.users.find(context.query).then( users => {
 
-    // Show the members of the current channel first, then sort by .relevance
-    // (which is server calculated)
+    // Then sort those users by membership in the current channel first,
+    // then by their .relevance (a server calculated value) second
 
     users = users.sortBy( user => [user.isMemberOf( client.currentChannel ), user.relevance] )
+
+    // Then pass back the list of sorted, matching users to the Other Chat
+    // client (which is who made the call) as chat complete results.
+    // 
+    // {user: user, action: 'whisper'} is short for:
+    // otherchat.types.chatCompleteResult({ user: user, action: 'whisper' })
+    // 
+    // The promise interprets dictionaries as the default chat complete result
+    // type.
+    // 
+    //   user - the client knows how to display a result based on the properties
+    //          set, in this case each row is displayed as a user
+    //   action - the name of the action button
+  
 
     var results = users.map( user => ({user: user, action: 'whisper'}) )
     promise.resolve( results )
 
-  }).catch( reason => promise.reject(reason) )
+  })
+  // Something went wrong with the search, abort!
+  .catch( reason => promise.reject(reason) )
   
 })
 
+//
+// When the action button is tapped, cause the client to navigate to the
+// selected user's whipser channel.
 
 mentionCommand.on( 'didAction', selected => {
   client.navigateTo( selected.user.whisperChannel )
 })
 
 
+
+
+
+
 // 
 // CHANNEL COMPLETE
 //
 
+// Very similar to the last. The promise is passed on object with the channel
+// property set, so they display as a channel chat complete row.
+
 var hashCommand = feature.command({
   tokens: ['#'],
-  version: 'channel.0.1'
+  version: 'channel.0.1',
+  name: '#channel complete'
+  accepts: {query: String}
 })
 
 
@@ -77,9 +160,8 @@ hashCommand.on('didQuery', (context, promise) => {
 
   otherchat.client.channels.find(context.query).then( channels => {
 
-    var results = channels
-                    .map( channel => ({channel: channel, action: 'go'})
-                    .sortBy(['relevance', 'createdAt')
+    var results = channels.map( channel => ({channel: channel, action: 'go'}) )
+                          .sortBy(['relevance', 'createdAt')
 
     promise.resolve( results )
 
@@ -97,35 +179,39 @@ hashCommand.on('didAction', selected => {
 // 
 // INVITE COMMAND
 //
-// As per the new spec hotness, you can select multiple people and invite
-// them all at once. This command shows server side goodness.
-//
-
-//
-// The accepts field allows programatic calling of commands:
-// otherchat.client.command('invite', {users: [...]})
-//
-// Inside of an event handler, this.context can be modified
-//
+// The invite command introduces three concepts. Accepting types other than
+// the query String, allowing multiple selections, and running code on the
+// server.
 
 var invite = feature.command({
   tokens: ['invite'],
   version: 'invite.0.2',
-  // Accepts both an array of users as well as an arbitrary query string for
-  // searching users.
+  
+  // Accepts both an array of users as well as the arbitrary query string for
+  // finding users.
   accepts: {users: [otherchat.types.user], query: String},
+
+  // Chat completes allow for multiple selection, huzzah!
   allowsMultipleSelection: true
 })
 
 
+// When the invite command is invoked...
+
 invite.on('didQuery', (context, promise) => {
+
+  // Search for the user's who match the query
   
   otherchat.client.users.find(context.query).then( users => {
+
+    // Map the users to user chat completes with an invite action
 
     var results = users.map( user => ({user: user, action: 'invite'}) )
 
     // TODO: How are we showing hint/explanation text for these multi-selection
     // comamnds? Needs design from Mike on user interface.
+
+    // And display them
 
     return promise.resolve( results )
 
@@ -133,9 +219,17 @@ invite.on('didQuery', (context, promise) => {
 
 })
 
+
+//
+// When an action button is activated, add the selected user to the context.
+// When an action button is deactivated, remove them from the context.
+//
+// If the full context isn't needed, then you can use a handler that takes
+// a single argument, which will passed the target of the event.
+
 invite.on('didAction', selected => {
 
-  // Modifies context, which gets passed into event handlers
+  // Modifies the context which gets passed into event handlers
   
   if(  selected.action.isActive ) this.context.users.append( selected.user )
   else this.context.users.remove( selected.user )
@@ -143,18 +237,39 @@ invite.on('didAction', selected => {
 })
 
 
-// The didFinish event is available for multiple-selection chat completes
-// and is fired when the user taps the send/done button
+//
+// When the user taps the send/done button (how a user indicates being done with
+// a multi-selection chat complete command), make the user a member of the
+// channel, and post a system message marking the invitation.
+//
+// This is the first time we'll see running code on the server in action.
 
 invite.on('didFinish', (context, promise) => {
   
   var currentChannel = otherchat.client.currentChannel,
       info = { users: context.users, by: client.me }
 
-  currentChannel.asServer( info, serverContext => {
+  // When we run code on the server, it doesn't have access to anything derived
+  // from the client except what is serialized through the info argument (and
+  // available on the server context object).
+  // 
+  // The closure's code is run on the server. Available in it's scope is
+  // anything in this scripts global name space.
+  //
+  // The server automatically catches any throws from the await calls and passes
+  // them along to the promise returned by .runAsServer.
+  //
+  // Everything done within a .runAsServer closure is atomic. If one error is
+  // thown, everything is rolled back so that nothing is left in a weird or
+  // inconsistent state.
+
+  currentChannel.runAsServer( info, serverContext => {
 
     var channel = serverContext.channel,
         info = serverContext.info
+
+    // Make the user a member of the channel, and post a system message to the 
+    // channel marking the invitation.
 
     await channel.addMembers( info.users )
     await channel.post({
@@ -165,9 +280,6 @@ invite.on('didFinish', (context, promise) => {
   })
   .then( () => promise.resolve() )
   .catch( reason => promise.reject(reason) )
-
-  // All actions in asServer are done atomically, so if there is an
-  // error, we aren't left in weird state
 
 })
 
@@ -209,10 +321,10 @@ kickCommand.on('didAction', (selected, promise) => {
 
   var info = { kicked: kickedUser, by: client.me, banLength: banLength }
 
-  theChannel.asServer( info, (context) => {
+  theChannel.runAsServer( info, serverContext => {
 
-    var channel = context.channel,
-        info = context.info
+    var channel = serverContext.channel,
+        info = serverContext.info
 
     await channel.forceUserToLeave( info.kicked )
     await channel.removeAsMember( info.kicked )
@@ -243,15 +355,16 @@ var checkIfKicked = otherchat.type.serverEventHandler({
   // unique means that this handler will only be installed once, no matter
   // how many times you .on() with it.
   unique: true,
-  handler: (context, promise) => {
+  handler: (handlercontext, handlerPromise) => {
 
     // Note: server-side handlers should only use data passed into the handler
     // and global things like modules. Variables that get defined by the client
     // won't be available in this scope, and so if used will cause errors.
 
-    var channel = context.channel
+    handlerContext.channel.run( (context, promise) => {
 
-    try {
+      // Get the blaclkist and find the first rule (or null if none) for the
+      // user that just entered.
 
       var blacklist = await channel.data.get( 'blacklist', [] ),
           rule = blacklist.filter( rule => rule.user == context.user ).first()
@@ -267,11 +380,11 @@ var checkIfKicked = otherchat.type.serverEventHandler({
           whoCanSee: [context.user]
         })
 
-        // Prevent default action, i.e., entering the channel
+        // Prevent default action, i.e., don't let them enter the channel
         return promise.resolve( false ) 
 
       }
-      
+
       // If the kick has run out, remove the blacklist rule
       else if( rule ){
         blacklist.remove( rule )
@@ -283,10 +396,11 @@ var checkIfKicked = otherchat.type.serverEventHandler({
 
       // Finally, allow default action to let the user into the channel
       promise.resolve( true )
-
-    }
-
-    catch( error ) promise.reject( error )
+    })
+    // Everything was succesfull! Let the server know.
+    .then( handlerPromise.resolve() )
+    // If something went wrong, tell the server and give it back the error
+    .catch( reason => promise.reject( reason ) )
 
   }
 })
