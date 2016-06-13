@@ -151,25 +151,25 @@ invite.on('didAction', selected => {
 
 invite.on('didFinish', (context, promise) => {
   
-  var thisChannel = otherchat.server.channel( otherchat.client.currentChannel )
+  var channel = otherchat.client.currentChannel,
+      info = { users: context.users, by: client.me }
 
-  // Everything done to thisChannel is passed as a message to the server,
-  // which then does it. If something goes wrong, then an error is thrown.
-  // Would be good if everything in the try block is done 'atomically' so
-  // that if it gets half way through and then throws an error, the changes
-  // roll-back.
+  channel.asServerWithInfo( info, context => {
 
-  try{
-    await thisChannel.addMembers( context.users )
+    var info = context.info
 
+    await thisChannel.addMembers( info.users )
     await thisChannel.post({
       type: 'system'
-      body: `${client.me} invited ${users.join(', ')} to ${thisChannel}`
+      body: `${info.by} invited ${info.users.join(', ')} to ${context.channel}`
     })
-    promise.resolve()
-  }
 
-  catch( error ) promise.reject( error )
+  })
+  .then( () => promise.resolve() )
+  .catch( reason => promise.reject(reason) )
+
+  // All actions in asServerWithInfo are done atomically, so if there is an
+  // error, we aren't left in weird state
 
 })
 
@@ -187,21 +187,21 @@ var kickCommand = feature.command({
   accepts: {user: otherchat.types.user, query: String}
 })
 
-var Time = require('other-time') // Time utils
+var Time = require('other-time') // Our legendary future time utilities
 
-var kickedHandler = otherchat.type.serverSideEventHandler({
+var checkIfKicked = otherchat.type.serverEventHandler({
   // unique means that this handler will only be installed once, no matter
   // how many times you .on() with it.
   unique: true,
   handler: (context, promise) => {
 
     // Note: server-side handlers should only use data passed into the handler
-    // and global things like modules. Variables that get defined in the client
-    // scope won't be available here.
+    // and global things like modules. Variables that get defined by the client
+    // won't be available in this scope.
 
     var channel = context.channel
 
-    try{
+    try {
 
       var blacklist = await channel.data( 'blacklist' ) || [],
           rule = blacklist.filter( rule => rule.user == context.user )
@@ -211,7 +211,7 @@ var kickedHandler = otherchat.type.serverSideEventHandler({
 
       if( rule && Date.now() <= rule.until ){
         
-        channel.post({
+        await channel.post({
           type: 'system',
           text: `You have been kicked from ${channel} for another ${Time.howLongUntil(rule.until)} minutes`,
           whoCanSee: [context.user]
@@ -223,39 +223,40 @@ var kickedHandler = otherchat.type.serverSideEventHandler({
       }
       
       // If the kick has run out, remove the blacklist rule
-
       else if( rule ){
         blacklist.remove( rule )
-        channel.data( 'blacklist', blacklist )
+        await channel.data( 'blacklist', blacklist )
       }
 
       // If there is no more blacklist, uninstall the event handler
-
-      if( blacklist.length == 0 ) channel.off('userWillEnter', kickedHandler)
+      if( blacklist.length == 0 ) await channel.off('userWillEnter', kickedHandler)
 
       // Finally, allow default action to let them into the channel
-
       promise.resolve( true )
+
     }
 
     catch( error ) promise.reject( error )
+
   }
 })
+
 
 kickCommand.on('didQuery', (context, promise) => {
   
   var channelMembers = otherchat.client.currentChannel.members
   
-  var users = channelMembers.find({ query: context.query }).map( user =>
-    otherchat.type.chatCompleteResult({
+  var users = channelMembers.find({ query: context.query }).map( user => {
+    return {
       user: user,
-      actionName: 'kick'
-    })
+      action: 'kick'
+    }
   })
 
   promise.resolve( users )
   
 })
+
 
 kickCommand.on('didAction', (selected, promise) => {
   
@@ -263,38 +264,38 @@ kickCommand.on('didAction', (selected, promise) => {
   // call kick from another command via otherchat.client.command('kick', {user: aUser}) 
 
   var kickedUser = selected.user,
-      theChannel = otherchat.server.channel( otherchat.client.currentChannel ),
+      theChannel = otherchat.client.currentChannel,
       banLength = '1 minute'
 
-  try{
-    // Functions on theChannel are messaged to the server for execution.
-    // If something goes wrong, an errors is thrown.
-    theChannel.forceLeave( kickedUser )
-    theChannel.removeAsMember( kickedUser )
+  var info = { kicked: kickedUser, by: client.me, banLength: banLength }
 
-    var blacklist = await theChannel.data( 'blacklist' ) || []
-    blacklist.append({ user: kickedUser, until: Time.fromNow( banLength ) })
-    theChannel.data( 'blacklist', blacklist )
+  theChannel.asServerWithInfo( info, (context) => {
 
-    // Only install the handler that blocks kicked users from entering after
-    // the first user is kicked.
-    theChannel.on('userWillEnter', kickHandler)
+    var channel = context.channel,
+        info = context.info
 
-    otherchat.client.post({
-      type: 'system',
-      text: `${client.me} kicked ${kickedUser} from this channel for ${banLength}`
+    await channel.forceUserToLeave( info.kicked )
+    await channel.removeAsMember( info.kicked )
+
+    var blacklist = await channel.data.getWithDefault( 'blacklist', [] )
+
+    blacklist.append({
+      user: info.kicked,
+      until: Time.fromNow( info.banLength )
     })
 
-    promise.resolve()
-  }
+    await channel.data( 'blacklist', blacklist )
+    await channel.post({
+      type: 'system',
+      text: `${info.by} kicked ${info.toKick} from this channel for ${info.banLength}`
+    })
 
-  catch( error ){
-    // If the promise is rejected, that means something went wrong in the
-    // try, so roll back any changes made. I.e., everything in the try
-    // should be atomic.
+    await channel.on( 'userWillEnter', checkIfKicked )
 
-    promise.reject( error )
-  }
+  })
+  .then( () => promise.resolve() )
+  .catch( reason => promise.reject(reason) )
+
 })
   
 
