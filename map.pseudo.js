@@ -13,10 +13,11 @@ var feature = new OtherchatFeature({
 
 var mapCmd = feature.command({
   tokens: ['map'],
-  version: 'map.0.2' // can be separately versioned from the feature
+  version: 'map.0.2' // can be separately versioned from the feature,
+  accepts: {place: Place, query: String}
 })
 
-mapCmd.on('query', (context, promise) => {
+mapCmd.on('didQuery', (context, promise) => {
   var query = context.query
 
   // "map me" displays the map of where you are
@@ -34,28 +35,25 @@ mapCmd.on('query', (context, promise) => {
   })
 })
 
-function findAndDisplayMapResults( options, promise ){
+function findAndDisplayMapResults( context, promise ){
 
   Places
-    .search({ query: options.query, centeredAt: options.center })
-    .then( results => {
+    .search({ query: context.query, centeredAt: context.center })
+    .then( places => {
 
-      results = results.map( place => {
-        return otherchat.types.mapChatComplete({
-          title: place.name,
-          rating: place.rating,
-          location: place.latLng
-        })
-      })
+      var results = places.map( place => otherchat.types.mapChatComplete({
+        title: place.name,
+        rating: place.rating,
+        location: place.latLng
+      }) )
 
       // When a single map chat complete object is passed to done the map chat
       // complete shows just that item. When a list is passed, it shows all
       // items on the map
 
       promise.resolve( results )
-
-    }
-  )
+    
+    }).catch( reason => promise.reject(reason) )
 
 }
 
@@ -74,13 +72,13 @@ function findAndDisplayMapResults( options, promise ){
 var etaCmd = feature.command({
   tokens: ['eta'],
   version: 'eta.0.1',
-  accepts: { user: otherchat.types.user, place: Place }
+  accepts: { user: otherchat.types.user, place: Place, query: String }
 })
 
-etaCmd.on('query', (context, promise) => {
+etaCmd.on('didQuery', (context, promise) => {
 
   if( !context.user && !context.place ){
-    return promise.reject( 'Keep typing to map your eta to a person or place...' )
+    return promise.reject( 'Get an eta to a person or place...' )
   }
 
   promise.resolve( oc.types.mapChatComplete({
@@ -119,32 +117,30 @@ etaCmd.on('query', (context, promise) => {
 
 var findCommand = feature.command({
   tokens: ['find'],
-  version: 'find.0.3',
+  version: 'find.0.1',
   accepts: { place: Place, query: String }
 })
 
-findCommand.on('query', (context, promise) => {
-  try{
-    
-    var places = await Places.search({ query:options.query, centeredAt: options.center })
+findCommand.on('didQuery', (context, promise) => {
+  
+  Places.search({ query:context.query, centeredAt: context.center }).then( places => {
 
-    var results = places.map( place => otherchat.types.chatComplete({
-        title: place.name,
-        detail: `${place.distance} ${place.vicinity}`,
-        rating: place.rating,
-        info: { href: place.href },
-        actionName: 'more',
-        action: selected => {
-          // Open a fullscreen web page with appropriate chrome for chat complete action
-          client.browser.open( selected.info.href ) 
-        }
-      })
-    )
+    var results = places.map( place => ({
+      title: place.name,
+      detail: `${place.distance} ${place.vicinity}`,
+      rating: place.rating,
+      info: { href: place.href },
+      action: 'more'
+    }) )
 
     promise.resolve( results )
 
-  }
-  catch(error) promise.reject( error )
+  }).catch(reason) promise.reject( reason )
+
+})
+
+findCommand.on('didAction', (context, promise) => {
+  otherchat.client.browser.open( context.info.href )
 })
 
 
