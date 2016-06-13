@@ -70,7 +70,7 @@ feature.on('install', () => {
 
 feature.runOnServer( () => {
 
-  feature.channels('*').on( 'shouldUpdate', (context, update) => {
+  feature.channels('*').on( 'shouldUpdate', (context, shouldUpdate) => {
 
     try {
       var channel = context.channel
@@ -105,13 +105,13 @@ feature.runOnServer( () => {
         // Does the default action with the passed value, so adds the new
         // tweets to the channel
 
-        update.resolve( messages )
+        shouldUpdate.resolve( messages )
 
       })
 
     }
 
-    catch( reason ) update.reject( reason )
+    catch( reason ) shouldUpdate.reject( reason )
 
   })
 
@@ -127,8 +127,8 @@ feature.channels( '.twitterUserChannel, .twitterHashtagChannel' ).set({
   whoCanPost: null
 })
 
-feature.channels('*').on( 'didTapLink', (context, navigate) => {
-  navigate.resolve( baseChannel.path + '/' + context.link.text )
+feature.channels('*').on( 'didTapLink', (context, didTap) => {
+  didTap.resolve( baseChannel.path + '/' + context.link.text )
 })
 
 
@@ -137,14 +137,14 @@ feature.channels('*').on( 'didTapLink', (context, navigate) => {
 // POSTING IN BASE CHANNEL TWEETS
 //
 
-baseChannel.on( 'willPostMessage', (context, post) => {
+baseChannel.on( 'willPostMessage', (context, willPost) => {
   var msg = context.message
 
   Twitter
     .tweet( msg )
     .then( () => {
       msg.author = twitterIdentity
-      post.resolve( msg )
+      willPost.resolve( msg )
     })
-    .catch( reason => promise.reject(reason) )
+    .catch( reason => willPost.reject(reason) )
 })
