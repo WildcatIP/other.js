@@ -8,7 +8,7 @@
 // - https://github.com/facebook/regenerator
 //
 
-let feature = new OtherchatFeature({
+let feature = new OtherchatFeatureSet({
       apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
       version: 'twitter.0.1'
     }),
