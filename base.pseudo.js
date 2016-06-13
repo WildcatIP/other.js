@@ -176,6 +176,9 @@ hashCommand.on('didAction', selected => {
 
 
 
+
+
+
 // 
 // INVITE COMMAND
 //
@@ -285,18 +288,28 @@ invite.on('didFinish', (context, promise) => {
 
 
 
+
+
+
 //
 // KICK
-// Kicks a user for the channel and bans them from entering for 1 minute
-// Would be nice to include: "kick @blah 10 minutes"
 //
+// Kicks a user for the channel and bans them for 1 minute. Ties everything
+// together, uses server-side events and data storage.
 
 var kickCommand = feature.command({
   tokens: ['kick'],
   version: 'kick.0.1',
+  name: 'Kick command',
+  description: 'Temporarily kicks a user from the channel.'
   accepts: {user: otherchat.types.user, query: String}
 })
 
+// The accepts field means you can programatically kick a user by:
+// otherchat.client.command('kick', {user: aUser})
+
+//
+// Show a list of users with a 'kick' action
 
 kickCommand.on('didQuery', (context, promise) => {
   
@@ -306,15 +319,13 @@ kickCommand.on('didQuery', (context, promise) => {
     var results = users.map( user => ({user: user, action: 'kick'}) )
     promise.resolve( results )
   })
+  .catch( reason => promise.reject(reason) )
   
 })
 
 
 kickCommand.on('didAction', (selected, promise) => {
   
-  // Can programatically called from another command via
-  // otherchat.client.command('kick', {user: aUser})
-
   var kickedUser = selected.user, // will exist because of accepts field
       theChannel = otherchat.client.currentChannel,
       banLength = '1 minute'
@@ -406,20 +417,19 @@ var checkIfKicked = otherchat.type.serverEventHandler({
 })
   
 
-
-
-// TODO:
-// Mute
-
+// TODO: Would be nice to include: "kick @blah 10 minutes"
+// TODO: Mute
+// TODO: Rechat
+// TODO: Todo app
 
 // NOTES:
-
-// Localization is an open question
 //
-// There's a problem with the explanation text on multiple selects conflicting with where you type
-// Maybe changes the "send" button to "invite" 
+// Localization is an open question, though I think string templates will be
+// a good place to look for an answer.
 //
+// There's a problem with the explanation text on multiple selects conflicting
+// with where you type. Maybe changes the "send" button to "invite" 
 //
-// Proposal:
+// How about...
 // If an @name is entered by typing, deleting works like normal: character to character.
 // If an @name is entered via chat complete, the name is deleted as a block
