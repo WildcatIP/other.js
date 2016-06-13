@@ -92,9 +92,9 @@ var mentionCommand = feature.command({
 // the command token. The handler is passed two arguments:
 //
 //   context - all the things the event handler needs to do its thing
-//   promise - how the handler communnicates with the caller
+//   didQuery - the promise by which the handler communnicates with the caller
 
-mentionCommand.on('didQuery', (context, promise) => {
+mentionCommand.on('didQuery', (context, didQuery) => {
 
   // Find all users the client knows that match the query
 
@@ -120,11 +120,11 @@ mentionCommand.on('didQuery', (context, promise) => {
   
 
     var results = users.map( user => ({user: user, action: 'whisper'}) )
-    promise.resolve( results )
+    didQuery.resolve( results )
 
   })
   // Something went wrong with the search, abort!
-  .catch( reason => promise.reject(reason) )
+  .catch( reason => didQuery.reject(reason) )
   
 })
 
@@ -156,16 +156,17 @@ var hashCommand = feature.command({
 })
 
 
-hashCommand.on('didQuery', (context, promise) => {
+hashCommand.on('didQuery', (context, didQuery) => {
 
   otherchat.client.channels.find(context.query).then( channels => {
 
-    var results = channels.map( channel => ({channel: channel, action: 'go'}) )
-                          .sortBy(['relevance', 'createdAt')
+    var results = channels
+                    .map( channel => ({ channel: channel, action: 'go' }) )
+                    .sortBy(['relevance', 'createdAt')
 
-    promise.resolve( results )
+    didQuery.resolve( results )
 
-  }).catch( reason => promise.reject( reason ) )
+  }).catch( reason => didQuery.reject( reason ) )
 
 })
 
@@ -201,41 +202,42 @@ var invite = feature.command({
 
 // When the invite command is invoked...
 
-invite.on('didQuery', (context, promise) => {
+invite.on('didQuery', (context, didQuery) => {
 
   // Search for the user's who match the query
   
   otherchat.client.users.find(context.query).then( users => {
 
-    // Map the users to user chat completes with an invite action
+    // Map the users to user chat completes with invite action
 
     var results = users.map( user => ({user: user, action: 'invite'}) )
 
-    // TODO: How are we showing hint/explanation text for these multi-selection
-    // comamnds? Needs design from Mike on user interface.
-
     // And display them
 
-    return promise.resolve( results )
+    return didQuery.resolve( results )
 
-  }).catch( reason => promise.reject( reason ) )
+  }).catch( reason => didQuery.reject( reason ) )
 
 })
+
+// TODO: How are we showing hint/explanation text for these multi-selection
+// comamnds? Needs design from Mike on user interface.
 
 
 //
 // When an action button is activated, add the selected user to the context.
 // When an action button is deactivated, remove them from the context.
-//
-// If the full context isn't needed, then you can use a handler that takes
-// a single argument, which will passed the target of the event.
 
-invite.on('didAction', selected => {
+invite.on('didAction', (context, didAction) => {
+
+  let selected = context.selected
 
   // Modifies the context which gets passed into event handlers
   
   if(  selected.action.isActive ) this.context.users.append( selected.user )
   else this.context.users.remove( selected.user )
+
+  didAction.resolve()
 
 })
 
@@ -247,7 +249,7 @@ invite.on('didAction', selected => {
 //
 // This is the first time we'll see running code on the server in action.
 
-invite.on('didFinish', (context, promise) => {
+invite.on('didFinish', (context, didFinish) => {
   
   var currentChannel = otherchat.client.currentChannel,
       info = { users: context.users, by: client.me }
@@ -281,8 +283,8 @@ invite.on('didFinish', (context, promise) => {
     })
 
   })
-  .then( () => promise.resolve() )
-  .catch( reason => promise.reject(reason) )
+  .then( () => didFinish.resolve() )
+  .catch( reason => didFinish.reject(reason) )
 
 })
 
@@ -312,15 +314,15 @@ var kickCommand = feature.command({
 //
 // Show a list of users with a 'kick' action
 
-kickCommand.on('didQuery', (context, promise) => {
+kickCommand.on('didQuery', (context, didQuery) => {
   
   var channelMembers = otherchat.client.currentChannel.members
   
   channelMembers.find({ query: context.query }).then( users => {
     var results = users.map( user => ({user: user, action: 'kick'}) )
-    promise.resolve( results )
+    didQuery.resolve( results )
   })
-  .catch( reason => promise.reject(reason) )
+  .catch( reason => didQuery.reject(reason) )
   
 })
 
@@ -328,7 +330,7 @@ kickCommand.on('didQuery', (context, promise) => {
 // This is where it gets exciting! This kicks somebody from a channel and bans
 // them for a minute.
 
-kickCommand.on('didAction', (selected, promise) => {
+kickCommand.on('didAction', (selected, didAction) => {
   
   var kickedUser = selected.user, // guaranteed from the accepts field
       theChannel = otherchat.client.currentChannel,
@@ -380,9 +382,9 @@ kickCommand.on('didAction', (selected, promise) => {
 
   })
   // Tell the client everything was succesfull!
-  .then( () => promise.resolve() )
+  .then( () => didAction.resolve() )
   // Roll-back any changes and let the client know something went uncheesy
-  .catch( reason => promise.reject(reason) )
+  .catch( reason => didAction.reject(reason) )
 
 })
 
@@ -396,19 +398,19 @@ kickCommand.on('didAction', (selected, promise) => {
 
 var checkIfKicked = otherchat.type.serverEventHandler({
   unique: true,
-  handler: (handlerContext, handlerPromise) => {
+  handler: (context, willEnter) => {
 
-    // Run the following atomically as the channel...
+    // This is run atomically on the server
 
-    handlerContext.channel.run( context => {
+    try{
       
       channel = context.channel
 
       // Get the blaclkist and find the first rule (or null if none) for the
       // user that just entered.
 
-      var blacklist = await channel.data.get( 'blacklist', [] ),
-          rule = blacklist.filter( rule => rule.user == context.user ).first()
+      var blacklist = await channel.data.get( 'blacklist', [] )
+      var rule = blacklist.filter( rule => rule.user == context.user ).first()
 
       // If the user is still kicked, keep them from entering and post a
       // system message only they can see saying why they cannot enter.
@@ -422,7 +424,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
         })
 
         // Prevent default action, i.e., don't let them enter the channel
-        return handlerPromise.resolve( false ) 
+        return willEnter.resolve( false ) 
 
       }
 
@@ -436,10 +438,11 @@ var checkIfKicked = otherchat.type.serverEventHandler({
       if( blacklist.length == 0 ) await channel.off('userWillEnter', kickedHandler)
 
       // Finally, allow default action to let the user into the channel
-      handlerPromise.resolve( true )
+      willEnter.resolve( true )
 
-    })
-    .catch( reason => handlerPromise.reject(reason) )
+    }
+    
+    catch( reason => willEnter.reject(reason) )
 
   }
 })
