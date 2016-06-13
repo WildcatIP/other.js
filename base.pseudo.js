@@ -323,12 +323,18 @@ kickCommand.on('didQuery', (context, promise) => {
   
 })
 
+//
+// This is where it gets exciting! This is the code that kicks somebody from
+// a channel and bans them for a minute.
 
 kickCommand.on('didAction', (selected, promise) => {
   
-  var kickedUser = selected.user, // will exist because of accepts field
+  var kickedUser = selected.user, // guaranteed from the accepts field
       theChannel = otherchat.client.currentChannel,
       banLength = '1 minute'
+
+  // To kick someone, the server needs to know who is kicked, who did the
+  // kicking, and for how long they should be banned
 
   var info = { kicked: kickedUser, by: client.me, banLength: banLength }
 
@@ -337,8 +343,15 @@ kickCommand.on('didAction', (selected, promise) => {
     var channel = serverContext.channel,
         info = serverContext.info
 
+    // Kick them from the channel and remove their membership
+
     await channel.forceUserToLeave( info.kicked )
     await channel.removeAsMember( info.kicked )
+
+    // Append to the blacklist stored on the channel. Remember that all
+    // features that share an apiKey can access shared data. For example,
+    // our block command might append an object to the blacklist with until
+    // set to Infinity and an extra field for also blocking on account. 
 
     var blacklist = await channel.data.get( 'blacklist', [] )
 
@@ -348,15 +361,22 @@ kickCommand.on('didAction', (selected, promise) => {
     })
 
     await channel.data.set( 'blacklist', blacklist )
+
+    // Post a system message saying the user was kicked
+
     await channel.post({
       type: 'system',
       text: `${info.by} kicked ${info.toKick} from this channel for ${info.banLength}`
     })
 
+    // Attach a server-side handler to the channel
+
     await channel.on( 'userWillEnter', checkIfKicked )
 
   })
+  // Tell the client everything was succesfull!
   .then( () => promise.resolve() )
+  // Oh noes...
   .catch( reason => promise.reject(reason) )
 
 })
