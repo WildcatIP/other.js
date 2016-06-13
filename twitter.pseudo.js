@@ -144,7 +144,6 @@ baseChannel.on( 'willPostMessage', (context, post) => {
     .tweet( msg )
     .then( () => {
       msg.author = twitterIdentity
-      msg.channel.post( msg )
       post.resolve( msg )
     })
     .catch( reason => promise.reject(reason) )
