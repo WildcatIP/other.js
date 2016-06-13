@@ -34,7 +34,7 @@ let suffixToPoints = { '++': 1, '+-': 0.5, '-+': -0.5, '--': -1 }
 
 // Installs the listener on the client
 
-otherchat.client.on('messageDidPost', (context, promise) => {
+otherchat.client.on('messageDidPost', async (context, didPost) => {
 
   // For each user mention, see if the next two characters match any of the
   // suffixes which gives points
@@ -72,10 +72,10 @@ otherchat.client.on('messageDidPost', (context, promise) => {
         body: `${message.user} gave ${newPoints} points to ${user}`,
       })
 
-      promise.resolve()
+      didPost.resolve( true )
 
     }
-    catch (reason) promise.reject( reason )
+    catch (reason) didPost.reject( reason )
 
 })
 
@@ -88,7 +88,7 @@ let pointsCommand = feature.command({
   accepts: { users: [otherchat.types.user] }
 })
 
-pointsCommand.on('didQuery', (context, promise) => {
+pointsCommand.on('didQuery', (context, didQuery) => {
 
   let users = context.users
   
@@ -97,13 +97,13 @@ pointsCommand.on('didQuery', (context, promise) => {
     users = client.currentChannel.members
   }
 
-  let results = users.map( user => ({
+  let results = users.find(context.query).map( user => ({
     text: user.data.get( 'points', [])
       .then( points => `${user} has ${points} points` )
       .catch( reason => `${user} has ? points` )
   })
 
-  promise.resolve( results )
+  didQuery.resolve( results )
 
 })
 
