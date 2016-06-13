@@ -37,29 +37,31 @@ var mentionCommand = feature.command({
   accepts: {query: String} // this is the default
 })
 
+
 mentionCommand.on('didQuery', (context, promise) => {
 
-  // using async/await syntax
+  otherchat.client.users.find(context.query).then( users => {
 
-  try{
-    var users = await otherchat.client.users.find(context.query)
-
-    // Show the members of the current channel first, sorted by .relevance
+    // Show the members of the current channel first, then sorted by .relevance
     // which is server calculated
-    users = users.sortBy( user => [user.isMemberOf( client.currentChannel ), user.relevance] )
-    users.map( user =>
-      otherchat.types.chatCompleteResult({
-        user: user,
-        action: 'whipser'
-      })
-    )
 
-  }
-  catch( error ) promise.reject( error )
+    users = users.sortBy( user => [user.isMemberOf( client.currentChannel ), user.relevance] )
+
+    var results = users.map( user => {
+      return {
+        user: user,
+        action: 'whisper'
+      }
+    })
+
+    promise.resolve( results )
+
+  }).catch( reason => promise.reject(reason) )
   
 })
 
-mentionCommand.on('didAction', selected => {
+
+mentionCommand.on( 'didAction', selected => {
   client.navigateTo( selected.user.whisperChannel )
 })
 
@@ -73,23 +75,23 @@ var hashCommand = feature.command({
   version: 'channel.0.1'
 })
 
-hashCommand.on('didQuery', (context, promise) => {
 
-  // using promise syntax
+hashCommand.on('didQuery', (context, promise) => {
 
   otherchat.client.channels.find(context.query).then( channels => {
 
-    channels = channels.map( channel =>
-      otherchat.types.chatCompleteResult({
+    var results = channels.map( channel =>
+      return {
         channel: channel,
         action: 'go'
       })
-    }).sortBy(['relevance', 'created_at')
+    }).sortBy(['relevance', 'createdAt')
 
-    promise.resolve( channels )
+    promise.resolve( results )
 
   }).catch( reason => promise.reject( reason ) )
 })
+
 
 hashCommand.on('didAction', selected => {
   client.navigateTo( selected.channel )
