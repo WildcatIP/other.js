@@ -57,3 +57,5 @@ Otherscript lets you attach new functionality to any community, upgrading it's a
 
 
 * Is Web an Other supplied library? Is it useful to default own this level of search strategically?
+
+* How should help work? Thought: add a question mark to the end of any command, and it brings up a bottom sheet with the contents of that extension's #:/help, just like for channel details/rules.
