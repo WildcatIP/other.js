@@ -148,21 +148,26 @@ invite.on('didAction', selected => {
 // The didFinish event is available for multiple-selection chat completes
 
 invite.on('didFinish', (context, promise) => {
-
-  context.users.each( user => {
-
-    var thisChannel = otherchat.client.currentChannel
   
-    thisChannel.addAsMember( user )
-    thisChannel.post({
+  var thisChannel = otherchat.server.channel( otherchat.client.currentChannel )
+
+  // Everything done to thisChannel is passed as a message to the server,
+  // which then does it. If something goes wrong, then an error is thrown.
+  // Would be good if everything in the try block is done 'atomically' so
+  // that if it gets half way through and then throws an error, the changes
+  // roll-back.
+
+  try{
+    await thisChannel.addMembers( context.users )
+
+    await thisChannel.post({
       type: 'system'
-      // localization is an open question
-      body: `${client.me} invited ${user} to ${thisChannel}`
+      body: `${client.me} invited ${users.join(', ')} to ${thisChannel}`
     })
+    promise.resolve()
+  }
 
-  })
-
-  promise.resolve()
+  catch( error ) promise.reject( error )
 
 })
 
@@ -374,6 +379,8 @@ kickCommand.on('didAction', (selected, promise) => {
 
 // NOTES:
 
+// Localization is an open question
+//
 // There's a problem with the explanation text on multiple selects conflicting with where you type
 // Maybe changes the "send" button to "invite" 
 //
