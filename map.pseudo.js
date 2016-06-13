@@ -42,7 +42,7 @@ function findAndDisplayMapResults( context, promise ){
     .then( places => {
 
       var results = places.map( place => otherchat.types.mapChatComplete({
-        title: place.name,
+        text: place.name,
         rating: place.rating,
         location: place.latLng
       }) )
@@ -126,7 +126,7 @@ findCommand.on('didQuery', (context, promise) => {
   Places.search({ query:context.query, centeredAt: context.center }).then( places => {
 
     var results = places.map( place => ({
-      title: place.name,
+      text: place.name,
       detail: `${place.distance} ${place.vicinity}`,
       rating: place.rating,
       info: { href: place.href },
