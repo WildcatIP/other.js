@@ -9,23 +9,22 @@
 //
 
 let feature = new OtherchatFeatureSet({
-      apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-      version: 'twitter.0.1'
-    }),
+  apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
+  id: 'points'
+  version: 'points.0.2',
+  name: 'Points++',
+  description: 'Give points to people with @user++, take them away with @user--.'
+})
 
-    otherchat = new Otherchat( feature ),
+
+let otherchat = new Otherchat( feature ),
     Twitter = require('http://...')
-
 
 //
 // TWITTER IDENTITY
 //
 
-// If an identity already exists (created by an Otherscript that
-// shares an API key) with the given id then that identity returned
-// with the other fields updated.
-
-let twitterIdentity = otherchat.types.identity({
+let twitterIdentity = feature.identity({
   id: 'me',
   name: Twitter.me.name,
   avatar: Twitter.me.profile_image_url  
@@ -36,12 +35,10 @@ let twitterIdentity = otherchat.types.identity({
 // APP CHANNEL STRUCTURE
 //
 
-// Same thing for channels
-
-let app = otherchat.types.channel({
+let baseChannel = feature.channel({
 
   id: 'app',
-  path: ':/twitter', // :/ means relative hashurl, # means absolute
+  path: '#:/twitter', // :/ means relative hashurl, # means absolute, #:/twitter means @user/twitter
   displayName: 'Twitter',
   class: 'baseChannel',
   
@@ -64,12 +61,9 @@ let app = otherchat.types.channel({
 // INSTALLATION
 //
 
-feature.on('install', () =>
+feature.on('install', () => {
   
-  /* TODO: oAuth setup here */
-
-  client.addIdentity( twitterIdentity )
-  client.me.addChannel( app )
+  // TODO: oAuth setup here
  
 })
 
@@ -78,76 +72,86 @@ feature.on('install', () =>
 // APP BEHAVIOR
 //
 
-app.on( 'willView', async (channel, promise) => {
-  
-  try {
+feature.runOnServer( () => {
 
-    let lastFetchTimestamp = await channel.data.get( 'lastFetchTimestamp' )
-    let twitterApiCall
+  baseChannel.on( 'shouldUpdate', (context, promise) => {
 
-    // channel.class (think CSS) is the class name of the channel.
-    // channel.path is the value returned by the hashurl regexp.
+    var channel = context.channel
 
-    if( channel.class == 'baseChannel' )
-      twitterApiCall = Twitter.fetchTimeline({ since: lastFetchTimestamp })
-    else if( channel.class == 'twitterUserChannel' )
-      twitterApiCall = Twitter.fetchTweets({ user: channel.path, since: lastFetchTimestamp })
-    else if( channel.class == 'twitterHashtagChannel' )
-      twitterApiCall = Twitter.search({ query: channel.path, since: lastFetchTimestamp })
+    try {
 
-    twitterApiCall.then( (tweets) => {
-      
-      tweets.each( (tweet) => {
-        addTweetToChannel( tweet, channel )
-        since = tweet.since
+      let lastFetchTimestamp = await channel.data.get( 'lastFetchTimestamp', 0 )
+      let twitterApiCall
+
+      // channel.class (think CSS) is the class name of the channel.
+      // channel.path is the value returned by the hashurl regexp.
+
+      if( channel.class == 'baseChannel' )
+        twitterApiCall = Twitter.fetchTimeline({ since: lastFetchTimestamp })
+      else if( channel.class == 'twitterUserChannel' )
+        twitterApiCall = Twitter.fetchTweets({ user: channel.path, since: lastFetchTimestamp })
+      else if( channel.class == 'twitterHashtagChannel' )
+        twitterApiCall = Twitter.search({ query: channel.path, since: lastFetchTimestamp })
+
+      twitterApiCall.then( tweets => {
+        
+        tweets.each( tweet => {
+          await addTweetToChannel( tweet, channel )
+          since = tweet.since
+        })
+        
+        await channel.data.set( 'lastFetchTime', since )
+        promise.resolve( true )
+
       })
-      
-      channel.data.set( 'lastFetchTime', since )
-      promise.resolve( true )
 
+    }
+
+    catch( error ) promise.reject( error )
+
+  })
+
+  async function addTweetToChannel(tweet, channel){
+
+    let msg = otherchat.types.message({
+      name: tweet.user.name
+      text: tweet.text,
+      time: tweet.time,
+      avatar: tweet.user.avatar_profile_url,
     })
+
+    msg.on( 'didTapLink',  (context, promise) => {
+      otherchat.client.navigateTo( app.path + '/' + context.link.text )
+      promise.resolve( false ) // prevent default behavior
+    })
+
+    await channel.post( msg )
 
   }
 
-  catch( error ) promise.reject( error )
 
 })
-
-function addTweetToChannel(channel, tweet){
-
-  let msg = otherchat.types.userMessage({
-    text: tweet.text,
-    time: tweet.time,
-    avatar: tweet.user.avatar_profile_url
-  })
-
-  msg.on( 'linkWasTapped', (link){
-    otherchat.client.navigateTo( app.path + '/' + link.text )
-    link.preventDefault() // prevent default navigation
-  })
-
-  channel.post( msg )
-
-}
 
 
 //
 // POSTING IN BASE CHANNEL TWEETS
 //
 
-app.on( 'willPostMessage', (message, promise) => {
+baseChannel.on( 'willPostMessage', (context, promise) => {
+  var msg = context.message
+
   Twitter
-    .tweet( message )
+    .tweet( msg )
     .then( () => {
-      message.author = twitterIdentity
-      message.channel.post(message)
-      promise.resolve()
+      msg.author = twitterIdentity
+      msg.channel.post( msg )
+      promise.resolve( false ) // cancel default action
     })
-    .error( () => { promise.reject() } )
+    .error( () => promise.reject() )
 })
 
 // Turn off posting for the rest of the app's channels
 
-app.subchannels( '.twitterUserChannel, .twitterHashtagChannel' ).set({
+baseChannel.subchannels( '.twitterUserChannel, .twitterHashtagChannel' ).set({
   whoCanPost: null
 })
