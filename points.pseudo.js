@@ -17,11 +17,13 @@
 // on a user.
 
 let feature = new OtherchatFeature({
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-  version: 'points.0.1'
+  apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
+  id: 'points'
+  version: 'points.0.2',
+  name: 'Points++',
+  description: 'Give points to people with @user++, take them away with @user--.'
 })
 
-// scope access to otherchat via the feature's permissions 
 let otherchat = new Otherchat( feature )
 
 //
@@ -32,7 +34,7 @@ let suffixToPoints = { '++': 1, '+-': 0.5, '-+': -0.5, '--': -1 }
 
 // Installs the listener on the client
 
-otherchat.client.on('messageDidPost', (message) => {
+otherchat.client.on('messageDidPost', (context, promise) => {
 
   // For each user mention, see if the next two characters match any of the
   // suffixes which gives points
@@ -40,18 +42,20 @@ otherchat.client.on('messageDidPost', (message) => {
   // Message objects contain handy-dandy common things, like lists of users
   // or channels mentioned in the message text.
 
-  message.userMentions.each( (mention) => {
+  let message = context.message
+
+  message.userMentions.each( mention => {
     
     let mentionSuffix = message.text.substr( mention.range.end, 2 )
     if( mentionSuffix.match(/[+-]{2}/) ){
-      givePointsToUser( mention.user, mentionSuffix )
+      await givePointsToUser( mention.user, mentionSuffix )
     }
 
   })
   
   async function givePointsToUser( user, suffixText ){
 
-    // Behind the scenes, this is essentially a key-value store with a key
+    // Behind the scenes, data is essentially a key-value store with a key
     // tuple of (apiKey, userId, propertyName). This lets all extensions that
     // share an API key share data.
     //
@@ -60,28 +64,22 @@ otherchat.client.on('messageDidPost', (message) => {
 
     try {
 
-      let points = user.data.get( 'points' ) || 0
-      user.data.set( 'points', points + suffixToPoints[suffixText] )
+      let points = await user.data.get( 'points' ) || 0
+      await user.data.set( 'points', points + suffixToPoints[suffixText] )
 
-      message.channel.post( otherchat.types.extensionMessage({
-        type: 'system',
+      await message.channel.post({
+        type: 'extension',
         body: `${message.user} gave ${newPoints} points to ${user}`,
       })
 
-    }
-    catch (error) {
-      
-      message.channel.post( otherchat.types.extensionMessage({
-        type: 'error',
-        body: `Could not give points: ${error}`,
-        whoCanSee: [client.me]
-      }))
+      promise.resolve()
 
     }
+    catch (reason) promise.reject( reason )
 
 })
 
-let pointsCommand = otherchat.client.registerCommand({
+let pointsCommand = feature.command({
   tokens: ['points'],
   // The accepts field tells the client what kind of arguments the command is
   // expecting and how it is called in the context object. In this case,
@@ -90,7 +88,7 @@ let pointsCommand = otherchat.client.registerCommand({
   accepts: { users: [otherchat.types.user] }
 })
 
-pointsCommand.on('query', (context, promise) => {
+pointsCommand.on('didQuery', (context, promise) => {
 
   let users = context.users
   
@@ -99,26 +97,10 @@ pointsCommand.on('query', (context, promise) => {
     users = client.currentChannel.members
   }
 
-  let results = users.map( async (user) => {
-
-    try{
-
-      let points = user.data.get( 'points' ) ||  0
-      
-      return otherchat.types.singleLineChatComplete({
-        text: `${result.user} has ${points} points`
-      })
-
-    }
-
-    catch (error) {
-      
-      return otherchat.types.singleLineChatComplete({
-        text: `${result.user} has ? points`
-      })
-
-    }
-
+  let results = users.map( user => ({
+    text: user.data.get( 'points', [])
+      .then( points => `${user} has ${points} points` )
+      .catch( reason => `${user} has ? points` )
   })
 
   promise.resolve( results )
@@ -151,9 +133,11 @@ pointsCommand.on('query', (context, promise) => {
 // that lets them install
 //
 
-otherchat.client.currentChannel.on('message', (message) => {
+otherchat.client.on('message', context => {
 
-  let didUseSyntax = message.userMentions.filter( (mention) => {
+  let message = context.message
+
+  let didUseSyntax = message.userMentions.filter( mention => {
     let mentionSuffix = message.text.substr( mention.range.end, 2 )
     return mentionSuffix.match(/[+-]{2}/)
   })
@@ -166,18 +150,16 @@ function postHintIfNeeded( user ){
   if( user == client.me ) return
 
   // You can only check if features that share your api key are installed
-  user.getIsFeatureInstalled( feature ).then( function( isFeatureInstalled ){
+
+  user.getIsFeatureInstalled( feature ).then( isFeatureInstalled  => {
 
     if( !isFeatureInstalled ){
 
-      let hint = otherchat.types.extensionMessage({
-        type: 'system',
+      message.channel.post({
+        type: 'extension',
         text: `Psst ${user}, you need ${feature} to do that`,
-        author: feature,
         whoCanSee: [user, client.me]
       })
-
-      message.channel.post( hint )
 
     }
 
