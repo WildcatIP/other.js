@@ -69,16 +69,15 @@ feature.on('install', () => {
 
 
 //
-// APP BEHAVIOR
+// BEHAVIOR
 //
 
 feature.runOnServer( () => {
 
-  baseChannel.on( 'shouldUpdate', (context, promise) => {
-
-    var channel = context.channel
+  feature.channels('*').on( 'shouldUpdate', (context, promise) => {
 
     try {
+      var channel = context.channel
 
       let lastFetchTimestamp = await channel.data.get( 'lastFetchTimestamp', 0 )
       let twitterApiCall
@@ -95,13 +94,18 @@ feature.runOnServer( () => {
 
       twitterApiCall.then( tweets => {
         
-        tweets.each( tweet => {
-          await addTweetToChannel( tweet, channel )
+        let messages = tweets.map( tweet => {
           since = tweet.since
+          return {
+            name: tweet.user.name
+            text: tweet.text,
+            time: tweet.time,
+            avatar: tweet.user.avatar_profile_url,
+          }
         })
-        
+
         await channel.data.set( 'lastFetchTime', since )
-        promise.resolve( true )
+        promise.resolve( messages ) // Adds the new tweets to the channel
 
       })
 
@@ -111,25 +115,20 @@ feature.runOnServer( () => {
 
   })
 
-  async function addTweetToChannel(tweet, channel){
-
-    let msg = otherchat.types.message({
-      name: tweet.user.name
-      text: tweet.text,
-      time: tweet.time,
-      avatar: tweet.user.avatar_profile_url,
-    })
-
-    msg.on( 'didTapLink',  (context, promise) => {
-      otherchat.client.navigateTo( app.path + '/' + context.link.text )
-      promise.resolve( false ) // prevent default behavior
-    })
-
-    await channel.post( msg )
-
-  }
+})
 
 
+//
+// TURN OFF POSTING FOR SUB CHANNELS, AND SET LINK DESTINATION
+//
+
+feature.channels( '.twitterUserChannel, .twitterHashtagChannel' ).set({
+  whoCanPost: null
+})
+
+feature.channels('*').on( 'didTapLink', (context, promise) => {
+  otherchat.client.navigateTo( baseChannel.path + '/' + context.link.text )
+  promise.resolve( false ) // prevent default behavior
 })
 
 
@@ -150,8 +149,4 @@ baseChannel.on( 'willPostMessage', (context, promise) => {
     .error( () => promise.reject() )
 })
 
-// Turn off posting for the rest of the app's channels
 
-baseChannel.subchannels( '.twitterUserChannel, .twitterHashtagChannel' ).set({
-  whoCanPost: null
-})
