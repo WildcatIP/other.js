@@ -296,6 +296,9 @@ invite.on('didFinish', (context, promise) => {
 //
 // Kicks a user for the channel and bans them for 1 minute. Ties everything
 // together, uses server-side events and data storage.
+//
+// The accepts field means you can programatically kick a user by:
+// otherchat.client.command('kick', {user: aUser})
 
 var kickCommand = feature.command({
   tokens: ['kick'],
@@ -305,8 +308,6 @@ var kickCommand = feature.command({
   accepts: {user: otherchat.types.user, query: String}
 })
 
-// The accepts field means you can programatically kick a user by:
-// otherchat.client.command('kick', {user: aUser})
 
 //
 // Show a list of users with a 'kick' action
@@ -324,8 +325,8 @@ kickCommand.on('didQuery', (context, promise) => {
 })
 
 //
-// This is where it gets exciting! This is the code that kicks somebody from
-// a channel and bans them for a minute.
+// This is where it gets exciting! This kicks somebody from a channel and bans
+// them for a minute.
 
 kickCommand.on('didAction', (selected, promise) => {
   
@@ -348,8 +349,10 @@ kickCommand.on('didAction', (selected, promise) => {
     await channel.forceUserToLeave( info.kicked )
     await channel.removeAsMember( info.kicked )
 
-    // Append to the blacklist stored on the channel. Remember that all
-    // features that share an apiKey can access shared data. For example,
+    // Append to the blacklist stored on the channel. Each rule in the blacklist
+    // contains the user to block and until when to block them.
+    // 
+    // All features that share an apiKey can access shared data. For example,
     // our block command might append an object to the blacklist with until
     // set to Infinity and an extra field for also blocking on account. 
 
@@ -381,10 +384,14 @@ kickCommand.on('didAction', (selected, promise) => {
 
 })
 
+//
+// Create the server-side event handler that checks if the user is on the black
+// list whenever a user tries to enter the channel.
+//
+//    unique - this handler will only be installed once per event, no matter
+//             how many times .on is called
 
 var checkIfKicked = otherchat.type.serverEventHandler({
-  // unique means that this handler will only be installed once, no matter
-  // how many times you .on() with it.
   unique: true,
   handler: (handlercontext, handlerPromise) => {
 
