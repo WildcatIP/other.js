@@ -185,58 +185,6 @@ var kickCommand = feature.command({
   accepts: {user: otherchat.types.user, query: String}
 })
 
-var checkIfKicked = otherchat.type.serverEventHandler({
-  // unique means that this handler will only be installed once, no matter
-  // how many times you .on() with it.
-  unique: true,
-  handler: (context, promise) => {
-
-    // Note: server-side handlers should only use data passed into the handler
-    // and global things like modules. Variables that get defined by the client
-    // won't be available in this scope, and so if used will cause errors.
-
-    var channel = context.channel
-
-    try {
-
-      var blacklist = await channel.data.get( 'blacklist', [] ),
-          rule = blacklist.filter( rule => rule.user == context.user ).first()
-
-      // If the user is still kicked, keep them from entering and post a
-      // system message only they can see saying why they cannot enter.
-
-      if( rule && Date.now() <= rule.until ){
-        
-        await channel.post({
-          type: 'system',
-          text: `You have been kicked from ${channel} for another ${Time.howLongUntil(rule.until)} minutes`,
-          whoCanSee: [context.user]
-        })
-
-        // Prevent default action, i.e., entering the channel
-        return promise.resolve( false ) 
-
-      }
-      
-      // If the kick has run out, remove the blacklist rule
-      else if( rule ){
-        blacklist.remove( rule )
-        await channel.data.set( 'blacklist', blacklist )
-      }
-
-      // If there are no blacklist rules, uninstall the event handler
-      if( blacklist.length == 0 ) await channel.off('userWillEnter', kickedHandler)
-
-      // Finally, allow default action to let the user into the channel
-      promise.resolve( true )
-
-    }
-
-    catch( error ) promise.reject( error )
-
-  }
-})
-
 
 kickCommand.on('didQuery', (context, promise) => {
   
@@ -288,6 +236,59 @@ kickCommand.on('didAction', (selected, promise) => {
   .then( () => promise.resolve() )
   .catch( reason => promise.reject(reason) )
 
+})
+
+
+var checkIfKicked = otherchat.type.serverEventHandler({
+  // unique means that this handler will only be installed once, no matter
+  // how many times you .on() with it.
+  unique: true,
+  handler: (context, promise) => {
+
+    // Note: server-side handlers should only use data passed into the handler
+    // and global things like modules. Variables that get defined by the client
+    // won't be available in this scope, and so if used will cause errors.
+
+    var channel = context.channel
+
+    try {
+
+      var blacklist = await channel.data.get( 'blacklist', [] ),
+          rule = blacklist.filter( rule => rule.user == context.user ).first()
+
+      // If the user is still kicked, keep them from entering and post a
+      // system message only they can see saying why they cannot enter.
+
+      if( rule && Date.now() <= rule.until ){
+        
+        await channel.post({
+          type: 'system',
+          text: `You have been kicked from ${channel} for another ${Time.howLongUntil(rule.until)} minutes`,
+          whoCanSee: [context.user]
+        })
+
+        // Prevent default action, i.e., entering the channel
+        return promise.resolve( false ) 
+
+      }
+      
+      // If the kick has run out, remove the blacklist rule
+      else if( rule ){
+        blacklist.remove( rule )
+        await channel.data.set( 'blacklist', blacklist )
+      }
+
+      // If there are no blacklist rules, uninstall the event handler
+      if( blacklist.length == 0 ) await channel.off('userWillEnter', kickedHandler)
+
+      // Finally, allow default action to let the user into the channel
+      promise.resolve( true )
+
+    }
+
+    catch( error ) promise.reject( error )
+
+  }
 })
   
 
