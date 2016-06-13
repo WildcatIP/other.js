@@ -82,7 +82,7 @@ etaCmd.on('didQuery', (context, promise) => {
   }
 
   promise.resolve( oc.types.mapChatComplete({
-    from: client.me,
+    from: otherchat.client.me,
     to: context.user || context.place,
     showTravelTime: true
   })
@@ -121,9 +121,19 @@ var findCommand = feature.command({
   accepts: { place: Place, query: String }
 })
 
+var Parser = require('other-parser') // maaaaaaggggiiiiccccc
+
 findCommand.on('didQuery', (context, promise) => {
+
+  // Some magic that parses out specific types
+
+  var parsed = Parser.parse( context.query, for:{
+    query: String,
+    time: Time,
+    near: Place.withDefault( otherchat.client.me )
+  })
   
-  Places.search({ query:context.query, centeredAt: context.center }).then( places => {
+  Places.search({ query:parsed.query, centeredAt: parsed.near, openAt: parsed.time }).then( places => {
 
     var results = places.map( place => ({
       text: place.name,
