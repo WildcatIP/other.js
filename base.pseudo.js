@@ -50,7 +50,7 @@ mentionCommand.on('didQuery', (context, promise) => {
 
     users = users.sortBy( user => [user.isMemberOf( client.currentChannel ), user.relevance] )
 
-    var results = users.map( user => ({user: user, action: 'whisper'})
+    var results = users.map( user => ({user: user, action: 'whisper'}) )
     promise.resolve( results )
 
   }).catch( reason => promise.reject(reason) )
