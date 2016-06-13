@@ -50,16 +50,17 @@ mentionCommand.on('didQuery', (context, promise) => {
     users.map( user =>
       otherchat.types.chatCompleteResult({
         user: user,
-        actionName: 'whipser',
-        action: function( selected ){
-          client.navigateTo( selected.user.whisperChannel )
-        }
+        action: 'whipser'
       })
     )
 
   }
   catch( error ) promise.reject( error )
   
+})
+
+mentionCommand.on('didAction', selected => {
+  client.navigateTo( selected.user.whisperChannel )
 })
 
 
@@ -81,16 +82,17 @@ hashCommand.on('didQuery', (context, promise) => {
     channels = channels.map( channel =>
       otherchat.types.chatCompleteResult({
         channel: channel,
-        actionName: 'go',
-        action: function( selected ){
-          client.navigateTo( selected.channel )
-        }
+        action: 'go'
       })
     }).sortBy(['relevance', 'created_at')
 
-    promise.resolve( users )
+    promise.resolve( channels )
 
   }).catch( reason => promise.reject( reason ) )
+})
+
+hashCommand.on('didAction', selected => {
+  client.navigateTo( selected.channel )
 })
 
 
@@ -119,43 +121,44 @@ invite.on('didQuery', (context, promise) => {
   
   otherchat.client.users.find(context.query).then( users => {
 
-    var users = users.map( user => {
-
-      var row = otherchat.types.chatCompleteResult({
+    var results = users.map( user =>
+      otherchat.types.chatCompleteResult({
         user: user,
-        actionName: 'invite',
+        action: 'invite',
       })
-
-      row.on('actionOn',  selected => context.users.append( selected.user ))
-      row.on('actionOff', selected => context.users.remove( selected.user ))
-
-      return row
-
-    })
+    )
 
     // TODO: How are we showing hint/explanation text for these multi-selection
     // comamnds? Needs design from Mike on user interface.
 
-    return promise.resolve( users )
+    return promise.resolve( results )
 
   }).catch( reason => promise.reject( reason ) )
 
 })
 
-invite.on('done', (context, promise) => {
+invite.on('didAction', selected => {
+  
+  if(  selected.isActive ) this.context.users.append( selected.user )
+  else this.context.users.remove( selected.user )
+
+})
+
+
+// The didFinish event is available for multiple-selection chat completes
+
+invite.on('didFinish', (context, promise) => {
 
   context.users.each( user => {
 
     var thisChannel = otherchat.client.currentChannel
   
     thisChannel.addAsMember( user )
-    thisChannel.post(
-      otherchat.types.systemMessage({
-        // localization is an open question
-        body: `${client.me} invited ${user} to ${thisChannel}`,
-        author: otherchat.system
-      })
-    )
+    thisChannel.post({
+      type: 'system'
+      // localization is an open question
+      body: `${client.me} invited ${user} to ${thisChannel}`
+    })
 
   })
 
@@ -183,8 +186,7 @@ var Web = request('other-web') // Our Web library
 webEmbed.on('didQuery', (context, promise) => {
 
   if( Web.isUrl(context.query) ){
-    var row = otherchat.types.mediaChatComplete({ url: context.query })
-    promise.resolve( row )
+    promise.resolve({ url: context.query })
   }
 
   promise.resolve()
@@ -209,12 +211,11 @@ calcCommand.on('didQuery', (context, promise) => {
   try{
     
     var answer = Maths.calc( context.query ),
-        row = otherchat.types.chatCompleteResult({
-          text: `${context.query} = ${answer}`,
-          info: {value: answer, equation: context.query}
-        })
     
-    return promise.resolve( row )
+    return promise.resolve({
+      text: `${context.query} = ${answer}`,
+      info: {value: answer, equation: context.query}
+    })
     
   }
   catch( error ) promise.reject( error )
@@ -244,7 +245,7 @@ calcCommand.on('didSelect', (selected, promise) => {
 
 //
 // KICK
-// Kicks a user for the channel and bans them from entering for 5 minutes
+// Kicks a user for the channel and bans them from entering for x minutes
 // Would be nice to include: "kick @blah 10 minutes"
 //
 
@@ -309,7 +310,7 @@ var kickedHandler = otherchat.type.serverSideEventHandler({
   }
 })
 
-kickCommand.on('query', (context, promise) => {
+kickCommand.on('didQuery', (context, promise) => {
   
   var channelMembers = otherchat.client.currentChannel.members
   
@@ -331,7 +332,7 @@ kickCommand.on('didAction', (selected, promise) => {
 
   var kickedUser = selected.user,
       theChannel = otherchat.server.channel( otherchat.client.currentChannel ),
-      banLength = '5 minutes'
+      banLength = '1 minute'
 
   try{
     // Functions on theChannel are messaged to the server for execution.
