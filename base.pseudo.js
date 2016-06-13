@@ -365,7 +365,9 @@ kickCommand.on('didAction', (selected, promise) => {
 
     await channel.data.set( 'blacklist', blacklist )
 
-    // Post a system message saying the user was kicked
+    // Post a system message saying the user was kicked. Normally extensions
+    // would only be able to post extension not system messages, but we are
+    // running with system privileges.
 
     await channel.post({
       type: 'system',
@@ -379,27 +381,28 @@ kickCommand.on('didAction', (selected, promise) => {
   })
   // Tell the client everything was succesfull!
   .then( () => promise.resolve() )
-  // Oh noes...
+  // Roll-back any changes and let the client know something went uncheesy
   .catch( reason => promise.reject(reason) )
 
 })
 
 //
-// Create the server-side event handler that checks if the user is on the black
-// list whenever a user tries to enter the channel.
+// Create the server-side event handler that checks if the user is on the
+// black list whenever a user tries to enter the channel, and keeps them out
+// if they are (and explains via a system message)
 //
 //    unique - this handler will only be installed once per event, no matter
 //             how many times .on is called
 
 var checkIfKicked = otherchat.type.serverEventHandler({
   unique: true,
-  handler: (handlercontext, handlerPromise) => {
+  handler: (handlerContext, handlerPromise) => {
 
-    // Note: server-side handlers should only use data passed into the handler
-    // and global things like modules. Variables that get defined by the client
-    // won't be available in this scope, and so if used will cause errors.
+    // Run the following atomically as the channel...
 
-    handlerContext.channel.run( (context, promise) => {
+    handlerContext.channel.run( context => {
+      
+      channel = context.channel
 
       // Get the blaclkist and find the first rule (or null if none) for the
       // user that just entered.
@@ -419,7 +422,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
         })
 
         // Prevent default action, i.e., don't let them enter the channel
-        return promise.resolve( false ) 
+        return handlerPromise.resolve( false ) 
 
       }
 
@@ -433,16 +436,14 @@ var checkIfKicked = otherchat.type.serverEventHandler({
       if( blacklist.length == 0 ) await channel.off('userWillEnter', kickedHandler)
 
       // Finally, allow default action to let the user into the channel
-      promise.resolve( true )
+      handlerPromise.resolve( true )
+
     })
-    // Everything was succesfull! Let the server know.
-    .then( handlerPromise.resolve() )
-    // If something went wrong, tell the server and give it back the error
-    .catch( reason => promise.reject( reason ) )
+    .catch( reason => handlerPromise.reject(reason) )
 
   }
 })
-  
+
 
 // TODO: Would be nice to include: "kick @blah 10 minutes"
 // TODO: Mute
