@@ -45,3 +45,28 @@ cmd.on('query', (context, promise) => {
   catch (error) promise.reject( error )
   
 })
+
+//
+// EMBEDDING WEB/MEDIA
+//
+// When you type a url like www.manatee.com you get a chat complete letting you
+// post an embed.
+//
+
+var webEmbed = feature.command({
+  tokens: ['www', 'http://'],
+  version: 'web-embed.0.1',
+  accepts: {query: String},
+})
+
+var Web = request('other-web') // Our Web library
+
+webEmbed.on('didQuery', (context, promise) => {
+
+  if( Web.isUrl(context.query) ){
+    promise.resolve({ url: context.query })
+  }
+
+  promise.resolve()
+
+})
