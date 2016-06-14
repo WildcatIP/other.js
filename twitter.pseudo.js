@@ -40,7 +40,7 @@ let baseChannel = feature.channel({
 
   subchannels: {
     twitterUserChannel: /@(.+)/,
-    twitterHashtagChannel: /@(.+)/
+    twitterHashtagChannel: /#(.+)/
   }
 
   style: {
