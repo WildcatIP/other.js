@@ -68,7 +68,7 @@ feature.on('install', () => {
 // BEHAVIOR
 //
 
-feature.runOnServer( () => {
+feature.runAsServer( () => {
 
   feature.channels('*').on( 'shouldUpdate', (context, shouldUpdate) => {
 
