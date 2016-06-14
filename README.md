@@ -32,6 +32,7 @@ Implementing much of Other Chat in Otherscript has some benefits:
 * [Points](points.pseudo.js) &mdash; explores how new social features are added, uses data
 * [Twitter](twitter.pseudo.js) &mdash; putting it all together, channels as app
 * [Map, ETA, Find](map.pseudo.js) &mdash; maps and places
+* [Channel Mentions](channel-mentions.pseudo.js) &mdash; post system message in mentioned channels
 * [Web](web.pseudo.js)
 
 ## Extensible Community
