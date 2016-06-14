@@ -2,14 +2,14 @@
 // TWITTER FEATURE
 //
 
-let Twitter = require('http://...')
+let Twitter = require('http://...') // 3rd party API
 
 let feature = new OtherchatFeatureSet({
   apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
-  id: 'points'
-  version: 'points.0.2',
-  name: 'Points++',
-  description: 'Give points to people with @user++, take them away with @user--.'
+  id: 'twitter'
+  version: 'twitter.0.2',
+  name: 'Twitter',
+  description: 'A Twitter in your home channel.'
 })
 
 

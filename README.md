@@ -27,12 +27,11 @@ Implementing much of Other Chat in Otherscript has some benefits:
 
 ## Examples
 
-* [Base Behaviors](base.pseudo.js)
-* [Find](find.pseudo.js)
-* [Map and ETA](map.pseudo.js)
+* [Base Behaviors](base.pseudo.js) &mdash; start here
+* [Points](points.pseudo.js) &mdash; explores how new social features are added, uses data
+* [Map and ETA](map.pseudo.js) &mdash; the map chat complete result type
+* [Twitter](twitter.pseudo.js) &mdash; putting it all together, channels as app
 * [Web](web.pseudo.js)
-* [Points](points.pseudo.js) &mdash; uses data
-* [Twitter](twitter.pseudo.js) &mdash; putting it all together
 
 ## Extensible Community
 
