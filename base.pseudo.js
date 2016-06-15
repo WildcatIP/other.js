@@ -228,7 +228,7 @@ invite.on('didQuery', (context, didQuery) => {
 // When an action button is activated, add the selected user to the context.
 // When an action button is deactivated, remove them from the context.
 
-invite.on('didAction', (context, didAction) => {
+invite.on('didAction', (context, doAction) => {
 
   let selected = context.selected
 
@@ -237,7 +237,7 @@ invite.on('didAction', (context, didAction) => {
   if(  selected.action.isActive ) this.context.users.append( selected.user )
   else this.context.users.remove( selected.user )
 
-  didAction.resolve()
+  doAction.resolve()
 
 })
 
@@ -249,7 +249,7 @@ invite.on('didAction', (context, didAction) => {
 //
 // This is the first time we'll see running code on the server in action.
 
-invite.on('didFinish', (context, didFinish) => {
+invite.on('didFinish', (context, doFinish) => {
   
   var currentChannel = otherchat.client.currentChannel,
       info = { users: context.users, by: client.me }
@@ -283,8 +283,8 @@ invite.on('didFinish', (context, didFinish) => {
     })
 
   })
-  .then( () => didFinish.resolve() )
-  .catch( reason => didFinish.reject(reason) )
+  .then( () => doFinish.resolve() )
+  .catch( reason => doFinish.reject(reason) )
 
 })
 
