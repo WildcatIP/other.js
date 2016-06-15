@@ -44,10 +44,12 @@ otherchat.client.on('messageDidPost', (context, didPostMentions) => {
 
     let link = otherchat.types.link({ text: 'mentioned', to: message })
 
-    channelPosts.push( channel.post({
-      type: 'system',
-      text: `${context.message.author} ${link} this channel in ${channel}`
-    }) )
+    channel
+      .post({
+        type: 'system',
+        text: `${context.message.author} ${link} this channel in ${channel}`
+      })
+      .appendTo( channelPosts )
 
   })
 
