@@ -20,14 +20,14 @@
 var feature = new FeatureSet({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
   id: 'rechat',
-  version: 'rechat-post-now.0.1',
-  name: 'Rechat Post Now'
+  version: '0.1',
+  name: 'Rechat'
 })
 
 var otherchat = new Otherchat( feature )
 
 var rechatCommand = feature.command({
-  id: 'rechat-post-now',
+  id: 'rechat',
   tokens: ['rechat'],
   version: '0.1',
   accepts: {

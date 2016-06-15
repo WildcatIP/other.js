@@ -11,15 +11,15 @@
 
 var feature = new FeatureSet({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
-  id: 'rechat',
-  version: 'rechat-now.0.1',
-  name: 'Rechat Now (Stopgap)'
+  id: 'rechat-simple',
+  version: '0.1',
+  name: 'Rechat Simple (Stopgap)'
 })
 
 var otherchat = new Otherchat( feature )
 
 var rechatCommand = feature.command({
-  id: 'rechat-now',
+  id: feature.id,
   tokens: ['rechat'],
   version: '0.1',
   action: 'select', // same action for all rows
