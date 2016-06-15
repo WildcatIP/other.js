@@ -62,8 +62,11 @@ rechatCommand.on('didFinish', (context, doFinish) => {
         type: 'system', // Could also add a 'rechat' type for custom rechatty display
         text: `rechat from ${currentChannel} by ${client.me}`
       })
-      .then( () => { doFinish.resolve() })
-      .catch( reason => { doFinish.reject(reason) }
+      .endsWith( doFinish )
+
+      // Short for:
+      // .then( () => { doFinish.resolve() })
+      // .catch( reason => { doFinish.reject(reason) }
 
   })
 

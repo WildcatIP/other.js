@@ -29,7 +29,7 @@ var otherchat = new Otherchat( feature )
 //   .then( () => promise.resolve() )
 //   .catch( reason => promise.reject( reasons )
 //
-// I'm chunking that into .resolveOrReject( promise )
+// I'm chunking that into .endWith( promise )
 
 
 
@@ -55,7 +55,7 @@ otherchat.client.on('messageDidPost', (context, didPostMentions) => {
 
   Promise
     .all( channelPosts )
-    .resolveOrReject( promise )
+    .endsWith( promise )
 
 })
 
@@ -79,12 +79,12 @@ otherchat.client.on('messageDidPost', (context, didPostMentions) => {
         type: 'system',
         text: `${message.author} ${link} this channel in ${channel}`
       })
-      .resolveOrReject( serverSuccess )
+      .endsWith( serverSuccess )
     
     })
 
   })
-  .resolveOrReject( didPostMentions )
+  .endWith( didPostMentions )
 
 })
 
