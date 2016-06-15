@@ -29,8 +29,8 @@ Implementing much of Other Chat in Otherscript has some benefits:
 
 * [Base Behaviors](base.pseudo.js) &mdash; start here
 * [Kick](kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
-* [Rechat](rechat-post-now.pseudo.js) &mdash; the core command! also: selecting a message
-* [Rechat Simple](rechat-now.pseudo.js) &mdash; an implementation that doesn't require selecting a message
+* [Rechat](rechat.pseudo.js) &mdash; the core command! also: selecting a message
+* [Rechat Simple](rechat-simple.pseudo.js) &mdash; an implementation that doesn't require selecting a message
 * [Points](points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
 * [Twitter](twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
 * [Map, ETA, Find](map.pseudo.js) &mdash; maps and places
