@@ -28,13 +28,21 @@ var feature = new FeatureSet({
 
 var otherchat = new Otherchat( feature )
 
+//
+// To me, it's rechat that makes the power of the accepts field apparent:
+// it both cuts down on boiler plate code, and acts as a kind of contract
+// call signature. To call rechat programatically one would:
+//
+// > otherchat.command('rechat', {message: messageToRechat, channels: [a,b,c]} )
+//
+
 var rechatCommand = feature.command({
   id: 'rechat',
   tokens: ['rechat'],
   version: '0.1',
   accepts: {
     message: otherchat.type.message, // populated by long-holding a message (if we allowed multi-select, would be an array)
-    channels: [otherchat.type.channels], // channels to which to rechat
+    channels: [otherchat.type.channels], // the to-rechat-to channels
     query: String
   },
   allowsMultipleSelection: true
