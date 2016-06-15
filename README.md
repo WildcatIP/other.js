@@ -28,16 +28,18 @@ Implementing much of Other Chat in Otherscript has some benefits:
 ## Examples
 
 * [Base Behaviors](base.pseudo.js) &mdash; start here
-* [Kick](kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data and server-run logic
-* [Points](points.pseudo.js) &mdash; explores how new social features are added, uses data
-* [Twitter](twitter.pseudo.js) &mdash; putting it all together, channels as app
+* [Kick](kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
+* [Rechat](rechat-post-now.pseudo.js) &mdash; the core command! also: selecting a message
+* [Rechat Simple](rechat-now.pseudo.js) &mdash; an implementation that doesn't require selecting a message
+* [Points](points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
+* [Twitter](twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
 * [Map, ETA, Find](map.pseudo.js) &mdash; maps and places
-* [Channel Mentions](channel-mentions.pseudo.js) &mdash; post system message in mentioned channels
+* [Channel Mentions](channel-mentions.pseudo.js) &mdash; link-back posted to channels are mentioned in another channels
 * [Web](web.pseudo.js)
 
 ## Extensible Community
 
-Imagine you start a channel around #mantatees. A vibrant community starts to grow around it, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on #manatees. You start #manatees/news and install a blog feature, so you and the other mods can compose posts on the web, and pull stuff in with a bookmarklet. You install a store feature to sell your #manateeshirts, and swap your mod feature for a better one.
+Imagine you start a channel around #mantatees. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on #manatees. A little later, you decide to start #manatees/news and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your #manateeshirts, and swap your officer features for a new one you heard about in #communitees.
 
 Otherscript lets you attach new functionality to any community, upgrading it's abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
 
