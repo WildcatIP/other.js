@@ -54,7 +54,7 @@ rechatCommand.on('didFinish', (context, doFinish) => {
   
   context.channels.each( toChannel => {
 
-    // repost the message, and the system message
+    // repost the message, and then post a system message
 
     toChannel
       .post( context.message )
