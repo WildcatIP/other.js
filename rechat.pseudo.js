@@ -1,8 +1,10 @@
 //
 // RECHAT (POST NOW)
 //
-// This is a better rechat that requires Other Chat having a basic
+// This implementation of rechat requires Other Chat having a basic
 // implementation of being able to select a message and then operating on it.
+//
+// Here's a post-now-ish way to implement it:
 //
 // Start by long-holding a message. It's turns a color to indicate that it is
 // chosen. Instead of the iOS action sheet, I'm a chat complete opens, whose
