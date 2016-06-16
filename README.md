@@ -1,12 +1,12 @@
 # Otherscript
 
-Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatter Net. It's goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
+Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatternet. Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
 
 A particular Chatternet feature set might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature set is written in a single file, which can be run both on the server and in the client.
 
 What is a feature set? A bundle of behavior. You can add new feature sets to Other Chat by having someone send you a link, then click to install.
 
-Cue dialouge:
+Cue dialogue:
 
 TWO FRIENDS TALKING OTHER CHAT — Have you tried any WoW sets that you liked? — Yeah, here's the one I use. _(sends link)_ — _(installs, does setup flow, oauths to his account)_ Cool. I like that it lets me be my character on here... love that she gets her own channel! — You should also try the item search and you can check auction prices with 'auction'.
 
@@ -39,9 +39,9 @@ Implementing much of Other Chat in Otherscript has some benefits:
 
 ## Extensible Community
 
-Imagine you start a channel around #mantatees. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on #manatees. A little later, you decide to start #manatees/news and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your #manateeshirts, and swap your officer features for a new one you heard about in #communitees.
+Imagine you start a channel around `#manatees`. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on `#manatees`. A little later, you decide to start `#manatees/news` and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your `#manateeshirts`, and swap your officer features for a new one you heard about in `#communities`.
 
-Otherscript lets you attach new functionality to any community, upgrading it's abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
+Otherscript lets you attach new functionality to any community, upgrading its abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
 
 ---
 
@@ -58,7 +58,6 @@ Otherscript lets you attach new functionality to any community, upgrading it's a
 
 (!!!: What's the philosophy for how we handle updates? On install, we can take a snapshot of the code, host a versioned, checksumed etc version on our servers?)
 
-
 * Is Web an Other supplied library? Is it useful to default own this level of search strategically?
 
-* How should help work? Thought: add a question mark to the end of any command, and it brings up a bottom sheet with the contents of that extension's #:/help, just like for channel details/rules.
+* How should help work? Thought: add a question mark to the end of any command, and it brings up a bottom sheet with the contents of that extension's `#:/help`, just like for channel details/rules.
