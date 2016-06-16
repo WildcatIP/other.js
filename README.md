@@ -1,12 +1,12 @@
 # Otherscript
 
-Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatter Net. It's goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
+Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatternet. Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
 
 A particular Chatternet feature set might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature set is written in a single file, which can be run both on the server and in the client.
 
 What is a feature set? A bundle of behavior. You can add new feature sets to Other Chat by having someone send you a link, then click to install.
 
-Cue dialouge:
+Cue dialogue:
 
 TWO FRIENDS TALKING OTHER CHAT — Have you tried any WoW sets that you liked? — Yeah, here's the one I use. _(sends link)_ — _(installs, does setup flow, oauths to his account)_ Cool. I like that it lets me be my character on here... love that she gets her own channel! — You should also try the item search and you can check auction prices with 'auction'.
 
