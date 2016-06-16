@@ -29,7 +29,7 @@ var otherchat = new Otherchat( feature )
 //   .then( () => promise.resolve() )
 //   .catch( reason => promise.reject( reasons )
 //
-// I'm chunking that into .endWith( promise )
+// I'm chunking that into .endsWith( promise )
 
 
 

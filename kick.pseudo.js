@@ -7,6 +7,15 @@
 // The accepts field means you can programatically kick a user by:
 // otherchat.client.command('kick', {user: aUser})
 
+var feature = new FeatureSet({
+  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
+  id: 'kick',
+  version: '0.1',
+  name: 'Kick'
+})
+
+var otherchat = new Otherchat( feature )
+
 var kickCommand = feature.command({
   tokens: ['kick'],
   version: 'kick.0.1',

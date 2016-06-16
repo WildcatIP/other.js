@@ -7,8 +7,8 @@
 // Here's a post-now-ish way to implement it:
 //
 // Start by long-holding a message. It's turns a color to indicate that it is
-// chosen. Instead of the iOS action sheet, I'm a chat complete opens, whose
-// completes are actions (commands) that act on a chosen message. E.g., flag,
+// chosen. Instead of the iOS action sheet, a chat complete opens, whose
+// completes are actions (commands) that act on the chosen message. E.g., flag,
 // delete, edit, ... rechat :) And potentially many more.
 //
 // Like normal, typing filters the chat complete. This makes it easy to have

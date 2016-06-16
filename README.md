@@ -20,7 +20,7 @@ Implementing much of Other Chat in Otherscript has some benefits:
 - Let's us make strong assertions about security. Otherscript is hermetically sealed from the rest of it's host, and can be passed objects with just the permissions they need.
 - Increases the number of us able to prototype and implement features and behaviors.
 - Provides a way to update client behavior across all platforms on the fly, roll out features to specific communities, and rollback miss-behaving functionality.
-- Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparitive analytics, and then tweaking behavior just right. The analytics we need to craft our feature sets will be the same analytics our community will want (revenue opportunity?).
+- Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparitive analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature sets will be the same analytics the community will want.
 - We work with and in the same tools as everyone else. This aligns '_us making what the community needs_' with '_us making what we need_'.
 
 
@@ -49,7 +49,7 @@ Otherscript lets you attach new functionality to any community, upgrading it's a
 
 - One of the most inspiring aspects of Swift, for me, has been how it's idioms forces me to write robust code with only minimal sacrifice to hackability. I'd like to learn from that in the design of Otherscript, so that the fastest way to express some behavior in Otherscript is also a robust way to express it.
 - I think of jQuery as a kind of Javascript DSL. It has a remarkable property: people who say they don't know Javascript can still use jQuery! From this we can learn. And also from it's hackably-robust chaining API.
-- The web. It's so expressive and maeleable. Otherscript is in the spirit of view-source on the web. (revenue opportunity? pay to be closed source)
+- The web. It's so expressive and maeleable. On the web, everything is a webpage; in Other Chat everthing is a channel.
 
 
 --------------------------
