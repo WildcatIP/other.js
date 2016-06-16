@@ -39,17 +39,17 @@ Implementing much of Other Chat in Otherscript has some benefits:
 
 ## Extensible Community
 
-Imagine you start a channel around #mantatees. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on #manatees. A little later, you decide to start #manatees/news and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your #manateeshirts, and swap your officer features for a new one you heard about in #communitees.
+Imagine you start a channel around `#manatees`. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on `#manatees`. A little later, you decide to start `#manatees/news` and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your `#manateeshirts`, and swap your officer features for a new one you heard about in `#communities`.
 
-Otherscript lets you attach new functionality to any community, upgrading it's abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
+Otherscript lets you attach new functionality to any community, upgrading its abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
 
 ---
 
 ## Inspirations
 
-- One of the most inspiring aspects of Swift, for me, has been how it's idioms forces me to write robust code with only minimal sacrifice to hackability. I'd like to learn from that in the design of Otherscript, so that the fastest way to express some behavior in Otherscript is also a robust way to express it.
-- I think of jQuery as a kind of Javascript DSL. It has a remarkable property: people who say they don't know Javascript can still use jQuery! From this we can learn. And also from it's hackably-robust chaining API.
-- The web. It's so expressive and maeleable. Otherscript is in the spirit of view-source on the web. (revenue opportunity? pay to be closed source)
+- One of the most inspiring aspects of Swift, for me, has been how its idioms force me to write robust code with only minimal sacrifice to hackability. I'd like to learn from that in the design of Otherscript, so that the fastest way to express some behavior in Otherscript is also a robust way to express it.
+- I think of jQuery as a kind of Javascript DSL. It has a remarkable property: people who say they don't know Javascript can still use jQuery! From this we can learn. And also from its hackably-robust chaining API.
+- The web. It's so expressive and malleable. Otherscript is in the spirit of view-source on the web. (revenue opportunity? pay to be closed source)
 
 
 --------------------------
@@ -58,7 +58,6 @@ Otherscript lets you attach new functionality to any community, upgrading it's a
 
 (!!!: What's the philosophy for how we handle updates? On install, we can take a snapshot of the code, host a versioned, checksumed etc version on our servers?)
 
-
 * Is Web an Other supplied library? Is it useful to default own this level of search strategically?
 
-* How should help work? Thought: add a question mark to the end of any command, and it brings up a bottom sheet with the contents of that extension's #:/help, just like for channel details/rules.
+* How should help work? Thought: add a question mark to the end of any command, and it brings up a bottom sheet with the contents of that extension's `#:/help`, just like for channel details/rules.
