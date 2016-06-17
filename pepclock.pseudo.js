@@ -49,6 +49,7 @@ pepclockCommand.on('didQuery', (context, doFinish) => {
     // the other being posting to their homeroom.
 
     users = users.sortBy(user => user.name)
+    // @aza: I was imagining action to be the human-intended name of the button in chat complete, fwiw
     var results = users.map( user => ({user: user, message: message, timestamp: timestamp, action: 'delayedPublicPost'}) )
 
     didQuery.resolve( results )
@@ -74,6 +75,7 @@ pepclockCommand.on('didAction', (selected, doFinish) => {
     var channel = serverContext.channel,
         info = serverContext.info
 
+    // @aza: how about channel.postAt(...), or I wonder if channel.post(...) with a timestamp in the future posts then?
     await channel.delayedPost(info)
 
   }
