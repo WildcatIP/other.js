@@ -70,6 +70,7 @@ pepclockCommand.on('didAction', (selected, doFinish) => {
 
   var theChannel = selected.user.channel;
 
+  // @aza: How about .scheduleRunAsServer( time, info, ... ) to generalize it
   theChannel.runAsServer( info, serverContext => {
 
     var channel = serverContext.channel,
