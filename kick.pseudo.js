@@ -40,44 +40,50 @@ kickCommand.on('didAction', (selected, didAction) => {
 
   var info = { kicked: kickedUser, by: client.me, banLength: banLength }
 
-  theChannel.runAsServer( info, serverContext => {
+  theChannel.runAsServer( info, (serverContext, didRun) => {
 
     var channel = serverContext.channel,
         info = serverContext.info
 
     // Kick them from the channel and remove their membership
 
-    await channel.forceUserToLeave( info.kicked )
-    await channel.removeAsMember( info.kicked )
+    channel
+      .forceUserToLeave( info.kicked )
+      .removeAsMember( info.kicked )
 
-    // Append to the blacklist stored on the channel. Each rule in the blacklist
-    // contains the user to block and until when to block them.
-    // 
-    // All features that share an apiKey can access shared data. For example,
-    // our block command might append an object to the blacklist with until
-    // set to Infinity and an extra field for also blocking on account. 
+      // Attach a server-side handler to the channel
 
-    var blacklist = await channel.data.get( 'blacklist', [] )
+      .on( 'userWillEnter', checkIfKicked )
 
-    blacklist.append({
-      user: info.kicked,
-      until: Time.fromNow( info.banLength )
-    })
+      // Append to the blacklist stored on the channel. Each rule in the blacklist
+      // contains the user to block and until when to block them.
+      // 
+      // All features that share an apiKey can access shared data. For example,
+      // our block command might append an object to the blacklist with until
+      // set to Infinity and an extra field for also blocking on account. 
 
-    await channel.data.set( 'blacklist', blacklist )
+      .withData( 'blacklist', [], (data, done) => {
+        
+        blacklist.append({
+          user: info.kicked,
+          until: Time.fromNow( info.banLength )
+        })
 
-    // Post a system message saying the user was kicked. Normally extensions
-    // would only be able to post extension not system messages, but we are
-    // running with system privileges.
+        channel
+          .updateData({ blacklist: blacklist })
+          .finishWith( done )
+        
+      })
 
-    await channel.post({
-      type: 'system',
-      text: `${info.by} kicked ${info.toKick} from this channel for ${info.banLength}`
-    })
+      // Post a system message saying the user was kicked. Normally extensions
+      // would only be able to post extension not system messages, but we are
+      // running with system privileges.
 
-    // Attach a server-side handler to the channel
-
-    await channel.on( 'userWillEnter', checkIfKicked )
+      .post({
+        type: 'system',
+        text: `${info.by} kicked ${info.toKick} from this channel for ${info.banLength}`
+      })
+      .finishWith( didRun )
 
   })
   // Tell the client everything was succesfull!
@@ -94,6 +100,8 @@ kickCommand.on('didAction', (selected, didAction) => {
 //
 //    unique - this handler will only be installed once per event, no matter
 //             how many times .on is called
+
+// Playing around here with try/await instead of pure Promises
 
 var checkIfKicked = otherchat.type.serverEventHandler({
   unique: true,
