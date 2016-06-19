@@ -5,7 +5,8 @@
 // together, uses server-side events and data storage.
 //
 // The accepts field means you can programatically kick a user by:
-// otherchat.client.command('kick', {user: aUser})
+// otherchat.client.command('kick', {user: aUser}), which will be used
+// by the ban command at the end of this file.
 
 var feature = new FeatureSet({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
@@ -33,12 +34,15 @@ kickCommand.on('didAction', (selected, didAction) => {
   
   var kickedUser = selected.user, // guaranteed from the accepts field
       theChannel = otherchat.client.currentChannel,
-      banLength = '1 minute'
+      banLength = '1 minute' || selected.banLength // so that it can be passed in
+
+  // TODO: Would be nice to include: "kick @blah 10 minutes"
+  // Q: In general, how do do that support that kind of parsing?
 
   // To kick someone, the server needs to know who is kicked, who did the
   // kicking, and for how long they should be banned
 
-  var info = { kicked: kickedUser, by: client.me, banLength: banLength }
+  var info = { kicked: kickedUser, by: client.me, banLength: banLength, action: selected.action }
 
   theChannel.runAsServer( info, (serverContext, didRun) => {
 
@@ -81,15 +85,16 @@ kickCommand.on('didAction', (selected, didAction) => {
 
       .post({
         type: 'system',
-        text: `${info.by} kicked ${info.toKick} from this channel for ${info.banLength}`
+        text: `${info.by} ${info.action} ${info.toKick} from this channel for ${info.banLength}`
       })
       .finishWith( didRun )
 
   })
-  // Tell the client everything was succesfull!
-  .then( () => didAction.resolve() )
-  // Roll-back any changes and let the client know something went uncheesy
-  .catch( reason => didAction.reject(reason) )
+  .finishWith( didAction )
+
+  // .finishWith is shorthand for:
+  //    .then( () => didAction.resolve() )
+  //    .catch( reason => didAction.reject(reason) )
 
 })
 
@@ -149,11 +154,37 @@ var checkIfKicked = otherchat.type.serverEventHandler({
 
     }
     
-    catch( reason => willEnter.reject(reason) )
+    catch{
+      reason => willEnter.reject(reason)
+    }
 
   }
 })
 
 
-// TODO: Would be nice to include: "kick @blah 10 minutes"
-// Q: In general, how do do that support that kind of parsing?
+
+//
+// BAN
+//
+// Bans a user for the channel forever.
+//
+// Shows how to programatically call another command
+
+
+var banCommand = feature.command({
+  tokens: ['ban'],
+  version: '0.1',
+  name: 'Ban User',
+  description: 'Permanently bans a user from the channel, until they are unbanned.'
+  action: 'ban',
+  // accepts means shows users as didQuery chat complete
+  accepts: {user: otherchat.types.user, query: String}
+})
+
+banCommand.on('didAction', (selected, didAction) => {
+
+  feature
+    .command( 'kick', {user: selected.user, banLength: 'Infinity minutes'} )
+    .finishWith( didAction )
+
+})
