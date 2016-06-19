@@ -22,7 +22,7 @@ mapCmd.on('didQuery', (context, promise) => {
 
   // "map me" displays the map of where you are
   // "map sushi" displays a list of sushi places
-    
+
   if( ['me', 'here'].contains(query) ){
     // Centering on a user object continually updates the map with the
     // user's location
@@ -52,7 +52,7 @@ function findAndDisplayMapResults( context, promise ){
       // items on the map
 
       promise.resolve( results )
-    
+
     }).catch( reason => promise.reject(reason) )
 
 }
@@ -61,7 +61,7 @@ function findAndDisplayMapResults( context, promise ){
 //
 // ETA COMMAND
 // eta @alien, eta active club
-// 
+//
 
 //
 // Playing with calling out the type of objects a command can accept. In this
@@ -121,6 +121,8 @@ var findCommand = feature.command({
   accepts: { place: Place, query: String }
 })
 
+// @bs: Haha, yay! And I thought it was just me!
+// Also ... yeah. Github really needs comments.
 var Parser = require('other-parser') // maaaaaaggggiiiiccccc
 
 findCommand.on('didQuery', (context, promise) => {
@@ -132,7 +134,7 @@ findCommand.on('didQuery', (context, promise) => {
     time: Time,
     near: Place.withDefault( otherchat.client.me )
   })
-  
+
   Places.search({ query:parsed.query, centeredAt: parsed.near, openAt: parsed.time }).then( places => {
 
     var results = places.map( place => ({
@@ -152,5 +154,3 @@ findCommand.on('didQuery', (context, promise) => {
 findCommand.on('didAction', (context, promise) => {
   otherchat.client.browser.open( context.info.href )
 })
-
-

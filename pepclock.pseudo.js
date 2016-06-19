@@ -59,7 +59,7 @@ pepclockCommand.on('didQuery', (context, doFinish) => {
 
 // When they've selected a user and action pair, push it to the server to be posted later
 
-pepclockCommand.on('didAction', (selected, doFinish) => {
+pepclockCommand.on('didAction', (selected, didAction) => {
 
   var info = {
     from: client.me,
@@ -70,16 +70,16 @@ pepclockCommand.on('didAction', (selected, doFinish) => {
 
   var theChannel = selected.user.channel;
 
-  // @aza: How about .scheduleRunAsServer( time, info, ... ) to generalize it
-  theChannel.runAsServer( info, serverContext => {
+  theChannel.scheduleRunAsServer( info.timestamp, info, serverContext => {
 
     var channel = serverContext.channel,
         info = serverContext.info
 
-    // @aza: how about channel.postAt(...), or I wonder if channel.post(...) with a timestamp in the future posts then?
-    await channel.delayedPost(info)
+    await channel.post(info)
+    didAction.resolve()
 
-  }
+  })
+  .catch( reason => didAction.reject( reason ) )
 
 })
 
