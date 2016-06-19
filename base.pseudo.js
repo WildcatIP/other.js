@@ -162,7 +162,7 @@ hashCommand.on('didQuery', (context, didQuery) => {
 
     var results = channels
                     .map( channel => ({ channel: channel, action: 'go' }) )
-                    .sortBy(['relevance', 'createdAt')
+                    .sortBy(['relevance', 'createdAt'])
 
     didQuery.resolve( results )
 

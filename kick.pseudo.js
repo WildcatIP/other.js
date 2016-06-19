@@ -9,40 +9,25 @@
 
 var feature = new FeatureSet({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-  id: 'kick',
-  version: '0.1',
-  name: 'Kick'
+  id: 'kickfeature',
+  version: '0.1'
 })
 
 var otherchat = new Otherchat( feature )
 
 var kickCommand = feature.command({
   tokens: ['kick'],
-  version: 'kick.0.1',
-  name: 'Kick command',
+  version: '0.1',
+  name: 'Kick Command',
   description: 'Temporarily kicks a user from the channel.'
+  action: 'kick',
+  // accepts means shows users as didQuery chat complete
   accepts: {user: otherchat.types.user, query: String}
 })
 
 
 //
-// Show a list of users with a 'kick' action
-
-kickCommand.on('didQuery', (context, didQuery) => {
-  
-  var channelMembers = otherchat.client.currentChannel.members
-  
-  channelMembers.find({ query: context.query }).then( users => {
-    var results = users.map( user => ({user: user, action: 'kick'}) )
-    didQuery.resolve( results )
-  })
-  .catch( reason => didQuery.reject(reason) )
-  
-})
-
-//
-// This is where it gets exciting! This kicks somebody from a channel and bans
-// them for a minute.
+// Kicks somebody from a channel and bans them for a minute.
 
 kickCommand.on('didAction', (selected, didAction) => {
   
