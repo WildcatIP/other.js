@@ -31,7 +31,7 @@ var kickCommand = feature.command({
 // Kicks somebody from a channel and bans them for a minute.
 
 kickCommand.on('didAction', (selected, didAction) => {
-  
+
   var kickedUser = selected.user, // guaranteed from the accepts field
       theChannel = otherchat.client.currentChannel,
       banLength = '1 minute' || selected.banLength // so that it can be passed in
@@ -41,6 +41,13 @@ kickCommand.on('didAction', (selected, didAction) => {
 
   // To kick someone, the server needs to know who is kicked, who did the
   // kicking, and for how long they should be banned
+  // @bs It might be useful to include an optional param with the reason they
+  //     were kicked. This could be useful for whispering to them the reason
+  //     they were timed out or any other messages the channel host might
+  //     want to send.
+  //
+  //     Q: How does someone attach an listener to something like kick
+  //        to add custom behavior?
 
   var info = { kicked: kickedUser, by: client.me, banLength: banLength, action: selected.action }
 
@@ -61,13 +68,13 @@ kickCommand.on('didAction', (selected, didAction) => {
 
       // Append to the blacklist stored on the channel. Each rule in the blacklist
       // contains the user to block and until when to block them.
-      // 
+      //
       // All features that share an apiKey can access shared data. For example,
       // our block command might append an object to the blacklist with until
-      // set to Infinity and an extra field for also blocking on account. 
+      // set to Infinity and an extra field for also blocking on account.
 
       .withData( 'blacklist', [], (data, done) => {
-        
+
         blacklist.append({
           user: info.kicked,
           until: Time.fromNow( info.banLength )
@@ -76,7 +83,7 @@ kickCommand.on('didAction', (selected, didAction) => {
         channel
           .updateData({ blacklist: blacklist })
           .finishWith( done )
-        
+
       })
 
       // Post a system message saying the user was kicked. Normally extensions
@@ -115,7 +122,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
     // This is run atomically on the server
 
     try{
-      
+
       channel = context.channel
 
       // Get the blaclkist and find the first rule (or null if none) for the
@@ -128,7 +135,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
       // system message only they can see saying why they cannot enter.
 
       if( rule && Date.now() <= rule.until ){
-        
+
         await channel.post({
           type: 'system',
           text: `You have been kicked from ${channel} for another ${Time.howLongUntil(rule.until)} minutes`,
@@ -136,7 +143,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
         })
 
         // Prevent default action, i.e., don't let them enter the channel
-        return willEnter.resolve( false ) 
+        return willEnter.resolve( false )
 
       }
 
@@ -153,7 +160,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
       willEnter.resolve( true )
 
     }
-    
+
     catch{
       reason => willEnter.reject(reason)
     }
