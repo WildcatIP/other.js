@@ -5,100 +5,103 @@
 // together, uses server-side events and data storage.
 //
 // The accepts field means you can programatically kick a user by:
-// otherchat.client.command('kick', {user: aUser})
+// otherchat.client.command('kick', {user: aUser}), which will be used
+// by the ban command at the end of this file.
 
 var feature = new FeatureSet({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-  id: 'kick',
-  version: '0.1',
-  name: 'Kick'
+  id: 'kickfeature',
+  version: '0.1'
 })
 
 var otherchat = new Otherchat( feature )
 
 var kickCommand = feature.command({
   tokens: ['kick'],
-  version: 'kick.0.1',
-  name: 'Kick command',
+  version: '0.1',
+  name: 'Kick Command',
   description: 'Temporarily kicks a user from the channel.'
+  action: 'kick',
+  // accepts means shows users as didQuery chat complete
   accepts: {user: otherchat.types.user, query: String}
 })
 
 
 //
-// Show a list of users with a 'kick' action
-
-kickCommand.on('didQuery', (context, didQuery) => {
-  
-  var channelMembers = otherchat.client.currentChannel.members
-  
-  channelMembers.find({ query: context.query }).then( users => {
-    var results = users.map( user => ({user: user, action: 'kick'}) )
-    didQuery.resolve( results )
-  })
-  .catch( reason => didQuery.reject(reason) )
-  
-})
-
-//
-// This is where it gets exciting! This kicks somebody from a channel and bans
-// them for a minute.
+// Kicks somebody from a channel and bans them for a minute.
 
 kickCommand.on('didAction', (selected, didAction) => {
-  
+
   var kickedUser = selected.user, // guaranteed from the accepts field
       theChannel = otherchat.client.currentChannel,
-      banLength = '1 minute'
+      banLength = '1 minute' || selected.banLength // so that it can be passed in
+
+  // TODO: Would be nice to include: "kick @blah 10 minutes"
+  // Q: In general, how do do that support that kind of parsing?
 
   // To kick someone, the server needs to know who is kicked, who did the
   // kicking, and for how long they should be banned
+  // @bs It might be useful to include an optional param with the reason they
+  //     were kicked. This could be useful for whispering to them the reason
+  //     they were timed out or any other messages the channel host might
+  //     want to send.
+  //
+  //     Q: How does someone attach an listener to something like kick
+  //        to add custom behavior?
 
-  var info = { kicked: kickedUser, by: client.me, banLength: banLength }
+  var info = { kicked: kickedUser, by: client.me, banLength: banLength, action: selected.action }
 
-  theChannel.runAsServer( info, serverContext => {
+  theChannel.runAsServer( info, (serverContext, didRun) => {
 
     var channel = serverContext.channel,
         info = serverContext.info
 
     // Kick them from the channel and remove their membership
 
-    await channel.forceUserToLeave( info.kicked )
-    await channel.removeAsMember( info.kicked )
+    channel
+      .forceUserToLeave( info.kicked )
+      .removeAsMember( info.kicked )
 
-    // Append to the blacklist stored on the channel. Each rule in the blacklist
-    // contains the user to block and until when to block them.
-    // 
-    // All features that share an apiKey can access shared data. For example,
-    // our block command might append an object to the blacklist with until
-    // set to Infinity and an extra field for also blocking on account. 
+      // Attach a server-side handler to the channel
 
-    var blacklist = await channel.data.get( 'blacklist', [] )
+      .on( 'userWillEnter', checkIfKicked )
 
-    blacklist.append({
-      user: info.kicked,
-      until: Time.fromNow( info.banLength )
-    })
+      // Append to the blacklist stored on the channel. Each rule in the blacklist
+      // contains the user to block and until when to block them.
+      //
+      // All features that share an apiKey can access shared data. For example,
+      // our block command might append an object to the blacklist with until
+      // set to Infinity and an extra field for also blocking on account.
 
-    await channel.data.set( 'blacklist', blacklist )
+      .withData( 'blacklist', [], (data, done) => {
 
-    // Post a system message saying the user was kicked. Normally extensions
-    // would only be able to post extension not system messages, but we are
-    // running with system privileges.
+        blacklist.append({
+          user: info.kicked,
+          until: Time.fromNow( info.banLength )
+        })
 
-    await channel.post({
-      type: 'system',
-      text: `${info.by} kicked ${info.toKick} from this channel for ${info.banLength}`
-    })
+        channel
+          .updateData({ blacklist: blacklist })
+          .finishWith( done )
 
-    // Attach a server-side handler to the channel
+      })
 
-    await channel.on( 'userWillEnter', checkIfKicked )
+      // Post a system message saying the user was kicked. Normally extensions
+      // would only be able to post extension not system messages, but we are
+      // running with system privileges.
+
+      .post({
+        type: 'system',
+        text: `${info.by} ${info.action} ${info.toKick} from this channel for ${info.banLength}`
+      })
+      .finishWith( didRun )
 
   })
-  // Tell the client everything was succesfull!
-  .then( () => didAction.resolve() )
-  // Roll-back any changes and let the client know something went uncheesy
-  .catch( reason => didAction.reject(reason) )
+  .finishWith( didAction )
+
+  // .finishWith is shorthand for:
+  //    .then( () => didAction.resolve() )
+  //    .catch( reason => didAction.reject(reason) )
 
 })
 
@@ -110,6 +113,8 @@ kickCommand.on('didAction', (selected, didAction) => {
 //    unique - this handler will only be installed once per event, no matter
 //             how many times .on is called
 
+// Playing around here with try/await instead of pure Promises
+
 var checkIfKicked = otherchat.type.serverEventHandler({
   unique: true,
   handler: (context, willEnter) => {
@@ -117,7 +122,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
     // This is run atomically on the server
 
     try{
-      
+
       channel = context.channel
 
       // Get the blaclkist and find the first rule (or null if none) for the
@@ -130,7 +135,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
       // system message only they can see saying why they cannot enter.
 
       if( rule && Date.now() <= rule.until ){
-        
+
         await channel.post({
           type: 'system',
           text: `You have been kicked from ${channel} for another ${Time.howLongUntil(rule.until)} minutes`,
@@ -138,7 +143,7 @@ var checkIfKicked = otherchat.type.serverEventHandler({
         })
 
         // Prevent default action, i.e., don't let them enter the channel
-        return willEnter.resolve( false ) 
+        return willEnter.resolve( false )
 
       }
 
@@ -155,12 +160,38 @@ var checkIfKicked = otherchat.type.serverEventHandler({
       willEnter.resolve( true )
 
     }
-    
-    catch( reason => willEnter.reject(reason) )
+
+    catch{
+      reason => willEnter.reject(reason)
+    }
 
   }
 })
 
 
-// TODO: Would be nice to include: "kick @blah 10 minutes"
-// Q: In general, how do do that support that kind of parsing?
+
+//
+// BAN
+//
+// Bans a user for the channel forever.
+//
+// Shows how to programatically call another command
+
+
+var banCommand = feature.command({
+  tokens: ['ban'],
+  version: '0.1',
+  name: 'Ban User',
+  description: 'Permanently bans a user from the channel, until they are unbanned.'
+  action: 'ban',
+  // accepts means shows users as didQuery chat complete
+  accepts: {user: otherchat.types.user, query: String}
+})
+
+banCommand.on('didAction', (selected, didAction) => {
+
+  feature
+    .command( 'kick', {user: selected.user, banLength: 'Infinity minutes'} )
+    .finishWith( didAction )
+
+})
