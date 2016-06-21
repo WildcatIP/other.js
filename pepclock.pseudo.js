@@ -49,8 +49,7 @@ pepclockCommand.on('didQuery', (context, doFinish) => {
     // the other being posting to their homeroom.
 
     users = users.sortBy(user => user.name)
-    // @aza: I was imagining action to be the human-intended name of the button in chat complete, fwiw
-    var results = users.map( user => ({user: user, message: message, timestamp: timestamp, action: 'delayedPublicPost'}) )
+    var results = users.map( user => ({user: user, message: message, timestamp: timestamp, action: 'Send Pep!'}) )
 
     didQuery.resolve( results )
 
@@ -70,18 +69,31 @@ pepclockCommand.on('didAction', (selected, didAction) => {
 
   var theChannel = selected.user.channel;
 
-  theChannel.scheduleRunAsServer( info.timestamp, info, serverContext => {
+  // Q: Should something like info.timestamp and info be optional params at
+  //    the end of runAsServer?
+
+  theChannel.scheduleRunAsServer( info.timestamp, info, (serverContext, didRun) => {
 
     var channel = serverContext.channel,
         info = serverContext.info
 
-    await channel.post(info)
-    didAction.resolve()
+    channel.post( info )
+    .then() => {
+      channel.post({
+        type: 'system',
+        text: `Pep scheduled for ${info.timestamp} `
+      })
 
+      didRun.resolve()
+    })
+    .finishWith( didRun )
   })
-  .catch( reason => didAction.reject( reason ) )
+  .catch( reason => didRun.reject( reason ) )
 
 })
+
+// Q: What is passed into the then(function(x) {}) in these promises?
+.finishWith( didAction )
 
 // Thoughts:
 // A receivedDelayedPost hook would be a part of browser-core. It would really
