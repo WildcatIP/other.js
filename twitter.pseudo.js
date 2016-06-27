@@ -2,6 +2,8 @@
 // TWITTER FEATURE
 //
 
+// TODO: Think about having the messages be stored client-side only
+
 let Twitter = require('http://...') // 3rd party API
 
 let feature = new OtherchatFeatureSet({

@@ -20,7 +20,7 @@ var kickCommand = feature.command({
   tokens: ['kick'],
   version: '0.1',
   name: 'Kick Command',
-  description: 'Temporarily kicks a user from the channel.'
+  description: 'Temporarily kicks a user from the channel.',
   action: 'kick',
   // accepts means shows users as didQuery chat complete
   accepts: {user: otherchat.types.user, query: String}
@@ -182,7 +182,7 @@ var banCommand = feature.command({
   tokens: ['ban'],
   version: '0.1',
   name: 'Ban User',
-  description: 'Permanently bans a user from the channel, until they are unbanned.'
+  description: 'Permanently bans a user from the channel, until they are unbanned.',
   action: 'ban',
   // accepts means shows users as didQuery chat complete
   accepts: {user: otherchat.types.user, query: String}
