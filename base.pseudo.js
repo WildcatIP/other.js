@@ -14,6 +14,7 @@
 // - Arrow functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
 // - String literals with embedded expressions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
 // - Promises: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+// - Destructuring assignment: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
 //
 // [1] http://kangax.github.io/compat-table/es6/
 // [2] https://github.com/google/traceur-compiler
@@ -63,7 +64,7 @@ var otherchat = new Otherchat( feature )
 
 
 
-// 
+//
 // AT MESSAGE COMPLETE
 //
 
@@ -94,11 +95,11 @@ var mentionCommand = feature.command({
 //   context - all the things the event handler needs to do its thing
 //   didQuery - the promise by which the handler communnicates with the caller
 
-mentionCommand.on('didQuery', (context, didQuery) => {
+mentionCommand.on( 'didQuery', (context, didQuery) => {
 
   // Find all users the client knows that match the query
 
-  otherchat.client.users.find(context.query).then( users => {
+  otherchat.client.users.find( context.query ).then( users => {
 
     // Then sort those users by membership in the current channel first,
     // then by their .relevance (a server calculated value) second
@@ -107,25 +108,25 @@ mentionCommand.on('didQuery', (context, didQuery) => {
 
     // Then pass back the list of sorted, matching users to the Other Chat
     // client (which is who made the call) as chat complete results.
-    // 
+    //
     // {user: user, action: 'whisper'} is short for:
     // otherchat.types.chatCompleteResult({ user: user, action: 'whisper' })
-    // 
+    //
     // The promise interprets dictionaries as the default chat complete result
     // type.
-    // 
+    //
     //   user - the client knows how to display a result based on the properties
     //          set, in this case each row is displayed as a user
     //   action - the name of the action button
-  
+
 
     var results = users.map( user => ({user: user, action: 'whisper'}) )
     didQuery.resolve( results )
 
   })
   // Something went wrong with the search, abort!
-  .catch( reason => didQuery.reject(reason) )
-  
+  .catch( reason => didQuery.reject( reason ) )
+
 })
 
 //
@@ -141,7 +142,7 @@ mentionCommand.on( 'didAction', selected => {
 
 
 
-// 
+//
 // CHANNEL COMPLETE
 //
 
@@ -180,7 +181,7 @@ hashCommand.on('didAction', selected => {
 
 
 
-// 
+//
 // INVITE COMMAND
 //
 // The invite command introduces three concepts. Accepting types other than
@@ -190,7 +191,7 @@ hashCommand.on('didAction', selected => {
 var invite = feature.command({
   tokens: ['invite'],
   version: 'invite.0.2',
-  
+
   // Accepts both an array of users as well as the arbitrary query string for
   // finding users.
   accepts: {users: [otherchat.types.user], query: String},
@@ -205,7 +206,7 @@ var invite = feature.command({
 invite.on('didQuery', (context, didQuery) => {
 
   // Search for the user's who match the query
-  
+
   otherchat.client.users.find(context.query).then( users => {
 
     // Map the users to user chat completes with invite action
@@ -233,7 +234,7 @@ invite.on('didAction', (context, doAction) => {
   let selected = context.selected
 
   // Modifies the context which gets passed into event handlers
-  
+
   if(  selected.action.isActive ) this.context.users.append( selected.user )
   else this.context.users.remove( selected.user )
 
@@ -250,14 +251,14 @@ invite.on('didAction', (context, doAction) => {
 // This is the first time we'll see running code on the server in action.
 
 invite.on('didFinish', (context, doFinish) => {
-  
+
   var currentChannel = otherchat.client.currentChannel,
       info = { users: context.users, by: client.me }
 
   // When we run code on the server, it doesn't have access to anything derived
   // from the client except what is serialized through the info argument (and
   // available on the server context object).
-  // 
+  //
   // The closure's code is run on the server. Available in it's scope is
   // anything in this scripts global name space.
   //
@@ -273,7 +274,7 @@ invite.on('didFinish', (context, doFinish) => {
     var channel = serverContext.channel,
         info = serverContext.info
 
-    // Make the user a member of the channel, and post a system message to the 
+    // Make the user a member of the channel, and post a system message to the
     // channel marking the invitation.
 
     await channel.addMembers( info.users )
@@ -300,7 +301,7 @@ invite.on('didFinish', (context, doFinish) => {
 // a good place to look for an answer.
 //
 // There's a problem with the explanation text on multiple selects conflicting
-// with where you type. Maybe changes the "send" button to "invite" 
+// with where you type. Maybe changes the "send" button to "invite"
 //
 // How about...
 // If an @name is entered by typing, deleting works like normal: character to character.
