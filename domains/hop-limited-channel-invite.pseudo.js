@@ -1,0 +1,1 @@
+// A channel that only you and the people you invite can invite/add people to a channel.
