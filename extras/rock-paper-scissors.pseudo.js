@@ -32,113 +32,113 @@ var rpsCommand = feature.command({
 
 rpsGame = feature.server.state({
 
-	// When the game begins:
-	// * Announce who challenged who
-	// * Present a choice of rock, paper, scissors as a message only visible to each participant
+  // When the game begins:
+  // * Announce who challenged who
+  // * Present a choice of rock, paper, scissors as a message only visible to each participant
 
-	init: (info, didInit) => {
+  init: (info, didInit) => {
 
-		let game = this // info is automatically made available as this.info
+    let game = this // info is automatically made available as this.info
 
-		// A message with three buttons: rock, paper, scissors
-		let throwPickers = [client.me, selected.user].map( user => ({
-			text: 'What will you throw?',
-			actions: ['Rock', 'Paper', 'Scissors'],
-			whoCanSee: user
-		}) )
+    // A message with three buttons: rock, paper, scissors
+    let throwPickers = [client.me, selected.user].map( user => ({
+      text: 'What will you throw?',
+      actions: ['Rock', 'Paper', 'Scissors'],
+      whoCanSee: user
+    }) )
 
-		throwPickers.on( 'didSelect', (selected, context, didSelect) => {
-			game.doPlayerThrow({ by: context.user, throw: selected.action }).ends( didSelect )
-		})
+    throwPickers.on( 'didSelect', (selected, context, didSelect) => {
+      game.doPlayerThrow({ by: context.user, throw: selected.action }).ends( didSelect )
+    })
 
-		info.channel
-			.post({
-				type: 'system',
-				text: `${info.challenger} has challenged ${info.challengee} to a game of rock paper scissors`
-			})
-			.post( chooseThrows )
-			.ends( didInit )
+    info.channel
+      .post({
+        type: 'system',
+        text: `${info.challenger} has challenged ${info.challengee} to a game of rock paper scissors`
+      })
+      .post( chooseThrows )
+      .ends( didInit )
 
-	},
+  },
 
-	// Given two player throws, returns an object with the result of who wins.
-	
-	whoWins: (throwA, throwB) => {
-		// Looks like: { type: 'tie' || 'won', winningThrow: ..., losingThrow: ... }
-	},
+  // Given two player throws, returns an object with the result of who wins.
+  
+  whoWins: (throwA, throwB) => {
+    // Looks like: { type: 'tie' || 'won', winningThrow: ..., losingThrow: ... }
+  },
 
-	// Handle a user throw
+  // Handle a user throw
 
-	doPlayerThow: (playerThrow, didPlayerThrow) => {
+  doPlayerThow: (playerThrow, didPlayerThrow) => {
 
-		let game = this,
-			channel = game.info.channel
+    let game = this,
+      channel = game.info.channel
 
-		game.withData( {playerThrows: []}, data => {
+    game.withData( {playerThrows: []}, data => {
 
-			// If first throw, announce who threw and who we are waiting for
+      // If first throw, announce who threw and who we are waiting for
 
-			if ( data.playerThrows.length == 0 ) {
+      if ( data.playerThrows.length == 0 ) {
 
-				let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
+        let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
 
-				channel
-					.post({
-						type: 'system',
-						text: '${playerThrow.by} has thrown, waiting for ${otherPlayer}...'
-					})
-				    .updateData({ playerThrows: data.playerThrows.append( playerThrow ) })
-					.ends( didPlayerThrow )
-			}
+        channel
+          .post({
+            type: 'system',
+            text: '${playerThrow.by} has thrown, waiting for ${otherPlayer}...'
+          })
+          .updateData({ playerThrows: data.playerThrows.append( playerThrow ) })
+          .ends( didPlayerThrow )
+      }
 
-			// If second throw, announce game results
+      // If second throw, announce game results
 
-			else if (data.playerThrows.length == 1 ){
+      else if (data.playerThrows.length == 1 ){
 
-				let firstThrow = data.playerThrows.first(),
-					secondThrow = playerThrow,
-					result = game.whoWins( firstThrow, secondThrow )
+        let firstThrow = data.playerThrows.first(),
+          secondThrow = playerThrow,
+          result = game.whoWins( firstThrow, secondThrow )
 
-				if ( result.type == 'tie' ) {
-					
-					channel
-						.post({
-							type: 'system',
-							text: '${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!'
-						})
-						.ends( didPlayerThrow )
+        if ( result.type == 'tie' ) {
+          
+          channel
+            .post({
+              type: 'system',
+              text: '${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!'
+            })
+            .ends( didPlayerThrow )
 
-				}
+        }
 
-				else {
+        else {
 
-					channel
-						.post({
-							type: 'system',
-							text: '${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!'
-						})
-						.then( () => game.deinit() )
-						.ends( didPlayerThrow )
+          channel
+            .post({
+              type: 'system',
+              text: '${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!'
+            })
+            .then( () => game.deinit() )
+            .ends( didPlayerThrow )
 
-				}
+        }
 
-			}
+      }
 
-		}).ends( didPlayerThrow )
+    }).ends( didPlayerThrow )
 
-	}
+  }
 })
 
 
 rpsCommand.on( 'didAction', (selected, didAction) => {
 
-	rpsGame
-		.init({
-			channel: otherchat.client.currentChannel,
-			challenger: otherchat.client.me,
-			challengee: selected.user
-		})
-		.ends( didAction )
+  rpsGame
+    .init({
+      channel: otherchat.client.currentChannel,
+      challenger: otherchat.client.me,
+      challengee: selected.user
+    })
+    .ends( didAction )
 
 })
 
