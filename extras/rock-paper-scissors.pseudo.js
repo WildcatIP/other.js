@@ -102,22 +102,16 @@ rpsGame = feature.server.state({
           secondThrow = playerThrow,
           result = game.whoWins( firstThrow, secondThrow )
 
-      if ( result.type == 'tie' ) {
+      if ( result.type == 'tie' )
         msg.text = `${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!`
-
-        channel
-          .post( msg )
-          .ends( didPlayerThrow )
-      }
-
-      else {
+      else
         msg.text = `${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!`
 
-        channel
-          .post( msg )
-          .then( () => game.deinit() )
-          .ends( didPlayerThrow )
-      }
+      
+      channel
+        .post( msg )
+        .then( () => game.deinit() )
+        .ends( didPlayerThrow )
 
     }
 
