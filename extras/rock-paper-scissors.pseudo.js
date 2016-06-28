@@ -76,13 +76,13 @@ rpsGame = feature.server.state({
     let game = this,
         channel = game.info.channel
 
-    game.withData( {playerThrows: []}, data => {
+    game.withData( {history: []}, data => {
 
       // If first throw, announce who threw and who we are waiting for
 
       let msg = { type: 'system' }
 
-      if ( data.playerThrows.length == 0 ) {
+      if ( data.history.length == 0 ) {
 
         let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
 
@@ -90,17 +90,17 @@ rpsGame = feature.server.state({
 
         channel
           .post( msg )
-          .updateData( {playerThrows: data.playerThrows.append( playerThrow )} )
+          .updateData( {history: data.history.append( playerThrow )} )
           .ends( didPlayerThrow )
       }
 
       // If second throw, announce game results
 
-      else if (data.playerThrows.length == 1 ){
+      else if (data.history.length == 1 ){
 
-        let firstThrow = data.playerThrows.first(),
-          secondThrow = playerThrow,
-          result = game.whoWins( firstThrow, secondThrow )
+        let firstThrow = data.history.first(),
+            secondThrow = playerThrow,
+            result = game.whoWins( firstThrow, secondThrow )
 
         if ( result.type == 'tie' ) {
 
