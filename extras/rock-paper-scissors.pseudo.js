@@ -71,63 +71,61 @@ rpsGame = feature.server.state({
 
   // Handle a user throw
 
-  doPlayerThow: (playerThrow, didPlayerThrow) => {
+  doPlayerThow: async (playerThrow, didPlayerThrow) => {
 
     let game = this,
-        channel = game.info.channel
+        channel = game.info.channel,
+        // If await throws, it propogates to the function's caller, which resolves didPlayerThrow appropriately
+        data = await game.data.get( {history: []} ),
+        msg = { type: 'system' }
 
-    game.withData( {history: []}, data => {
+    // If first throw, announce who threw and who we are waiting for
 
-      // If first throw, announce who threw and who we are waiting for
+    if ( data.history.length == 0 ) {
 
-      let msg = { type: 'system' }
+      let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
 
-      if ( data.history.length == 0 ) {
+      msg.text = `${playerThrow.by} has thrown, waiting for ${otherPlayer}...`
 
-        let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
+      channel
+        .post( msg )
+        .updateData( {history: data.history.append( playerThrow )} )
+        .ends( didPlayerThrow )
+    }
 
-        msg.text = '${playerThrow.by} has thrown, waiting for ${otherPlayer}...'
+    // If second throw, announce game results
+
+    else if (data.history.length == 1 ){
+
+      let firstThrow = data.history.first(),
+          secondThrow = playerThrow,
+          result = game.whoWins( firstThrow, secondThrow )
+
+      if ( result.type == 'tie' ) {
+
+        msg.text = `${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!`
 
         channel
           .post( msg )
-          .updateData( {history: data.history.append( playerThrow )} )
           .ends( didPlayerThrow )
-      }
-
-      // If second throw, announce game results
-
-      else if (data.history.length == 1 ){
-
-        let firstThrow = data.history.first(),
-            secondThrow = playerThrow,
-            result = game.whoWins( firstThrow, secondThrow )
-
-        if ( result.type == 'tie' ) {
-
-          msg.text = '${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!'
-
-          channel
-            .post( msg )
-            .ends( didPlayerThrow )
-
-        }
-
-        else {
-
-          let msg.text = '${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!'
-
-          channel
-            .post( msg )
-            .then( () => game.deinit() )
-            .ends( didPlayerThrow )
-
-        }
 
       }
 
-    }).ends( didPlayerThrow )
+      else {
+
+        msg.text = `${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!`
+
+        channel
+          .post( msg )
+          .then( () => game.deinit() )
+          .ends( didPlayerThrow )
+
+      }
+
+    }
 
   }
+
 })
 
 
