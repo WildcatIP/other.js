@@ -51,11 +51,13 @@ rpsGame = feature.server.state({
       game.doPlayerThrow({ by: context.user, throw: selected.action }).ends( didSelect )
     })
 
+    let msg = {
+      type: 'system',
+      text: `${info.challenger} has challenged ${info.challengee} to a game of rock paper scissors`
+    }
+
     info.channel
-      .post({
-        type: 'system',
-        text: `${info.challenger} has challenged ${info.challengee} to a game of rock paper scissors`
-      })
+      .post( msg )
       .post( chooseThrows )
       .ends( didInit )
 
@@ -72,22 +74,23 @@ rpsGame = feature.server.state({
   doPlayerThow: (playerThrow, didPlayerThrow) => {
 
     let game = this,
-      channel = game.info.channel
+        channel = game.info.channel
 
     game.withData( {playerThrows: []}, data => {
 
       // If first throw, announce who threw and who we are waiting for
 
+      let msg = { type: 'system' }
+
       if ( data.playerThrows.length == 0 ) {
 
         let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
 
+        msg.text = '${playerThrow.by} has thrown, waiting for ${otherPlayer}...'
+
         channel
-          .post({
-            type: 'system',
-            text: '${playerThrow.by} has thrown, waiting for ${otherPlayer}...'
-          })
-          .updateData({ playerThrows: data.playerThrows.append( playerThrow ) })
+          .post( msg )
+          .updateData( {playerThrows: data.playerThrows.append( playerThrow )} )
           .ends( didPlayerThrow )
       }
 
@@ -100,23 +103,21 @@ rpsGame = feature.server.state({
           result = game.whoWins( firstThrow, secondThrow )
 
         if ( result.type == 'tie' ) {
-          
+
+          msg.text = '${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!'
+
           channel
-            .post({
-              type: 'system',
-              text: '${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!'
-            })
+            .post( msg )
             .ends( didPlayerThrow )
 
         }
 
         else {
 
+          let msg.text = '${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!'
+
           channel
-            .post({
-              type: 'system',
-              text: '${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!'
-            })
+            .post( msg )
             .then( () => game.deinit() )
             .ends( didPlayerThrow )
 
