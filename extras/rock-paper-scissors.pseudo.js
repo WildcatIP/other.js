@@ -1,7 +1,7 @@
 //
 // A Rock Paper Scissors Game
 //
-// Shows a way of handling server state logic.
+// Shows a more Firebase-y handling server state logic.
 //
 // Game works like this:
 //
@@ -30,105 +30,89 @@ var rpsCommand = feature.command({
   accepts: {user: otherchat.types.user, query: String}
 })
 
-rpsGame = feature.server.state({
 
-  // When the game begins:
-  // * Announce who challenged who
-  // * Present a choice of rock, paper, scissors as a message only visible to each participant
+let RPS = {
+  
+  startGame: gameRef => {
 
-  init: (info, didInit) => {
-
-    let game = this // info is automatically made available as this.info
+    let historyRef = gameRef.child( 'history' ),
+        game = gameRef.value()
 
     // A message with three buttons: rock, paper, scissors
-    let throwPickers = [client.me, selected.user].map( user => ({
-      text: 'What will you throw?',
-      actions: ['Rock', 'Paper', 'Scissors'],
-      whoCanSee: user
-    }) )
 
-    throwPickers.on( 'didSelect', (selected, context, didSelect) => {
-      game.doPlayerThrow({ by: context.user, throw: selected.action }).ends( didSelect )
-    })
+    let actionPickers = [game.challenger, game.challengee].map( user => ({
+        text: 'What will you throw?',
+        actions: ['Rock', 'Paper', 'Scissors'],
+        whoCanSee: user,
+        _didSelect: selected => historyRef.append({ by: context.user, action: selected.action })
+      })
+    )
 
     let msg = {
       type: 'system',
       text: `${info.challenger} has challenged ${info.challengee} to a game of rock paper scissors`
     }
 
-    info.channel
+    return game.channel
       .post( msg )
       .post( chooseThrows )
-      .ends( didInit )
-
+    
   },
 
-  // Given two player throws, returns an object with the result of who wins.
-  
-  whoWins: (throwA, throwB) => {
-    // Looks like: { type: 'tie' || 'won', winningThrow: ..., losingThrow: ... }
-  },
+  whoWins: ( throwA, throwB ) => { /* Looks like: { type: 'tie' || 'won', winningThrow: ..., losingThrow: ... } */ },
 
-  // Handle a user throw
+  doPlayerAction: ( actionRef ) => {
 
-  doPlayerThow: async (playerThrow, didPlayerThrow) => {
-
-    let game = this,
-        channel = game.info.channel,
-        // If await throws, it propogates to the function's caller, which resolves didPlayerThrow appropriately
-        data = await game.data.get( {history: []} ),
-        msg = { type: 'system' }
+    let game = await actionRef.parent().value(),
+        playerAction = actionRef.value(),
+        channel = game.channel
 
     // If first throw, announce who threw and who we are waiting for
 
-    if ( data.history.length == 0 ) {
+    if ( game.history.length == 0 ) {
 
-      let otherPlayer = [game.info.challenger, game.info.challengee].filter( player => player != playerThrow.by )
+      let otherPlayer = [game.challenger, game.challengee].filter( player => player != playerAction.by )
 
-      msg.text = `${playerThrow.by} has thrown, waiting for ${otherPlayer}...`
+      msg.text = `${playerAction.by} has thrown, waiting for ${otherPlayer}...`
 
-      channel
+      return game.channel
         .post( msg )
-        .updateData( {history: data.history.append( playerThrow )} )
-        .ends( didPlayerThrow )
-        
+        .then( () => gameRef.child('history').append( playerAction ) )
+
     }
 
     // If second throw, announce game results
 
-    else if (data.history.length == 1 ){
+    else if ( game.history.length == 1 ){
 
-      let firstThrow = data.history.first(),
-          secondThrow = playerThrow,
-          result = game.whoWins( firstThrow, secondThrow )
+      let firstThrow = game.history.first(),
+          secondThrow = playerAction,
+          result = RPS.whoWins( firstThrow, secondThrow )
 
-      if ( result.type == 'tie' )
-        msg.text = `${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.throw} for a tie!`
-      else
-        msg.text = `${result.winningThrow.throw} beats ${result.losingThrow.throw}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!`
-
+      msg.text = result.type == 'tie'
+                    ? `${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.action} for a tie!`
+                    : `${result.winningThrow.action} beats ${result.losingThrow.action}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!`
       
-      channel
+      return channel
         .post( msg )
-        .then( () => game.deinit() )
-        .ends( didPlayerThrow )
+        .then( () => gameRef.remove() )
 
     }
-
   }
+  
+}
 
-})
+rpsCommand.on( 'didAction', selected => {
 
-
-rpsCommand.on( 'didAction', (selected, didAction) => {
-
-  rpsGame
-    .init({
-      channel: otherchat.client.currentChannel,
-      challenger: otherchat.client.me,
-      challengee: selected.user
-    })
-    .ends( didAction )
+  return feature.data.append({
+    channel: otherchat.client.currentChannel,
+    challenger: otherchat.client.me,
+    challengee: selected.user,
+    history: [
+      _didAppend: RPS.doPlayerAction
+    ],
+    _didAppendedTo: RPS.startGame
+  })
 
 })
 
