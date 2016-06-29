@@ -59,7 +59,18 @@ let RPS = {
     
   },
 
-  whoWins: ( throwA, throwB ) => { /* Looks like: { type: 'tie' || 'won', winningThrow: ..., losingThrow: ... } */ },
+  whoWins: ( throwA, throwB ) => { 
+  
+    let qs = [throwA.throw, throwB.throw].map( action => math.Quaternion(0, action == 'Rock', action == 'Scissors', action == 'Paper') ),
+        result = qs[0]*qs[1]
+
+    return {
+      type: result == -1 ? 'tie' : 'won',
+      winningThrow: Math.sign(result) : q1 ? q2,
+      losingThrow:  Math.sign(result) : q2 ? q1
+    }
+
+  },
 
   doPlayerAction: ( actionRef ) => {
 
@@ -115,6 +126,10 @@ rpsCommand.on( 'didAction', selected => {
   })
 
 })
+
+// Would like to consider:
+// - http://redux.js.org/docs/introduction/ThreePrinciples.html
+// and how it applies to Otherscript.
 
 // FURTHER THOUGHTS:
 //
