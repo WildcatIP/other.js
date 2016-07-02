@@ -31,31 +31,46 @@ var rpsCommand = feature.command({
 })
 
 
+rpsCommand.on( 'didAction', selected => {
+
+  return feature.data.append({
+    channel: otherchat.client.currentChannel,
+    challenger: otherchat.client.me,
+    challengee: selected.user,
+    history: [
+      _didAppend: RPS.playerDidTakeAction
+    ],
+    _didAppendedTo: RPS.startGame
+  })
+
+})
+
+
 let RPS = {
   
   startGame: gameRef => {
 
     let historyRef = gameRef.child( 'history' ),
-        game = gameRef.value()
+        game = await gameRef.value()
 
     // A message with three buttons: rock, paper, scissors
 
-    let actionPickers = [game.challenger, game.challengee].map( user => ({
+    let rpsMessages = [game.challenger, game.challengee].map( user => ({
         text: 'What will you throw?',
         actions: ['Rock', 'Paper', 'Scissors'],
         whoCanSee: user,
-        _didSelect: selected => historyRef.append({ by: context.user, action: selected.action })
+        _didSelect: selected => historyRef.append({ by: user, action: selected.action })
       })
     )
 
-    let msg = {
+    let startGameMessage = {
       type: 'system',
       text: `${info.challenger} has challenged ${info.challengee} to a game of rock paper scissors`
     }
 
     return game.channel
-      .post( msg )
-      .post( chooseThrows )
+      .post( startGameMessage )
+      .post( rpsMessages )
     
   },
 
@@ -72,60 +87,42 @@ let RPS = {
 
   },
 
-  doPlayerAction: ( actionRef ) => {
+  playerDidTakeAction: ( actionRef ) => {
 
     let game = await actionRef.parent().value(),
-        playerAction = actionRef.value(),
+        playerAction = await actionRef.value(),
         channel = game.channel
 
     // If first throw, announce who threw and who we are waiting for
 
-    if ( game.history.length == 0 ) {
+    if ( game.history.length == 1 ) {
 
       let otherPlayer = [game.challenger, game.challengee].filter( player => player != playerAction.by )
 
       msg.text = `${playerAction.by} has thrown, waiting for ${otherPlayer}...`
 
-      return game.channel
-        .post( msg )
-        .then( () => gameRef.child('history').append( playerAction ) )
+      return game.channel.post( msg )
 
     }
 
     // If second throw, announce game results
 
-    else if ( game.history.length == 1 ){
+    else if ( game.history.length == 2 ){
 
-      let firstThrow = game.history.first(),
-          secondThrow = playerAction,
+      let [ firstThrow, secondThrow ] = game.history,
           result = RPS.whoWins( firstThrow, secondThrow )
 
       msg.text = result.type == 'tie'
                     ? `${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.action} for a tie!`
                     : `${result.winningThrow.action} beats ${result.losingThrow.action}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!`
       
-      return channel
-        .post( msg )
-        .then( () => gameRef.remove() )
+      return channel.post( msg )
 
     }
   }
   
 }
 
-rpsCommand.on( 'didAction', selected => {
-
-  return feature.data.append({
-    channel: otherchat.client.currentChannel,
-    challenger: otherchat.client.me,
-    challengee: selected.user,
-    history: [
-      _didAppend: RPS.doPlayerAction
-    ],
-    _didAppendedTo: RPS.startGame
-  })
-
-})
 
 // Would like to consider:
 // - http://redux.js.org/docs/introduction/ThreePrinciples.html
