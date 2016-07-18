@@ -28,8 +28,8 @@ Channel FeatureSets may only be installed by channel owners (ie. the creator and
 
 Installation may be initiated by:
   1. Clicking a link from within the client.
-    2. Clicking a link from outside the client (e.g. a web browser) which deep links into the client.
-      3. Attaching a FeatureSet URL to a message or channel (e.g. a message may declare that a particular renderer should be installed to view it). However, all messages must be serializable to a primitive (mostly textual) representation. In some cases, this allows graceful degradation when the FeatureSet isn't install. In the most degenerative case, it just displays a link to install that FeatureSet.
+  1. Clicking a link from outside the client (e.g. a web browser) which deep links into the client.
+  1. Attaching a FeatureSet URL to a message or channel (e.g. a message may declare that a particular renderer should be installed to view it). However, all messages must be serializable to a primitive (mostly textual) representation. In some cases, this allows graceful degradation when the FeatureSet isn't install. In the most degenerative case, it just displays a link to install that FeatureSet.
 
 FeatureSets which don't require permissions are applied automatically, otherwise the user is prompted to grant its permissions. Channel FeatureSet permissions are accepted by the channel owner. Their behaviors should be safe for channel visitors.
 
