@@ -69,7 +69,7 @@ Permissionless when in combined with **only** the above "permissionless" capabil
 - A Starbucks ordering app could be implemented as a message list renderer which always displays an ordering UI above the message list (or perhaps doesn't even display the message list).
 - An extended-local store. A la Instagram boutiques. Imagine an IME button that nav to #knifeman/store with a set of knives with buy buttons.
 - [Rock, Paper, Scissors](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/extras/rock-paper-scissors.pseudo.js) could be implemented as a pure logic Feature Set, which requires another (probably builtin) Feature Set renderer that displays a customizable set of action buttons on a message. This has the advantage of lower barrier to entry through code reuse, greater UI consistency and potential for more performance implementation by using native widgets instead of web.
-- TBD: Moar, many moar
+- TBD: [Moar, many moar](https://docs.google.com/document/d/1qhH74PRk9RdMLszV2PVMZniIgtpVxyG6e4-1fcA5Qmc/edit#)
 
 ## Development
 
