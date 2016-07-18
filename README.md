@@ -27,15 +27,23 @@ See the [User-first FeatureSet manifesto](https://github.com/other-xyz/otherscri
 
 ## Examples
 
-* [Base Behaviors](base.pseudo.js) &mdash; start here
-* [Kick](kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
-* [Rechat](rechat.pseudo.js) &mdash; the core command! also: selecting a message
-* [Rechat Simple](rechat-simple.pseudo.js) &mdash; an implementation that doesn't require selecting a message
-* [Points](points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
-* [Twitter](twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
-* [Map, ETA, Find](map.pseudo.js) &mdash; maps and places
-* [Channel Mentions](channel-mentions.pseudo.js) &mdash; link-back posted to channels are mentioned in another channels
-* [Web](web.pseudo.js)
+### Core
+
+* [Base Behaviors](core/base.pseudo.js) &mdash; start here
+* [Kick](core/kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
+* [Rechat](core/rechat.pseudo.js) &mdash; the core command! also: selecting a message
+* [Rechat Simple](core/rechat-simple.pseudo.js) &mdash; an implementation that doesn't require selecting a message
+* [Map, ETA, Find](core/map.pseudo.js) &mdash; maps and places
+* [Channel Mentions](core/channel-mentions.pseudo.js) &mdash; link-back posted to channels are mentioned in another channels
+* [Web](core/web.pseudo.js)
+
+### Apps
+
+* [Twitter](apps/twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
+
+### Extras
+
+* [Points](extras/points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
 
 ## Extensible Community
 
