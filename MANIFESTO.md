@@ -66,16 +66,17 @@ We explicitly **do not** hardcode any privileged aggregation of FeatureSets (ie.
 
 ### Examples
 
-- A [Twitter feed](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/apps/twitter.pseudo.js) could be implemented as a Channel FeatureSet which polls on the server and posts messages to the channel.
+- A [Twitter feed](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/apps/twitter.pseudo.js) could be implemented as a Channel Feature Set which polls on the server and posts messages to the channel.
 - A Starbucks ordering app could be implemented as a message list renderer which always displays an ordering UI above the message list (or perhaps doesn't even display the message list).
-- [Rock, Paper, Scissors](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/extras/rock-paper-scissors.pseudo.js) could be implemented as a pure logic FeatureSet, which requires another (probably builtin) FeatureSet renderer that displays a customizable set of action buttons on a message. This has the advantage of lower barrier to entry through code reuse, greater UI consistency and potential for more performance implementation by using native widgets instead of web.
+- An extended-local store. A la Instagram boutiques. Imagine an IME button that nav to #knifeman/store with a set of knives with buy buttons.
+- [Rock, Paper, Scissors](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/extras/rock-paper-scissors.pseudo.js) could be implemented as a pure logic Feature Set, which requires another (probably builtin) FeatureSet renderer that displays a customizable set of action buttons on a message. This has the advantage of lower barrier to entry through code reuse, greater UI consistency and potential for more performance implementation by using native widgets instead of web.
 - TBD: Moar, many moar
 
 ## Development
 
 The platform follows similar principles to the [Rational Web Platform](https://docs.google.com/document/d/1ZkV1PpPsJJgdSZOA10Jh0VrThR6D_Q0XWv_2B9-0gGE/edit). That is, rational layers of abstraction, no "magic", etc.
 
-All third party FeatureSets are implemented in JavaScript. Builtin FeatureSets may also be implemented in any native language in order to expose native capabilities, however, we try to implement as many in JS as possible in order to share code and eat our own dogfood.
+All third party Feature Sets are implemented in JavaScript. Builtin Feature Sets may also be implemented in any native language in order to expose native capabilities, however, we try to implement as many in JS as possible in order to share code and eat our own dogfood.
 
 We aim to make the lowest friction development environment possible. Everything should be view sourcable, forkable, hackable. Zero to hello world should be < 2 minutes. Designing such a system is out of scope of this document.
 
