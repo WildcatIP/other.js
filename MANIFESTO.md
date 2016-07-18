@@ -1,8 +1,8 @@
-# The user-first FeatureSet manifesto
+# The user-first Feature Set manifesto
 
 Like a web browser, Other Chat is a User Agent. That is, an agent which acts on _behalf of the user_!
 
-This manifesto describes how [FeatureSets](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/README.md) operate on behalf of the user.
+This manifesto describes how [Feature Sets](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/README.md) operate on behalf of the user.
 
 ## User bill of rights
 
@@ -18,24 +18,24 @@ Bots are bots and humans are humans. Features and bots must have their own ident
 
 ## Applicability
 
-Any FeatureSet may be applied at four distinct levels: `channel`, `identity`, `account` and `builtin`.
+Any Feature Set may be applied at four distinct levels: `channel`, `identity`, `account` and `builtin`.
 - Where in conflict, they take precedence in that order. For example, a channel's color scheme overrides an identity's, which overrides an account's.
 - Where compatible, they're additive. For example, an identity's hotword tokens are added to the builtin hotwords.
 
 ## Installation
 
-Channel FeatureSets may only be installed by channel owners (ie. the creator and their delegates). Identity and Account FeatureSets are obviously installed by the identity/account owner. Builtin FeatureSets ship with the client (we'll likely come up w/ a scheme to update them more frequently than the client itself which supports A/B testing).
+Channel Feature Sets may only be installed by channel owners (ie. the creator and their delegates). Identity and Account Feature Sets are obviously installed by the identity/account owner. Builtin Feature Sets ship with the client (we'll likely come up w/ a scheme to update them more frequently than the client itself which supports A/B testing).
 
 Installation may be initiated by:
   1. Clicking a link from within the client.
   1. Clicking a link from outside the client (e.g. a web browser) which deep links into the client.
-  1. Attaching a FeatureSet URL to a message or channel (e.g. a message may declare that a particular renderer should be installed to view it). However, all messages must be serializable to a primitive (mostly textual) representation. In some cases, this allows graceful degradation when the FeatureSet isn't install. In the most degenerative case, it just displays a link to install that FeatureSet.
+  1. Attaching a Feature Set URL to a message or channel (e.g. a message may declare that a particular renderer should be installed to view it). However, all messages must be serializable to a primitive (mostly textual) representation. In some cases, this allows graceful degradation when the Feature Set isn't install. In the most degenerative case, it just displays a link to install that Feature Set.
 
-FeatureSets which don't require permissions are applied automatically, otherwise the user is prompted to grant its permissions. Channel FeatureSet permissions are accepted by the channel owner. Their behaviors should be safe for channel visitors.
+Feature Sets which don't require permissions are applied automatically, otherwise the user is prompted to grant its permissions. Channel Feature Set permissions are accepted by the channel owner. Their behaviors should be safe for channel visitors.
 
-UI for determining the level to apply the FeatureSet to is TBD.
+UI for determining the level to apply the Feature Set to is TBD.
 
-We explicitly **do not** hardcode any privileged aggregation of FeatureSets (ie. an App Store). This would make us responsible for policing the content and isn't in line with the *early web feels*. Search engines and curated lists may freely evolve in the ecosystem. This being said, we'll likely have a default landing channel (e.g. `#welcome`) that has some sort of "spotlight" curated list and/or search functionality. The key is that other than being the default landing, it otherwise enjoys no special capabilities.
+We explicitly **do not** hardcode any privileged aggregation of Feature Sets (ie. an App Store). This would make us responsible for policing the content and isn't in line with the *early web feels*. Search engines and curated lists may freely evolve in the ecosystem. This being said, we'll likely have a default landing channel (e.g. `#welcome`) that has some sort of "spotlight" curated list and/or search functionality. The key is that other than being the default landing, it otherwise enjoys no special capabilities.
 
 ## Capabilities
 
@@ -63,21 +63,21 @@ Permissionless when in combined with **only** the above "permissionless" capabil
 
 ### Examples
 
-- A [Twitter feed](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/apps/twitter.pseudo.js) could be implemented as a Channel FeatureSet which polls on the server and posts messages to the channel.
+- A [Twitter feed](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/apps/twitter.pseudo.js) could be implemented as a Channel Feature Set which polls on the server and posts messages to the channel.
 - A Starbucks ordering app could be implemented as a message list renderer which always displays an ordering UI above the message list (or perhaps doesn't even display the message list).
-- [Rock, Paper, Scissors](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/extras/rock-paper-scissors.pseudo.js) could be implemented as a pure logic FeatureSet, which requires another (probably builtin) FeatureSet renderer that displays a customizable set of action buttons on a message. This has the advantage of lower barrier to entry through code reuse, greater UI consistency and potential for more performance implementation by using native widgets instead of web.
+- [Rock, Paper, Scissors](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/extras/rock-paper-scissors.pseudo.js) could be implemented as a pure logic Feature Set, which requires another (probably builtin) Feature Set renderer that displays a customizable set of action buttons on a message. This has the advantage of lower barrier to entry through code reuse, greater UI consistency and potential for more performance implementation by using native widgets instead of web.
 - TBD: Moar, many moar
 
 ## Development
 
 The platform follows similar principles to the [Rational Web Platform](https://docs.google.com/document/d/1ZkV1PpPsJJgdSZOA10Jh0VrThR6D_Q0XWv_2B9-0gGE/edit). That is, rational layers of abstraction, no "magic", etc.
 
-All third party FeatureSets are implemented in JavaScript. Builtin FeatureSets may also be implemented in any native language in order to expose native capabilities, however, we try to implement as many in JS as possible in order to share code and eat our own dogfood.
+All third party Feature Sets are implemented in JavaScript. Builtin Feature Sets may also be implemented in any native language in order to expose native capabilities, however, we try to implement as many in JS as possible in order to share code and eat our own dogfood.
 
 We aim to make the lowest friction development environment possible. Everything should be view sourcable, forkable, hackable. Zero to hello world should be < 2 minutes. Designing such a system is out of scope of this document.
 
 ## TBD
-- @aza: FeatureSets also apply at the message level and feature level
+- @aza: Feature Sets also apply at the message level and feature level
 - @aza: How do ChannelSets fit?
 - @tonygentilcore: Explain Rechat via containers with references. Entities may then hang off of the referenced entity or the container.
 - @tonygentilcore: Explain using references for content (like a Twitter feed) whose source of truth isn't in courier.
