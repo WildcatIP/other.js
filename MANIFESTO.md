@@ -12,15 +12,19 @@ It's our equivalent of the browser's URL bar. It lets the user know who they are
 
 ### Never send a message on user's behalf
 
-The "send" button is the _only_ way to send a message. All message modifications, insertions and completions stage the content in the input box for the user to send.
+The "send" button is the _only_ way to send a message. All message modifications, insertions and completions stage the content for the user to send. (Current proposal: for media, selecting adds +1 to the send button; you add text in the normal input field; and you can select multiple types of media each with +1 to the send button).
 
-Bots are bots and humans are humans. Features and bots must have their own identity.
+Bots are bots and humans are humans. Features and bots have their own identity.
+
+If extensions post on behalf of the user, they are clearly marked as coming from an extension. E.g., Clicking on them reveals which extension is posting. This function stacks as a word-of-mouth discovery mechanism for new features.
 
 ## Applicability
 
 Any FeatureSet may be applied at four distinct levels: `channel`, `identity`, `account` and `builtin`.
 - Where in conflict, they take precedence in that order. For example, a channel's color scheme overrides an identity's, which overrides an account's.
-- Where compatible, they're additive. For example, an identity's hotword tokens are added to the builtin hotwords.
+- Where compatible, they're additive. For example, an identity's word tokens are added to the builtin words.
+
+AZA: How about feature and message level?
 
 ## Installation
 
