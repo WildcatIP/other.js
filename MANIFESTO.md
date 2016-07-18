@@ -47,7 +47,7 @@ We explicitly **do not** hardcode any privileged aggregation of FeatureSets (ie.
 - Suggest (ChatComplete)
 - Render a message which it sent
 
-### Conditionally Permissionless
+### Conditionally permissionless
 Permissionless when in combined with **only** the above "permissionless" capabilities and **not** each other or the below "permission guarded" capabilities.
 - Access the network
 - Read channel messages
