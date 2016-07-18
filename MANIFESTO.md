@@ -12,15 +12,17 @@ It's our equivalent of the browser's URL bar. It lets the user know who they are
 
 ### Never send a message on user's behalf
 
-The "send" button is the _only_ way to send a message. All message modifications, insertions and completions stage the content in the input box for the user to send.
+The "send" button is the _only_ way to send a message. All message modifications, insertions and completions stage the content for the user to send (current proposal: for media, selecting adds +1 to the send button; you add text in the normal input field; and you can select multiple types of media each with +1 to the send button).
 
-Bots are bots and humans are humans. Features and bots must have their own identity.
+Bots are bots and humans are humans. Features and bots have their own identity.
+
+If extensions post on behalf of the user, they are clearly marked as coming from an extension (e.g. clicking on them reveals which extension is posting. This function stacks as a word-of-mouth discovery mechanism for new features).
 
 ## Applicability
 
 Any Feature Set may be applied at four distinct levels: `channel`, `identity`, `account` and `builtin`.
 - Where in conflict, they take precedence in that order. For example, a channel's color scheme overrides an identity's, which overrides an account's.
-- Where compatible, they're additive. For example, an identity's hotword tokens are added to the builtin hotwords.
+- Where compatible, they're additive. For example, an identity's word tokens are added to the builtin hotwords.
 
 ## Installation
 
@@ -65,6 +67,7 @@ Permissionless when in combined with **only** the above "permissionless" capabil
 
 - A [Twitter feed](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/apps/twitter.pseudo.js) could be implemented as a Channel Feature Set which polls on the server and posts messages to the channel.
 - A Starbucks ordering app could be implemented as a message list renderer which always displays an ordering UI above the message list (or perhaps doesn't even display the message list).
+- An extended-local store. A la Instagram boutiques. Imagine an IME button that nav to #knifeman/store with a set of knives with buy buttons.
 - [Rock, Paper, Scissors](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/extras/rock-paper-scissors.pseudo.js) could be implemented as a pure logic Feature Set, which requires another (probably builtin) Feature Set renderer that displays a customizable set of action buttons on a message. This has the advantage of lower barrier to entry through code reuse, greater UI consistency and potential for more performance implementation by using native widgets instead of web.
 - TBD: Moar, many moar
 
