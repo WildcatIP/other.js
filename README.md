@@ -10,8 +10,6 @@ Cue dialogue:
 
 TWO FRIENDS TALKING OTHER CHAT — Have you tried any WoW sets that you liked? — Yeah, here's the one I use. _(sends link)_ — _(installs, does setup flow, oauths to his account)_ Cool. I like that it lets me be my character on here... love that she gets her own channel! — You should also try the item search and you can check auction prices with 'auction'.
 
-
-
 ## Building Ourselves With Ourselves
 
 Implementing much of Other Chat in Otherscript has some benefits:
@@ -23,7 +21,9 @@ Implementing much of Other Chat in Otherscript has some benefits:
 - Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparitive analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature sets will be the same analytics the community will want.
 - We work with and in the same tools as everyone else. This aligns '_us making what the community needs_' with '_us making what we need_'.
 
+## Specification / technical details
 
+See the [User-first FeatureSet manifesto](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/MANIFESTO.md).
 
 ## Examples
 
