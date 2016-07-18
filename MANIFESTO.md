@@ -45,9 +45,10 @@ We explicitly **do not** hardcode any privileged aggregation of FeatureSets (ie.
 - Provide IME buttons. Builtin buttons are provided that hook device capabilities like camera roll, audio input, etc.
 - Customize button slots in the IME bar (e.g. donger could be a first class citizen next to audio input, or giphy could just replace audio input).
 - Suggest (ChatComplete)
-- Render a message which specifies it
+- Render a message which it sent
 
-### Permissionless (when in combiniation with only the above "permissionless" capabilities and **not** each other **or** the below "permission guarded")
+### Conditionally Permissionless
+Permissionless when in combined with **only** the above "permissionless" capabilities and **not** each other or the below "permission guarded" capabilities.
 - Access the network
 - Read channel messages
 
