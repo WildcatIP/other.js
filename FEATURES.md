@@ -24,6 +24,17 @@ The "send" button is the _only_ way to send a message. All message modifications
 
 Bots are bots and humans are humans. If a Feature posts on behalf of a user, they are clearly marked as coming from an Identity owned by that Feature. A renderer may choose how to display the Feature's identity and/or the user it acted on behalf of. (e.g. clicking on them reveals which Feature is posting. This function stacks as a word-of-mouth discovery mechanism for new Features).
 
+### Minimize Kingmakers
+
+There are pros and cons to open, democratic models like the web vs closed, kingmaker models like app stores. We aim for a hybrid approach that capitalizes on the strengths while minimizing the downsides of each.
+
+- All Features must abide by a ToS.
+- All Features which utilize Other's servers require a verified developer account. This is our app store equivalent.
+- All Features which utilize permission guarded capabilities must be run on Other's servers. It's possible we may allow users to override this similar to how macOS allows non-verified apps to be installed with user consent.
+- A verified developer may host any Feature on Other's servers. There may be a fee structure. There may be reviews.
+- Any Feature which uses only driveby permissions may be hosted on third-party servers. This is our open web equivalent.
+- It is possible for third party channels to do aggregation of driveby safe Features (e.g. third party search engines).
+
 ## Applicability
 
 Any Feature may be applied at four distinct levels: `channel`, `identity`, `account` and `builtin`.
@@ -43,8 +54,6 @@ Features which don't require permissions are applied automatically, otherwise th
 
 UI for determining the level to apply the Feature to is TBD.
 
-We explicitly **do not** hardcode any privileged aggregation of Features (ie. an App Store). This would make us responsible for policing the content and isn't in line with the *early web feels*. Search engines and curated lists may freely evolve in the ecosystem. This being said, we'll likely have a default landing channel (e.g. `#welcome`) that has some sort of "spotlight" curated list and/or search functionality. The key is that other than being the default landing, it otherwise enjoys no special capabilities.
-
 ## Capabilities
 
 ### Driveby
@@ -56,6 +65,7 @@ Driveby capabilites are those that, like the open web, are considered safe to ap
 - Customize button slots in the IME bar (e.g. donger could be a first class citizen next to audio input, or giphy could just replace audio input).
 - Suggest (ChatComplete)
 - Render a message which the Feature itself sent
+- Post messages to the channel with its own identity
 
 ### Conditionally permission guarded
 
@@ -68,7 +78,7 @@ Safe for driveby when combined with **only** the above "driveby" capabilities an
 
 Capabilities which require user consent.
 
-- Post messages to the channel
+- Post messages to the channel with its own identity on behalf of the user
 - Configure channel properties (e.g. who can post, readonly)
 - Render a message list
 - Render an arbitrary message
