@@ -22,7 +22,7 @@ It's our equivalent of the browser's URL bar. It lets the user know who they are
 
 The "send" button is the _only_ way to send a message. All message modifications, insertions and completions stage the content for the user to send (current proposal: for media, selecting adds +1 to the send button; you add text in the normal input field; and you can select multiple types of media each with +1 to the send button).
 
-Bots are bots and humans are humans. If a Feature posts on behalf of a user, they are clearly marked as coming from an Identity owned by that Feature. A renderer may choose how to display the Feature's identity and/or the user it acted on behalf of. (e.g. clicking on them reveals which extension is posting. This function stacks as a word-of-mouth discovery mechanism for new features).
+Bots are bots and humans are humans. If a Feature posts on behalf of a user, they are clearly marked as coming from an Identity owned by that Feature. A renderer may choose how to display the Feature's identity and/or the user it acted on behalf of. (e.g. clicking on them reveals which Feature is posting. This function stacks as a word-of-mouth discovery mechanism for new Features).
 
 ## Applicability
 
@@ -86,7 +86,7 @@ All third party Features are implemented in JavaScript. Builtin Features may als
 We aim to make the lowest friction development environment possible. Everything should be view sourcable, forkable, hackable. Zero to hello world should be < 2 minutes. Designing such a system is out of scope of this document.
 
 ## TBD
-- @aza: Features also apply at the message level and feature level
+- @aza: Features also apply at the message level and Feature level
 - @aza: How do ChannelSets fit?
 - @tonygentilcore: Explain Rechat via containers with references. Entities may then hang off of the referenced entity or the container.
 - @tonygentilcore: Explain using references for content (like a Twitter feed) whose source of truth isn't in courier.
