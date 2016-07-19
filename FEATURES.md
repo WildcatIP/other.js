@@ -24,7 +24,7 @@ The "send" button is the _only_ way to send a message. All message modifications
 
 Bots are bots and humans are humans. If a Feature posts on behalf of a user, they are clearly marked as coming from an Identity owned by that Feature. A renderer may choose how to display the Feature's identity and/or the user it acted on behalf of. (e.g. clicking on them reveals which Feature is posting. This function stacks as a word-of-mouth discovery mechanism for new Features).
 
-### Minimize Kingmakers
+### Maximize safety, minimize kingmakers
 
 There are pros and cons to open, democratic models like the web vs closed, kingmaker models like app stores. We aim for a hybrid approach that capitalizes on the strengths while minimizing the downsides of each.
 
