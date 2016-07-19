@@ -47,20 +47,26 @@ We explicitly **do not** hardcode any privileged aggregation of Features (ie. an
 
 ## Capabilities
 
-### Permissionless
+### Driveby
+
+Driveby capabilites are those that, like the open web, are considered safe to apply without security or privacy considerations. They must not expose any information about the user and be idempotent with respect to the Chatternet. Features may use all of these capabilities without the need to prompt the user. If the user doesn't like the Feature, they may simply remove it.
 
 - Provide simple, declarative themes (e.g primary color, accent color, sound set, icon set).
 - Provide IME buttons. Builtin buttons are provided that hook device capabilities like camera roll, audio input, etc.
 - Customize button slots in the IME bar (e.g. donger could be a first class citizen next to audio input, or giphy could just replace audio input).
 - Suggest (ChatComplete)
-- Render a message which it sent
+- Render a message which the Feature itself sent
 
-### Conditionally permissionless
-Permissionless when in combined with **only** the above "permissionless" capabilities and **not** each other or the below "permission guarded" capabilities.
+### Conditionally permission guarded
+
+Safe for driveby when combined with **only** the above "driveby" capabilities and **not** each other or the below "permission guarded" capabilities. Otherwise, permission guarded.
+
 - Access the network
 - Read channel messages
 
 ### Permission guarded
+
+Capabilities which require user consent.
 
 - Post messages to the channel
 - Configure channel properties (e.g. who can post, readonly)
