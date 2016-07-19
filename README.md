@@ -23,7 +23,7 @@ Implementing much of Other Chat in Otherscript has some benefits:
 
 ## Specification / technical details
 
-See the [User-first FeatureSet manifesto](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/MANIFESTO.md).
+See the [Features proposal](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/FEATURES.md).
 
 ## Examples
 

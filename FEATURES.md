@@ -1,8 +1,8 @@
-# The user-first Feature Set manifesto
+# Other Features
 
 Like a web browser, Other Chat is a User Agent. That is, an agent which acts on _behalf of the user_!
 
-This manifesto describes how [Feature Sets](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/README.md) operate on behalf of the user.
+This document describes how [Feature Sets](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/README.md) operate on behalf of the user.
 
 ## User bill of rights
 
