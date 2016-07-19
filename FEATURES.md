@@ -22,9 +22,7 @@ It's our equivalent of the browser's URL bar. It lets the user know who they are
 
 The "send" button is the _only_ way to send a message. All message modifications, insertions and completions stage the content for the user to send (current proposal: for media, selecting adds +1 to the send button; you add text in the normal input field; and you can select multiple types of media each with +1 to the send button).
 
-Bots are bots and humans are humans. Features and bots have their own identity.
-
-If extensions post on behalf of the user, they are clearly marked as coming from an extension (e.g. clicking on them reveals which extension is posting. This function stacks as a word-of-mouth discovery mechanism for new features).
+Bots are bots and humans are humans. If a Feature posts on behalf of a user, they are clearly marked as coming from an Identity owned by that Feature. A renderer may choose how to display the Feature's identity and/or the user it acted on behalf of. (e.g. clicking on them reveals which extension is posting. This function stacks as a word-of-mouth discovery mechanism for new features).
 
 ## Applicability
 
