@@ -1,6 +1,10 @@
 # other.js
 
-other.js is a Javascript language for extending Other Chat and adding new functionality to the Chatternet. Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
+A framework for adding Chatternet features
+
+## Introduction
+
+Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
 
 A particular Chatternet feature set might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature set is written in a single file, which can be run both on the server and in the client.
 
@@ -10,7 +14,15 @@ Cue dialogue:
 
 TWO FRIENDS TALKING OTHER CHAT — Have you tried any WoW sets that you liked? — Yeah, here's the one I use. _(sends link)_ — _(installs, does setup flow, oauths to his account)_ Cool. I like that it lets me be my character on here... love that she gets her own channel! — You should also try the item search and you can check auction prices with 'auction'.
 
-## Building Ourselves With Ourselves
+## Getting started
+
+*TBD: Create user docs*
+
+## Contributing
+
+[contributing](CONTRIBUTING.md)
+
+## Building ourselves with ourselves
 
 Implementing much of Other Chat in other.js has some benefits:
 
@@ -18,7 +30,7 @@ Implementing much of Other Chat in other.js has some benefits:
 - Let's us make strong assertions about security. other.js is hermetically sealed from the rest of it's host, and can be passed objects with just the permissions they need.
 - Increases the number of us able to prototype and implement features and behaviors.
 - Provides a way to update client behavior across all platforms on the fly, roll out features to specific communities, and rollback miss-behaving functionality.
-- Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparitive analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature sets will be the same analytics the community will want.
+- Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparative analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature sets will be the same analytics the community will want.
 - We work with and in the same tools as everyone else. This aligns '_us making what the community needs_' with '_us making what we need_'.
 
 ## Specification / technical details
@@ -45,7 +57,7 @@ See the [Features proposal](FEATURES.md).
 
 * [Points](pseudo/extras/points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
 
-## Extensible Community
+## Extensible community
 
 Imagine you start a channel around `#manatees`. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on `#manatees`. A little later, you decide to start `#manatees/news` and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your `#manateeshirts`, and swap your officer features for a new one you heard about in `#communities`.
 
@@ -57,12 +69,12 @@ other.js lets you attach new functionality to any community, upgrading its abili
 
 - One of the most inspiring aspects of Swift, for me, has been how it's idioms forces me to write robust code with only minimal sacrifice to hackability. I'd like to learn from that in the design of other.js, so that the fastest way to express some behavior in other.js is also a robust way to express it.
 - I think of jQuery as a kind of Javascript DSL. It has a remarkable property: people who say they don't know Javascript can still use jQuery! From this we can learn. And also from it's hackably-robust chaining API.
-- The web. It's so expressive and maeleable. On the web, everything is a webpage; in Other Chat everthing is a channel.
+- The web. It's so expressive and malleable. On the web, everything is a webpage; in Other Chat everything is a channel.
 
 
 --------------------------
 
-### Random Notes
+### Random notes
 
 (!!!: What's the philosophy for how we handle updates? On install, we can take a snapshot of the code, host a versioned, checksumed etc version on our servers?)
 
