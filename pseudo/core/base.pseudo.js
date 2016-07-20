@@ -27,11 +27,11 @@ var Time = require('other-time') // Legendary time utils from the future
 
 //
 // other.js is used to install new features on the Chatternet + browser. A
-// collection of features is, in code, called a FeatureSet, and this is the
+// collection of features is, in code, called a FeaturePack, and this is the
 // base unit of other.js.
 //
 // The API key is tied to the developer and dictates the overall permissions of
-// the other.js. Permissions for specific feature sets and commands can be
+// the other.js. Permissions for specific feature packs and commands can be
 // set from a web interface and/or in code.
 //
 // Data storage is built-in to Other Script. Both user and channel objects have
@@ -44,7 +44,7 @@ var Time = require('other-time') // Legendary time utils from the future
 //
 // Further data security measures are, without a doubt, needed.
 
-var feature = new FeatureSet({
+var feature = new FeaturePack({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
   id: 'base',
   version: 'base.0.1',

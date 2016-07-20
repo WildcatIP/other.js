@@ -1,4 +1,4 @@
-var feature = new OtherchatFeature({
+var feature = new Feature({
     apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
     version: 'mapping-and-finding.0.1'
   }),

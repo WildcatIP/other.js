@@ -2,16 +2,6 @@
 
 Like a web browser, Other Chat is a User Agent. That is, an agent which acts on _behalf of the user_! This document describes how Other Chat's extensible platform (aka [Features](https://github.com/other-xyz/other.js.pseudo.js/blob/master/README.md)) operate on behalf of the user.
 
-## Terminology
-
-- **Identity**: An entity which may read and post Chatternet events.
-- **Channel**: A stream of Chatternet events.
-- **Feature**: A unit of possibly third-party code which extends Other Chat client functionality.
-- **Bot**: A Feature which also has its own Identity.
-- **Idenity Feature** and **Account Feature**: Features which are carried by a user to channels.
-- **Channel Feature**: Features which are installed on channels.
-- **Feature Bundle**: A bundle of multiple related Features.
-
 ## User bill of rights
 
 ### The input box is sacred

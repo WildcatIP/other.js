@@ -1,4 +1,4 @@
-var feature = new FeatureSet({
+var feature = new FeaturePack({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
   id: 'smsbride',
   version: '0.1',

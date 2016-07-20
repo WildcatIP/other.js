@@ -7,7 +7,7 @@
 // The server just holds the message until a given time and then passes it back
 // to the client to be acted on.
 
-var feature = new FeatureSet({
+var feature = new FeaturePack({
   apiKey: 'dfjklsaj3-87da-4546-b08b-b656461042dfjh4',
   id: 'pepclock',
   version: '0.1',
@@ -32,7 +32,7 @@ pepclockCommand.on('didQuery', (context, doFinish) => {
   var pepParser = new PepParser();
   [user, message, timestamp] = pepParser(context.query)
 
-  // Then it behaves similarly to the @mention FeatureSet except instead of
+  // Then it behaves similarly to the @mention FeaturePack except instead of
   // filtering by one user and the action being whisper, we have each user listed
   // twice with the option to send the pep as a whisper or to their homeroom
 

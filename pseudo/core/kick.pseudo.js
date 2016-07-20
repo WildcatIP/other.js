@@ -8,7 +8,7 @@
 // otherchat.client.command('kick', {user: aUser}), which will be used
 // by the ban command at the end of this file.
 
-var feature = new FeatureSet({
+var feature = new FeaturePack({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
   id: 'kickfeature',
   version: '0.1'

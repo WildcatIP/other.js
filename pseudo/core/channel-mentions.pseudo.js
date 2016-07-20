@@ -10,7 +10,7 @@
 // Builds from the patterns in points.pseudo.js
 //
 
-var feature = new FeatureSet({
+var feature = new FeaturePack({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
   id: 'channel-mention',
   version: 'channel-mention.0.1',
