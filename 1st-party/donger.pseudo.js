@@ -1,5 +1,3 @@
-import _ from "underscore"
-
 var DONGERS = [
 	"⊂(▀¯▀⊂)",
 	"ᕙ(˵ ಠ ਊ ಠ ˵)ᕗ",
@@ -18,7 +16,7 @@ var DONGERS = [
 	"[ * ༎ຶ _ ༎ຶ * ]"
 ]
 
-let feature = new Feature({id: 'donger.0.1'})
+let feature = new Feature({ id: 'donger.0.1' })
 
 var command = feature.command({
     tokens: [ 'donger' ],
@@ -27,16 +25,15 @@ var command = feature.command({
 
 command.on('didQuery', (context, completes) => {
 
-	var query = context.queryString,
-		theDongers = []
+	var shuffledDongers = DONGERS.sort(function() { return 0.5 - Math.random() })
 
-	if( query.length <= 1 ){
-		theDongers = _( DONGERS ).shuffle()
-	} else {
+	if( context.query.length > 1 ){
 		var sampleSize = Math.round( DONGERS.length / Math.pow( query.length, 2 ) )
-		theDongers = _( DONGERS ).sample( sampleSize ) 
+		shuffledDongers = shuffledDongers.slice( 0, sampleSize )
 	}
 
-	completes.resolve(theDongers)
+	var results = shuffledDongers.map( donger => ({ text: donger }) )
+
+	completes.resolve( results )
 
 })
