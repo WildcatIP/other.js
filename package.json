@@ -1,0 +1,84 @@
+{
+  "name": "other.js",
+  "version": "0.0.1",
+  "description": "Framework for adding other chat features",
+  "author": "Tony Gentilcore <tony@other.xyz>",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' ."
+  },
+  "devDependencies": {
+    "babel-core": "^6.10.4",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-syntax-class-properties": "^6.8.0",
+    "babel-plugin-syntax-decorators": "^6.8.0",
+    "babel-plugin-syntax-object-rest-spread": "^6.8.0",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-1": "^6.5.0",
+    "babel-register": "^6.9.0",
+    "eslint": "^3.1.1",
+    "eslint-config-defaults": "^9.0.0",
+    "eslint-config-google": "^0.6.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "google"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-console": "off",
+      "require-jsdoc": "off",
+      "no-warning-comments": "off",
+      "max-len": "off",
+      "camelcase": "off",
+      "consistent-return": "error",
+      "curly": [
+        "error",
+        "multi-line",
+        "consistent"
+      ],
+      "default-case": "error",
+      "no-duplicate-imports": "error",
+      "no-else-return": "error",
+      "no-eval": "error",
+      "no-extra-bind": "error",
+      "no-extra-label": "error",
+      "no-fallthrough": "error",
+      "no-implicit-globals": "error",
+      "no-implied-eval": "error",
+      "no-invalid-this": "error",
+      "no-mixed-requires": "error",
+      "no-multi-spaces": "error",
+      "no-native-reassign": "error",
+      "no-new": "error",
+      "no-new-func": "error",
+      "no-new-wrappers": "error",
+      "no-param-reassign": "error",
+      "no-return-assign": "error",
+      "no-self-compare": "error",
+      "no-shadow-restricted-names": "error",
+      "no-undef-init": "error",
+      "no-unused-expressions": "error",
+      "no-useless-call": "error",
+      "no-useless-computed-key": "error",
+      "no-useless-concat": "error",
+      "no-useless-constructor": "error",
+      "no-useless-escape": "error",
+      "no-useless-rename": "error",
+      "no-var": "error",
+      "no-void": "error",
+      "no-with": "error",
+      "object-shorthand": "error",
+      "prefer-arrow-callback": "error",
+      "prefer-const": "error",
+      "strict": "error"
+    }
+  }
+}
