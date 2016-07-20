@@ -25,7 +25,7 @@ var command = feature.command({
 
 command.on('didQuery', (context, completes) => {
 
-	var shuffledDongers = DONGERS.sort(function() { return 0.5 - Math.random() })
+	var shuffledDongers = DONGERS.sort( () => 0.5 - Math.random() )
 
 	if( context.query.length > 1 ){
 		var sampleSize = Math.round( DONGERS.length / Math.pow( query.length, 2 ) )
