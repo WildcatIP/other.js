@@ -1,3 +1,5 @@
+const Feature = require('../src');
+
 const DONGERS = [
   "⊂(▀¯▀⊂)",
   "ᕙ(˵ ಠ ਊ ಠ ˵)ᕗ",
