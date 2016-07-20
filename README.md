@@ -23,27 +23,27 @@ Implementing much of Other Chat in other.js has some benefits:
 
 ## Specification / technical details
 
-See the [Features proposal](https://github.com/other-xyz/other.js.pseudo.js/blob/master/FEATURES.md).
+See the [Features proposal](FEATURES.md).
 
 ## Examples
 
 ### Core
 
-* [Base Behaviors](core/base.pseudo.js) &mdash; start here
-* [Kick](core/kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
-* [Rechat](core/rechat.pseudo.js) &mdash; the core command! also: selecting a message
-* [Rechat Simple](core/rechat-simple.pseudo.js) &mdash; an implementation that doesn't require selecting a message
-* [Map, ETA, Find](core/map.pseudo.js) &mdash; maps and places
-* [Channel Mentions](core/channel-mentions.pseudo.js) &mdash; link-back posted to channels are mentioned in another channels
-* [Web](core/web.pseudo.js)
+* [Base Behaviors](pseudo/core/base.pseudo.js) &mdash; start here
+* [Kick](pseudo/core/kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
+* [Rechat](pseudo/core/rechat.pseudo.js) &mdash; the core command! also: selecting a message
+* [Rechat Simple](pseudo/core/rechat-simple.pseudo.js) &mdash; an implementation that doesn't require selecting a message
+* [Map, ETA, Find](pseudo/core/map.pseudo.js) &mdash; maps and places
+* [Channel Mentions](pseudo/core/channel-mentions.pseudo.js) &mdash; link-back posted to channels are mentioned in another channels
+* [Web](pseudo/core/web.pseudo.js)
 
 ### Apps
 
-* [Twitter](apps/twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
+* [Twitter](pseudo/apps/twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
 
 ### Extras
 
-* [Points](extras/points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
+* [Points](pseudo/extras/points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
 
 ## Extensible Community
 
