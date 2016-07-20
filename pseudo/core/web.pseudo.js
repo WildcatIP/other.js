@@ -9,7 +9,7 @@
 // without leaving Other Chat. Think a much better version of the web
 // snippets thing on Twitter.
 
-var feature = new OtherchatFeature({
+var feature = new Feature({
       apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
       version: 'web-bundle.0.1'
     })

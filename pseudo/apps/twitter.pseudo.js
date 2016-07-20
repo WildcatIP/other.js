@@ -6,7 +6,7 @@
 
 let Twitter = require('http://...') // 3rd party API
 
-let feature = new OtherchatFeatureSet({
+let feature = new FeaturePack({
   apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
   id: 'twitter'
   version: 'twitter.0.2',

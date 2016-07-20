@@ -16,7 +16,7 @@
 // This implementation instead is run by the client, and the behavior installed
 // on a user.
 
-let feature = new OtherchatFeatureSet({
+let feature = new FeaturePack({
   apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
   id: 'points'
   version: 'points.0.2',

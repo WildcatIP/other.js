@@ -6,13 +6,24 @@ The Chatternet feature platform
 
 Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
 
-A particular Chatternet feature set might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature set is written in a single file, which can be run both on the server and in the client.
+A particular Chatternet feature pack might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature pack is written in a single file, which can be run both on the server and in the client.
 
-What is a feature set? A bundle of behavior. You can add new feature sets to Other Chat by having someone send you a link, then click to install.
+What is a feature pack? A bundle of behavior. You can add new feature packs to Other Chat by having someone send you a link, then click to install.
 
 Cue dialogue:
 
 TWO FRIENDS TALKING OTHER CHAT — Have you tried any WoW sets that you liked? — Yeah, here's the one I use. _(sends link)_ — _(installs, does setup flow, oauths to his account)_ Cool. I like that it lets me be my character on here... love that she gets her own channel! — You should also try the item search and you can check auction prices with 'auction'.
+
+### Terminology
+
+- **Chatternet**: The real social web.
+- **Identity**: An entity which may read and post Chatternet events.
+- **Channel**: A stream of Chatternet events.
+- **Feature**: A unit of possibly third-party code which extends Other Chat client functionality.
+- **Bot**: A Feature which also has its own Identity.
+- **Identity Feature** and **Account Feature**: Features which are carried by a user to channels.
+- **Channel Feature**: Features which are installed on channels.
+- **Feature Pack**: A package of multiple related Features.
 
 ## Getting started
 
@@ -30,7 +41,7 @@ Implementing much of Other Chat in other.js has some benefits:
 - Let's us make strong assertions about security. other.js is hermetically sealed from the rest of it's host, and can be passed objects with just the permissions they need.
 - Increases the number of us able to prototype and implement features and behaviors.
 - Provides a way to update client behavior across all platforms on the fly, roll out features to specific communities, and rollback miss-behaving functionality.
-- Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparative analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature sets will be the same analytics the community will want.
+- Allows us to automatically build granular usage and telemetry analytics for feature packs. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparative analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature packs will be the same analytics the community will want.
 - We work with and in the same tools as everyone else. This aligns '_us making what the community needs_' with '_us making what we need_'.
 
 ## Specification / technical details
@@ -59,7 +70,7 @@ See the [Features proposal](FEATURES.md).
 
 ## Extensible community
 
-Imagine you start a channel around `#manatees`. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on `#manatees`. A little later, you decide to start `#manatees/news` and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your `#manateeshirts`, and swap your officer features for a new one you heard about in `#communities`.
+Imagine you start a channel around `#manatees`. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a feature pack with the right features and install it on `#manatees`. A little later, you decide to start `#manatees/news` and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your `#manateeshirts`, and swap your officer features for a new one you heard about in `#communities`.
 
 other.js lets you attach new functionality to any community, upgrading its abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with other.js it's Facebook against everybody, which they can't win.
 

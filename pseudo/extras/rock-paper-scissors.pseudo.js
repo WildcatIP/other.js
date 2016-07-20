@@ -12,7 +12,7 @@
 // > Rock beats scissors, @alien wins vs @za!
 //
 
-var feature = new FeatureSet({
+var feature = new FeaturePack({
   apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
   id: 'rockpaperscissors',
   version: '0.1'
