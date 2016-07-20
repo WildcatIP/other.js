@@ -1,6 +1,6 @@
 # other.js
 
-A framework for adding Chatternet features
+The Chatternet feature platform
 
 ## Introduction
 
