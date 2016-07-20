@@ -1,4 +1,4 @@
-# other.js
+# <img src="https://web.other.chat/images/favicon.png" height="18" width="18" /> other.js
 
 The Chatternet feature platform
 
