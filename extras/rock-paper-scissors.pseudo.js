@@ -126,7 +126,7 @@ let RPS = {
 
 // Would like to consider:
 // - http://redux.js.org/docs/introduction/ThreePrinciples.html
-// and how it applies to Otherscript.
+// and how it applies to other.js.
 
 // FURTHER THOUGHTS:
 //

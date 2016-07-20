@@ -1,4 +1,4 @@
-// The implementation of a read-only channel. By implementing in Otherscript, allows even base
+// The implementation of a read-only channel. By implementing in other.js, allows even base
 // behaviors of channels to be hacked on.
 
 // Seems like we want the ability to give channels composable behavior. How does that work?

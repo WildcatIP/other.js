@@ -5,7 +5,7 @@
 // message in mentioned channel with a link back. In other words, post system
 // messages with a link to the message than mentioned it.
 //
-// Shows how quickly we can experiment with new behavior with Otherscript.
+// Shows how quickly we can experiment with new behavior with other.js.
 //
 // Builds from the patterns in points.pseudo.js
 //

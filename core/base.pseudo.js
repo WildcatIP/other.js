@@ -1,14 +1,14 @@
 //
-// This sketch of Otherscript is centered around trying to build as much of
-// Otherchat's features in Otherscript as possible. It focuses on the base
+// This sketch of other.js is centered around trying to build as much of
+// Otherchat's features in other.js as possible. It focuses on the base
 // commands. While thinking forward to 3rd party extensions and their permission
 // model, this exploration focuses on letting us build quickly.
 //
-// Otherscript uses some ES6 and ES7. While not all of these features are
+// other.js uses some ES6 and ES7. While not all of these features are
 // supported[1] by JavascriptCore on iOS, both Google[2] and Facebook[3] have
 // open-source code regenerators that converts future ES* into standard ES5.
 //
-// In particular, Otherscript uses these features:
+// In particular, other.js uses these features:
 //
 // - Async/await: https://github.com/tc39/ecmascript-asyncawait
 // - Arrow functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
@@ -26,12 +26,12 @@
 var Time = require('other-time') // Legendary time utils from the future
 
 //
-// Otherscript is used to install new features on the Chatternet + browser. A
+// other.js is used to install new features on the Chatternet + browser. A
 // collection of features is, in code, called a FeatureSet, and this is the
-// base unit of Otherscript.
+// base unit of other.js.
 //
 // The API key is tied to the developer and dictates the overall permissions of
-// the Otherscript. Permissions for specific feature sets and commands can be
+// the other.js. Permissions for specific feature sets and commands can be
 // set from a web interface and/or in code.
 //
 // Data storage is built-in to Other Script. Both user and channel objects have

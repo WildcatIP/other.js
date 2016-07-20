@@ -1,6 +1,6 @@
-# Otherscript
+# other.js
 
-Otherscript is a Javascript language for extending Other Chat and adding new functionality to the Chatternet. Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
+other.js is a Javascript language for extending Other Chat and adding new functionality to the Chatternet. Its goals are to be: readable, never clever, succinct, pickup-able, and simultaneously [hackable and robust](#inspirations).
 
 A particular Chatternet feature set might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature set is written in a single file, which can be run both on the server and in the client.
 
@@ -12,10 +12,10 @@ TWO FRIENDS TALKING OTHER CHAT â€” Have you tried any WoW sets that you liked? â
 
 ## Building Ourselves With Ourselves
 
-Implementing much of Other Chat in Otherscript has some benefits:
+Implementing much of Other Chat in other.js has some benefits:
 
 - It forces a clean separation of base Chatternet/client infrastructure from our feature logic: which minimizes the part of the client that has to be ported and tested platform to platform; and creates a clear line along which we can open source.
-- Let's us make strong assertions about security. Otherscript is hermetically sealed from the rest of it's host, and can be passed objects with just the permissions they need.
+- Let's us make strong assertions about security. other.js is hermetically sealed from the rest of it's host, and can be passed objects with just the permissions they need.
 - Increases the number of us able to prototype and implement features and behaviors.
 - Provides a way to update client behavior across all platforms on the fly, roll out features to specific communities, and rollback miss-behaving functionality.
 - Allows us to automatically build granular usage and telemetry analytics for feature sets. Imagine being able to test and compare multiple versions of our commands in the wild at the same time, with comparitive analytics, and then tweaking behavior just right in realish time. The analytics we need to craft our feature sets will be the same analytics the community will want.
@@ -23,7 +23,7 @@ Implementing much of Other Chat in Otherscript has some benefits:
 
 ## Specification / technical details
 
-See the [Features proposal](https://github.com/other-xyz/otherscript.pseudo.js/blob/master/FEATURES.md).
+See the [Features proposal](https://github.com/other-xyz/other.js.pseudo.js/blob/master/FEATURES.md).
 
 ## Examples
 
@@ -49,13 +49,13 @@ See the [Features proposal](https://github.com/other-xyz/otherscript.pseudo.js/b
 
 Imagine you start a channel around `#manatees`. It stays small for a while. Then a vibrant community starts to grow, and soon the channels needs mods and manatee specific flagging. So you look around and find a bundle with the right features and install it on `#manatees`. A little later, you decide to start `#manatees/news` and install a blog feature, so you and the other mods can compose posts on the web, pulling stuff in with a bookmarklet. Later, you install a store feature to sell your `#manateeshirts`, and swap your officer features for a new one you heard about in `#communities`.
 
-Otherscript lets you attach new functionality to any community, upgrading its abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with Otherscript it's Facebook against everybody, which they can't win.
+other.js lets you attach new functionality to any community, upgrading its abilities on the fly. It's an expressiveness and flexibility unique to us, and a strategic competitive advantage: if it's us against Facebook, we can't win; with other.js it's Facebook against everybody, which they can't win.
 
 ---
 
 ## Inspirations
 
-- One of the most inspiring aspects of Swift, for me, has been how it's idioms forces me to write robust code with only minimal sacrifice to hackability. I'd like to learn from that in the design of Otherscript, so that the fastest way to express some behavior in Otherscript is also a robust way to express it.
+- One of the most inspiring aspects of Swift, for me, has been how it's idioms forces me to write robust code with only minimal sacrifice to hackability. I'd like to learn from that in the design of other.js, so that the fastest way to express some behavior in other.js is also a robust way to express it.
 - I think of jQuery as a kind of Javascript DSL. It has a remarkable property: people who say they don't know Javascript can still use jQuery! From this we can learn. And also from it's hackably-robust chaining API.
 - The web. It's so expressive and maeleable. On the web, everything is a webpage; in Other Chat everthing is a channel.
 
