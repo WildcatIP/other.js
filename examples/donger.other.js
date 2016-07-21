@@ -1,4 +1,4 @@
-const Feature = require('../src');
+const Feature = require('Feature');
 
 const DONGERS = [
   "⊂(▀¯▀⊂)",
