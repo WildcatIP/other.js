@@ -1,4 +1,4 @@
-# <img src="https://web.other.chat/images/favicon.png" height="18" width="18" /> other.js [![Build Status](https://travis-ci.com/other-xyz/other.js.svg?token=96rqAKq1wuu7waxjVyTg&branch=master)](https://travis-ci.com/other-xyz/other.js) [![chat](https://img.shields.io/badge/chat-%23otherjs-919cff.svg)](https://web.other.chat/#/channel/1503761bc6574d6f95daf2fb64baf4cc)
+# <img src="https://web.other.chat/images/favicon.png" height="18" width="18" /> other.js [![Build Status](https://travis-ci.com/other-xyz/other.js.svg?token=96rqAKq1wuu7waxjVyTg&branch=master)](https://travis-ci.com/other-xyz/other.js) [![chat](https://img.shields.io/badge/chat-%23otherjs-919cff.svg)](https://web.other.chat/#/channel/740c2b85b3ad45509a59168891a58f74)
 
 The Chatternet feature platform
 
