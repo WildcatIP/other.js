@@ -85,8 +85,6 @@ Capabilities which require user consent.
 
 ## Development
 
-The platform follows similar principles to the [Rational Web Platform](https://docs.google.com/document/d/1ZkV1PpPsJJgdSZOA10Jh0VrThR6D_Q0XWv_2B9-0gGE/edit). That is, rational layers of abstraction, no "magic", etc.
-
 All third party Features are implemented in JavaScript. Builtin Features may also be implemented in any native language in order to expose native capabilities, however, we try to implement as many in JS as possible in order to share code and eat our own dogfood.
 
 We aim to make the lowest friction development environment possible. Everything should be view sourcable, forkable, hackable. Zero to hello world should be < 2 minutes. Designing such a system is out of scope of this document.

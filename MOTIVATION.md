@@ -1,5 +1,27 @@
 # Motivation
 
+## Introduction
+
+A particular Chatternet feature pack might require behavior that changes both server and client behavior. For example, a guild's extension might modify the behavior of the guild channel, create new social/structural behaviors that mirror the guild's governance, and install a chat command for members to interact with the guild bank. To minimize dW, a complete Chatternet feature pack is written in a single file, which can be run both on the server and in the client.
+
+What is a feature pack? A bundle of behavior. You can add new feature packs to Other Chat by having someone send you a link, then click to install.
+
+Cue dialogue...
+
+TWO FRIENDS TALKING OTHER CHAT:
+
+> "Have you tried any WoW sets that you liked?"
+
+> "Yeah, here's the one I use."
+
+> _sends link_
+
+> _installs, does setup flow, oauths to his account_
+
+> "Cool. I like that it lets me be my character on here... love that she gets her own channel!"
+
+> "You should also try the item search and you can check auction prices with 'auction'."
+
 ## Building ourselves with ourselves
 
 Implementing much of Other Chat in other.js has some benefits:
