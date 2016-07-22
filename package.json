@@ -6,10 +6,13 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "build": "webpack",
+    "dist": "NODE_ENV=production webpack",
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' ."
   },
   "devDependencies": {
     "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
     "babel-plugin-react-transform": "^2.0.2",
     "babel-plugin-syntax-class-properties": "^6.8.0",
     "babel-plugin-syntax-decorators": "^6.8.0",
@@ -21,7 +24,9 @@
     "babel-register": "^6.9.0",
     "eslint": "^3.1.1",
     "eslint-config-defaults": "^9.0.0",
-    "eslint-config-google": "^0.6.0"
+    "eslint-config-google": "^0.6.0",
+    "webpack": "^1.13.1",
+    "webpack-validator": "^2.2.3"
   },
   "eslintConfig": {
     "extends": [
