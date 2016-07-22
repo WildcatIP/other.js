@@ -13,7 +13,12 @@ function getPlugins() {
     })
   ];
   if (isProd) {
-    // TODO: Uglify
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
+      compress: {warnings: false}
+      // TODO: Mangling reduces bundle size by 20%, but breaks things.
+      // Need to figure out the right set of exceptions.
+      // mangle: {props: true}
+    }));
     plugins.push(new webpack.optimize.DedupePlugin());
     plugins.push(new webpack.optimize.AggressiveMergingPlugin());
   }
@@ -35,8 +40,10 @@ module.exports = validate({
     ]
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
     filename: './other.min.js',
+    library: '[name]',
+    libraryTarget: 'commonjs2',
+    path: path.resolve(__dirname, 'dist'),
     sourceMapFilename: "./[name].js.map"
   },
   plugins: getPlugins()
