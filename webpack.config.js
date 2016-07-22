@@ -13,12 +13,7 @@ function getPlugins() {
     })
   ];
   if (isProd) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-      compress: {warnings: false}
-      // TODO: Mangling reduces bundle size by 20%, but breaks things.
-      // Need to figure out the right set of exceptions.
-      // mangle: {props: true}
-    }));
+    // TODO: Uglify
     plugins.push(new webpack.optimize.DedupePlugin());
     plugins.push(new webpack.optimize.AggressiveMergingPlugin());
   }
