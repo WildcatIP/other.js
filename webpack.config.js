@@ -41,7 +41,6 @@ module.exports = validate({
   },
   output: {
     filename: './other.min.js',
-    library: '[name]',
     libraryTarget: 'commonjs2',
     path: path.resolve(__dirname, 'dist'),
     sourceMapFilename: "./[name].js.map"
