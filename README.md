@@ -12,7 +12,7 @@ See [motivation](MOTIVATION.md).
 
 *TBD: Create user docs*
 
-[API documentation](https://apps.other.js/docs)
+[API documentation](https://apps.other.chat/docs/index.html)
 
 ## Examples
 
