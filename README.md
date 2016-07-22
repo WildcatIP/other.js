@@ -12,6 +12,8 @@ See [motivation](MOTIVATION.md).
 
 *TBD: Create user docs*
 
+[API documentation](https://apps.other.js/docs)
+
 ## Examples
 
 ### Core

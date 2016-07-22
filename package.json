@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "webpack",
-    "dist": "NODE_ENV=production webpack",
+    "dist": "NODE_ENV=production webpack && jsdoc ./other.js -d ./dist/docs",
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' ."
   },
   "devDependencies": {
@@ -20,6 +20,7 @@
     "eslint": "^3.1.1",
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.6.0",
+    "jsdoc": "^3.4.0",
     "webpack": "^1.13.1",
     "webpack-validator": "^2.2.3"
   },
