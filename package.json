@@ -1,7 +1,7 @@
 {
   "name": "other.js",
   "version": "0.0.1",
-  "description": "A framework for adding other chat features",
+  "description": "The Chatternet feature platform",
   "author": "Tony Gentilcore <tony@other.xyz>",
   "private": true,
   "license": "UNLICENSED",
