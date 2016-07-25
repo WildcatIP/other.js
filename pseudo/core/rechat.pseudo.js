@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // RECHAT (POST NOW)
 //
@@ -24,9 +24,9 @@ const feature = new Feature({
   name: 'Rechat',
   version: '0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
-});
+})
 
-const otherchat = new Otherchat(feature);
+const otherchat = new Otherchat(feature)
 
 //
 // To me, it's rechat that makes the power of the accepts field apparent:
@@ -46,10 +46,10 @@ const rechatCommand = feature.command({
     query: String
   },
   allowsMultipleSelection: true
-});
+})
 
 rechatCommand.on('didFinish', (context, doFinish) => {
-  const currentChannel = otherchat.client.currentChannel;
+  const currentChannel = otherchat.client.currentChannel
 
   context.channels.each(toChannel => {
     // repost the message, and then post a system message
@@ -60,10 +60,10 @@ rechatCommand.on('didFinish', (context, doFinish) => {
         type: 'system', // Could also add a 'rechat' type for custom rechatty display
         text: `rechat from ${currentChannel} by ${otherchat.client.me}`
       })
-      .endsWith(doFinish);
+      .endsWith(doFinish)
 
       // Short for:
       // .then( () => { doFinish.resolve() })
       // .catch( reason => { doFinish.reject(reason) }
-  });
-});
+  })
+})

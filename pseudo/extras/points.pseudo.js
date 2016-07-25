@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // POINTS
 // Give and take away points by posting @adam-- or @alien++ in a message, then
@@ -22,7 +22,7 @@ const feature = new Feature({
   description: 'Give points to people with @user++, take them away with @user--.',
   version: '0.0.2',
   identity: '8b889bba-87da-4546-b08b-b6564610261b'
-});
+})
 
 let otherchat = new Otherchat( feature )
 

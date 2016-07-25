@@ -1,6 +1,6 @@
 /** @module other */
 
-const EventEmitter = require('events');
+const EventEmitter = require('events')
 
 /** @inheritdoc */
 class Channel extends EventEmitter {
@@ -28,22 +28,22 @@ class Chatternet extends EventEmitter {
    * @param {string} args.identity - Scope for chatternet interactions.
    */
   constructor({identity}) {
-    super();
+    super()
   }
 
   /** @return {Channel} The channel associated witht he given id or else null if it doesn't exist. */
   channel({id}) {
-    return new Channel(); // TODO: Implement me.
+    return new Channel() // TODO: Implement me.
   }
 
   /** @return {Account} The account associated witht he given id or else null if it doesn't exist. */
   account({id}) {
-    return new Account(); // TODO: Implement me.
+    return new Account() // TODO: Implement me.
   }
 
   /** @return {Identity} The identity associated witht he given id or else null if it doesn't exist. */
   identity({id}) {
-    return new Identity(); // TODO: Implement me.
+    return new Identity() // TODO: Implement me.
   }
 }
 
@@ -55,17 +55,17 @@ class Chatternet extends EventEmitter {
 class UserAgent extends EventEmitter {
   /** @return {Channel} The currently active channel. */
   channel() {
-    return new Channel(); // TODO: Implement me.
+    return new Channel() // TODO: Implement me.
   }
 
   /** @return {Account} The currently active account. */
   account() {
-    return new Account(); // TODO: Implement me.
+    return new Account() // TODO: Implement me.
   }
 
   /** @return {Identity} The currently active identity. */
   identity() {
-    return new Identity(); // TODO: Implement me.
+    return new Identity() // TODO: Implement me.
   }
 
   /**
@@ -84,7 +84,7 @@ class UserAgent extends EventEmitter {
  */
 class ChatCompleteResult {
   constructor({text}) {
-    this.text = text;
+    this.text = text
   }
 }
 
@@ -100,17 +100,17 @@ class Command {
    * @param {onQueryCallback} args.onQuery - Called when one of the tokens is invoked by the user.
    */
   constructor({tokens, onQuery}) {
-    this._tokens = tokens;
-    this._onQuery = onQuery;
+    this._tokens = tokens
+    this._onQuery = onQuery
   }
 
   get tokens() {
-    return this._tokens;
+    return this._tokens
   }
 
   /** @param {onQueryCallback} callback - Called when one of the tokens is invoked by the user. */
   onQuery(callback) {
-    this._onQuery = callback;
+    this._onQuery = callback
     // TODO: Implement me.
   }
 
@@ -137,24 +137,24 @@ class Feature {
    */
   constructor({name, description, version, identity, commands = []}) {
     // TODO: Validation
-    this.name = name;
-    this.description = description;
-    this.version = version;
-    this.identity = identity;
-    this.commands = commands;
-    console.log(`Created feature: ${name} ${version}`); // TODO: Remove.
+    this.name = name
+    this.description = description
+    this.version = version
+    this.identity = identity
+    this.commands = commands
+    console.log(`Created feature: ${name} ${version}`) // TODO: Remove.
   }
 
   /** @return {Chatternet} The global chatternet as seen by this feature's identity or null if the feature doesn't have access. */
   chatternet() {
-    const {identity} = this;
-    return identity ? new Chatternet({identity}) : null;
+    const {identity} = this
+    return identity ? new Chatternet({identity}) : null
   }
 
   /** @return {UserAgent} The user agent's current browsing context. */
   userAgent() {
-    return new UserAgent();
+    return new UserAgent()
   }
 }
 
-module.exports = {ChatCompleteResult, Command, Feature};
+module.exports = {ChatCompleteResult, Command, Feature}

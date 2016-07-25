@@ -1,8 +1,8 @@
-const path = require('path');
-const validate = require('webpack-validator');
-const webpack = require('webpack');
+const path = require('path')
+const validate = require('webpack-validator')
+const webpack = require('webpack')
 
-const isProd = (process.env.NODE_ENV === 'production');
+const isProd = (process.env.NODE_ENV === 'production')
 
 function getPlugins() {
   const plugins = [
@@ -11,18 +11,18 @@ function getPlugins() {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }
     })
-  ];
+  ]
   if (isProd) {
     plugins.push(new webpack.optimize.UglifyJsPlugin({
       compress: {warnings: false}
       // TODO: Mangling reduces bundle size by 20%, but breaks things.
       // Need to figure out the right set of exceptions.
       // mangle: {props: true}
-    }));
-    plugins.push(new webpack.optimize.DedupePlugin());
-    plugins.push(new webpack.optimize.AggressiveMergingPlugin());
+    }))
+    plugins.push(new webpack.optimize.DedupePlugin())
+    plugins.push(new webpack.optimize.AggressiveMergingPlugin())
   }
-  return plugins;
+  return plugins
 }
 
 module.exports = validate({
@@ -46,4 +46,4 @@ module.exports = validate({
     sourceMapFilename: "./[name].js.map"
   },
   plugins: getPlugins()
-});
+})

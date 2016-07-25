@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // WEB
 // Either does a web search or opens a URL
@@ -13,8 +13,8 @@ const feature = new Feature({
   name: 'web-bundle',
   version: '0.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
-});
-const otherchat = new Otherchat(feature);
+})
+const otherchat = new Otherchat(feature)
 const Web = require('other-web'); // Extended-local web search?
 
 var cmd = feature.command({

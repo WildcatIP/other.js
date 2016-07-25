@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // PepClock
 //
@@ -28,8 +28,8 @@ var pepclockCommand = feature.command({
 pepclockCommand.on('didQuery', (context, doFinish) => {
 
   // First we tokenize each part of the command.
-  var user, message, timestamp;
-  var pepParser = new PepParser();
+  var user, message, timestamp
+  var pepParser = new PepParser()
   [user, message, timestamp] = pepParser(context.query)
 
   // Then it behaves similarly to the @mention Feature except instead of
@@ -67,7 +67,7 @@ pepclockCommand.on('didAction', (selected, didAction) => {
     timestamp: selected.user.timestamp
   }
 
-  var theChannel = selected.user.channel;
+  var theChannel = selected.user.channel
 
   // Q: Should something like info.timestamp and info be optional params at
   //    the end of runAsServer?

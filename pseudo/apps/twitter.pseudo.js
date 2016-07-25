@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // TWITTER FEATURE
 
@@ -11,7 +11,7 @@ const feature = new Feature({
   description: 'A Twitter in your home channel.',
   version: '0.0.2',
   identity: '8b889bba-87da-4546-b08b-b6564610261b'
-});
+})
 
 
 //

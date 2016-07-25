@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // KICK
 //
@@ -13,7 +13,7 @@ const feature = new Feature({
   name: 'kickfeature',
   version: '0.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
-});
+})
 
 var otherchat = new Otherchat( feature )
 

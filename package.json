@@ -78,6 +78,7 @@
       "object-shorthand": "error",
       "prefer-arrow-callback": "error",
       "prefer-const": "error",
+      "semi": ["error", "never"],
       "strict": "error"
     }
   }

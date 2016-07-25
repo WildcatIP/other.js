@@ -1,4 +1,4 @@
-const {Feature} = require('other');
+const {Feature} = require('other')
 
 // CHANNEL MENTION
 //
@@ -14,9 +14,9 @@ const feature = new Feature({
   name: 'Channel Mention Backlink',
   version: 'channel-mention.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
-});
+})
 
-const command = feature.command();
+const command = feature.command()
 
 // Have two versions of the implementation: one where the client does the
 // posting, and one where the server does the posting. I think I dig the
@@ -32,42 +32,42 @@ const command = feature.command();
 // CLIENT VERSION
 
 command.on('messageDidPost', (context, didPostMentions) => {
-  const message = context.message;
-  const channelPosts = [];
+  const message = context.message
+  const channelPosts = []
 
   message.mentionedChannels.each(channel => {
-    const link = command.types.link({text: 'mentioned', to: message});
+    const link = command.types.link({text: 'mentioned', to: message})
 
     channel
       .post({
         type: 'system',
         text: `${context.message.author} ${link} this channel in ${channel}`
       })
-      .appendTo(channelPosts);
-  });
+      .appendTo(channelPosts)
+  })
 
   Promise
     .all(channelPosts)
-    .endsWith(promise);
-});
+    .endsWith(promise)
+})
 
 // ALTERNATE SERVER VERSION
 
 command.on('messageDidPost', (context, didPostMentions) => {
-  const info = {message: context.message};
+  const info = {message: context.message}
 
   feature.runAsServer(info, (serverContext, serverSuccess) => {
-    const message = serverContext.info.message;
+    const message = serverContext.info.message
 
     message.mentionedChannels.each(channel => {
-      const link = command.types.link({text: 'mentioned', to: message});
+      const link = command.types.link({text: 'mentioned', to: message})
 
       channel.post({
         type: 'system',
         text: `${message.author} ${link} this channel in ${channel}`
       })
-      .endsWith(serverSuccess);
-    });
+      .endsWith(serverSuccess)
+    })
   })
-  .endWith(didPostMentions);
-});
+  .endWith(didPostMentions)
+})
