@@ -1,11 +1,12 @@
-var feature = new FeaturePack({
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
-  id: 'smsbride',
-  version: '0.1',
-  name: 'SMS Bride nOG'
-})
+const {FeaturePack} = require('other');
 
-// Twilio Credentials 
+const feature = new FeaturePack({
+  version: '00.1',
+  name: 'SMS Bride nOG',
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
+});
+
+// Twilio Credentials
 var accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
     authToken = '[AuthToken]',
     twilio = require('twilio')(accountSid, authToken)
@@ -22,14 +23,14 @@ otherchat.client.on( 'willPostMessage', (context, postMessage) => {
   var message = context.message,
       phoneUsers = message.userMentions.filter( mention => mention.name.match( phoneRegexp ) )
 
-  
+
   // After a user is created this way, you just nickname them to a mneumonic. The sms icon shows.
   var smsPromises = phoneUsers.map( user => {
 
     return new Promise( (reject, resolve) => {
 
       var endpoint = otherchat.server.Endpoint()
-      
+
       twilio.messages.create({
         to: user.name,
         from: '+14153325538',

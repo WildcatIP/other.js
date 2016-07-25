@@ -1,10 +1,12 @@
-var feature = new Feature({
-    apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-    version: 'mapping-and-finding.0.1'
-  }),
-  otherchat = new Otherchat( feature ),
-  Places = require('other-places') // our extended-local place search
+const {FeaturePack} = require('other');
 
+const feature = new FeaturePack({
+  name: 'mapping-and-finding',
+  version: '0.0.1',
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
+});
+const otherchat = new Otherchat( feature );
+const Places = require('other-places'); // our extended-local place search
 
 //
 // MAP COMMAND
@@ -13,7 +15,7 @@ var feature = new Feature({
 
 var mapCmd = feature.command({
   tokens: ['map'],
-  version: 'map.0.2' // can be separately versioned from the feature,
+  version: 'map.0.2', // can be separately versioned from the feature,
   accepts: {place: Place, query: String}
 })
 
@@ -77,7 +79,7 @@ var etaCmd = feature.command({
 
 etaCmd.on('didQuery', (context, promise) => {
 
-  if( !context.user && !context.place ){
+  if ( !context.user && !context.place ) {
     return promise.reject( 'Get an eta to a person or place...' )
   }
 
@@ -85,7 +87,7 @@ etaCmd.on('didQuery', (context, promise) => {
     from: otherchat.client.me,
     to: context.user || context.place,
     showTravelTime: true
-  })
+  }));
 
   // There's some behind-the-scenes magic going on here with permissioning:
   //
@@ -99,7 +101,7 @@ etaCmd.on('didQuery', (context, promise) => {
   // Another implementation of the command might not show a map, but do a single
   // line chat complete with just the estimated time/distance.
 
-})
+});
 
 
 //
@@ -129,11 +131,11 @@ findCommand.on('didQuery', (context, promise) => {
 
   // Some magic that parses out specific types
 
-  var parsed = Parser.parse( context.query, for:{
+  const parsed = Parser.parse(context.query, {for: {
     query: String,
     time: Time,
     near: Place.withDefault( otherchat.client.me )
-  })
+  }});
 
   Places.search({ query:parsed.query, centeredAt: parsed.near, openAt: parsed.time }).then( places => {
 
@@ -147,7 +149,7 @@ findCommand.on('didQuery', (context, promise) => {
 
     promise.resolve( results )
 
-  }).catch(reason) promise.reject( reason )
+  }).catch(reason => promise.reject( reason ) );
 
 })
 

@@ -1,4 +1,5 @@
-//
+const {FeaturePack} = require('other');
+
 // POINTS
 // Give and take away points by posting @adam-- or @alien++ in a message, then
 // view the points with the 'points' command
@@ -12,17 +13,16 @@
 //
 // But, you don't control every channel, so in those channels points wouldn't
 // work which frusterates habit formation and hence the use of the command.
-// 
+//
 // This implementation instead is run by the client, and the behavior installed
 // on a user.
 
-let feature = new FeaturePack({
-  apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
-  id: 'points'
-  version: 'points.0.2',
+const feature = new FeaturePack({
   name: 'Points++',
-  description: 'Give points to people with @user++, take them away with @user--.'
-})
+  description: 'Give points to people with @user++, take them away with @user--.',
+  version: '0.0.2',
+  identity: '8b889bba-87da-4546-b08b-b6564610261b'
+});
 
 let otherchat = new Otherchat( feature )
 
@@ -45,14 +45,14 @@ otherchat.client.on('messageDidPost', async (context, didPost) => {
   let message = context.message
 
   message.userMentions.each( mention => {
-    
+
     let mentionSuffix = message.text.substr( mention.range.end, 2 )
     if( mentionSuffix.match(/[+-]{2}/) ){
       await givePointsToUser( mention.user, mentionSuffix )
     }
 
   })
-  
+
   async function givePointsToUser( user, suffixText ){
 
     // Behind the scenes, data is essentially a key-value store with a key
@@ -91,7 +91,7 @@ let pointsCommand = feature.command({
 pointsCommand.on('didQuery', (context, didQuery) => {
 
   let users = context.users
-  
+
   // Default is to show points for all members of the channel.
   if( users.length == 0 ){
     users = client.currentChannel.members
@@ -109,20 +109,20 @@ pointsCommand.on('didQuery', (context, didQuery) => {
 
 //
 // HOW DO FEATURES SPREAD?
-// 
+//
 // The points feature is installed per user, meaning that if I have it installed
 // and you don't, I can give you points but you can't give me points.
-// 
+//
 // The question is, how do you find out how I gave you points and gain the
 // ability if desired?
-// 
+//
 // One way is for any message posted by an app to include attribution (say via
 // info/link shown on long-hold). This lets you easily find out how I did it,
 // install or find out more. This way a feature can spread organically
 // via usage
-// 
+//
 // In addition, another way might be the following:
-// 
+//
 
 
 //

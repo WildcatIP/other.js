@@ -1,18 +1,17 @@
-//
+const {FeaturePack} = require('other');
+
 // TWITTER FEATURE
-//
 
 // TODO: Think about having the messages be stored client-side only
 
 let Twitter = require('http://...') // 3rd party API
 
-let feature = new FeaturePack({
-  apiKey: '8b889bba-87da-4546-b08b-b6564610261b',
-  id: 'twitter'
-  version: 'twitter.0.2',
+const feature = new FeaturePack({
   name: 'Twitter',
-  description: 'A Twitter in your home channel.'
-})
+  description: 'A Twitter in your home channel.',
+  version: '0.0.2',
+  identity: '8b889bba-87da-4546-b08b-b6564610261b'
+});
 
 
 //
@@ -22,7 +21,7 @@ let feature = new FeaturePack({
 let twitterIdentity = feature.identity({
   id: 'me',
   name: Twitter.me.name,
-  avatar: Twitter.me.profile_image_url  
+  avatar: Twitter.me.profile_image_url
 })
 
 
@@ -37,13 +36,13 @@ let baseChannel = feature.channel({
   path: '#:/twitter', // :/ means relative hashurl, # means absolute, #:/twitter means @user/twitter
   displayName: 'Twitter',
   class: 'baseChannel',
-  
+
   whoCanPost: [ twitterIdentity ],
 
   subchannels: {
     twitterUserChannel: /@(.+)/,
     twitterHashtagChannel: /#(.+)/
-  }
+  },
 
   style: {
     navBackgroundColor: '#4099FF', // Twitter blue
@@ -59,9 +58,9 @@ let baseChannel = feature.channel({
 //
 
 feature.on('install', () => {
-  
+
   // TODO: oAuth setup here
- 
+
 })
 
 
@@ -91,7 +90,7 @@ feature.runAsServer( () => {
         twitterApiCall = Twitter.search({ query: channel.path, since: lastFetchTimestamp })
 
       twitterApiCall.then( tweets => {
-        
+
         let messages = tweets.map( tweet => {
           since = tweet.since
           return {

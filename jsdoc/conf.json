@@ -1,0 +1,19 @@
+{
+  "opts": {
+    "destination": "./dist/docs/",
+    "pedantic": true
+  },
+  "plugins": [],
+  "source": {
+    "excludePattern": "(^|\\/|\\\\)_",
+    "includePattern": ".+\\.js(doc)?$"
+  },
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": ["jsdoc"]
+  },
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": false
+  }
+}

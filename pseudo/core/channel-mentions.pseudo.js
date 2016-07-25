@@ -1,4 +1,5 @@
-//
+const {FeaturePack} = require('other');
+
 // CHANNEL MENTION
 //
 // An experimental behavior: When a message mentions a channel, post a system
@@ -8,18 +9,15 @@
 // Shows how quickly we can experiment with new behavior with other.js.
 //
 // Builds from the patterns in points.pseudo.js
-//
 
-var feature = new FeaturePack({
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
-  id: 'channel-mention',
+const feature = new FeaturePack({
+  name: 'Channel Mention Backlink',
   version: 'channel-mention.0.1',
-  name: 'Channel Mention Backlink'
-})
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
+});
 
-var otherchat = new Otherchat( feature )
+const command = feature.command();
 
-//
 // Have two versions of the implementation: one where the client does the
 // posting, and one where the server does the posting. I think I dig the
 // client version more, but it doesn't guarantee atomicness.
@@ -31,61 +29,45 @@ var otherchat = new Otherchat( feature )
 //
 // I'm chunking that into .endsWith( promise )
 
-
-
 // CLIENT VERSION
 
-otherchat.client.on('messageDidPost', (context, didPostMentions) => {
+command.on('messageDidPost', (context, didPostMentions) => {
+  const message = context.message;
+  const channelPosts = [];
 
-  let message = context.message,
-      channelPosts = []
-
-  message.mentionedChannels.each( channel => {
-
-    let link = otherchat.types.link({ text: 'mentioned', to: message })
+  message.mentionedChannels.each(channel => {
+    const link = command.types.link({text: 'mentioned', to: message});
 
     channel
       .post({
         type: 'system',
         text: `${context.message.author} ${link} this channel in ${channel}`
       })
-      .appendTo( channelPosts )
-
-  })
+      .appendTo(channelPosts);
+  });
 
   Promise
-    .all( channelPosts )
-    .endsWith( promise )
-
-})
-
-
+    .all(channelPosts)
+    .endsWith(promise);
+});
 
 // ALTERNATE SERVER VERSION
 
-otherchat.client.on('messageDidPost', (context, didPostMentions) => {
+command.on('messageDidPost', (context, didPostMentions) => {
+  const info = {message: context.message};
 
-  let info = { message: context.message }
+  feature.runAsServer(info, (serverContext, serverSuccess) => {
+    const message = serverContext.info.message;
 
-  feature.runAsServer( info, (serverContext, serverSuccess) => {
-
-    let message = serverContext.info.message
-
-    message.mentionedChannels.each( channel => {
-
-      let link = otherchat.types.link({ text: 'mentioned', to: message })
+    message.mentionedChannels.each(channel => {
+      const link = command.types.link({text: 'mentioned', to: message});
 
       channel.post({
         type: 'system',
         text: `${message.author} ${link} this channel in ${channel}`
       })
-      .endsWith( serverSuccess )
-    
-    })
-
+      .endsWith(serverSuccess);
+    });
   })
-  .endWith( didPostMentions )
-
-})
-
-
+  .endWith(didPostMentions);
+});

@@ -1,4 +1,5 @@
-//
+const {FeaturePack} = require('other');
+
 // PepClock
 //
 // Have a message waiting for a friend in the morning with something you want
@@ -8,10 +9,9 @@
 // to the client to be acted on.
 
 var feature = new FeaturePack({
-  apiKey: 'dfjklsaj3-87da-4546-b08b-b656461042dfjh4',
-  id: 'pepclock',
+  name: 'Pep Clock!',
   version: '0.1',
-  name: 'Pep Clock!'
+  identity: 'dfjklsaj3-87da-4546-b08b-b656461042dfjh4'
 })
 
 var pepclockCommand = feature.command({
@@ -78,7 +78,7 @@ pepclockCommand.on('didAction', (selected, didAction) => {
         info = serverContext.info
 
     channel.post( info )
-    .then() => {
+    .then(() => {
       channel.post({
         type: 'system',
         text: `Pep scheduled for ${info.timestamp} `

@@ -1,4 +1,5 @@
-//
+const {FeaturePack} = require('other');
+
 // KICK
 //
 // Kicks a user for the channel and bans them for 1 minute. Ties everything
@@ -8,11 +9,11 @@
 // otherchat.client.command('kick', {user: aUser}), which will be used
 // by the ban command at the end of this file.
 
-var feature = new FeaturePack({
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-  id: 'kickfeature',
-  version: '0.1'
-})
+const feature = new FeaturePack({
+  name: 'kickfeature',
+  version: '0.0.1',
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
+});
 
 var otherchat = new Otherchat( feature )
 

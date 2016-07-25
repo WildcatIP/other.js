@@ -1,4 +1,4 @@
-const Feature = require('other');
+const {ChatCompleteResult, Command, FeaturePack} = require('other');
 
 const DONGERS = [
   "⊂(▀¯▀⊂)",
@@ -18,22 +18,23 @@ const DONGERS = [
   "[ * ༎ຶ _ ༎ຶ * ]"
 ];
 
-const feature = new Feature({id: 'donger.0.1'});
+module.exports = new FeaturePack({
+  name: 'Donger',
+  version: '0.0.1',
+  commands: [
+    new Command({
+      tokens: ['donger'],
+      onQuery(token, query, promise) {
+        let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random());
 
-const command = feature.command({
-  tokens: ['donger'],
-  accepts: {query: String}
-});
+        if (query.length > 1) {
+          const sampleSize = Math.round(DONGERS.length / Math.pow(query.length, 2));
+          shuffledDongers = shuffledDongers.slice(0, sampleSize);
+        }
 
-command.on('didQuery', (context, completes) => {
-  const {query} = context;
-  let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random());
-
-  if (query.length > 1) {
-    const sampleSize = Math.round(DONGERS.length / Math.pow(query.length, 2));
-    shuffledDongers = shuffledDongers.slice(0, sampleSize);
-  }
-
-  const results = shuffledDongers.map(donger => ({text: donger}));
-  completes.resolve(results);
+        const results = shuffledDongers.map(donger => new ChatCompleteResult({text: donger}));
+        promise.resolve(results);
+      }
+    })
+  ]
 });

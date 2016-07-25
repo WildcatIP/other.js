@@ -1,4 +1,5 @@
-//
+const {FeaturePack} = require('other');
+
 // RECHAT (POST NOW)
 //
 // This implementation of rechat requires Other Chat having a basic
@@ -19,14 +20,13 @@
 //
 // > 'rechat from #foo by @blah'
 
-var feature = new FeaturePack({
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
-  id: 'rechat',
+const feature = new FeaturePack({
+  name: 'Rechat',
   version: '0.1',
-  name: 'Rechat'
-})
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
+});
 
-var otherchat = new Otherchat( feature )
+const otherchat = new Otherchat(feature);
 
 //
 // To me, it's rechat that makes the power of the accepts field apparent:
@@ -36,7 +36,7 @@ var otherchat = new Otherchat( feature )
 // > otherchat.command('rechat', {message: messageToRechat, channels: [a,b,c]} )
 //
 
-var rechatCommand = feature.command({
+const rechatCommand = feature.command({
   id: 'rechat',
   tokens: ['rechat'],
   version: '0.1',
@@ -46,28 +46,24 @@ var rechatCommand = feature.command({
     query: String
   },
   allowsMultipleSelection: true
-})
+});
 
 rechatCommand.on('didFinish', (context, doFinish) => {
-  
-  var currentChannel = otherchat.client.currentChannel
-  
-  context.channels.each( toChannel => {
+  const currentChannel = otherchat.client.currentChannel;
 
+  context.channels.each(toChannel => {
     // repost the message, and then post a system message
 
     toChannel
-      .post( context.message )
+      .post(context.message)
       .post({
         type: 'system', // Could also add a 'rechat' type for custom rechatty display
-        text: `rechat from ${currentChannel} by ${client.me}`
+        text: `rechat from ${currentChannel} by ${otherchat.client.me}`
       })
-      .endsWith( doFinish )
+      .endsWith(doFinish);
 
       // Short for:
       // .then( () => { doFinish.resolve() })
       // .catch( reason => { doFinish.reject(reason) }
-
-  })
-
-})
+  });
+});

@@ -1,4 +1,5 @@
-//
+const {FeaturePack} = require('other');
+
 // A Rock Paper Scissors Game
 //
 // Shows a more Firebase-y handling server state logic.
@@ -8,15 +9,15 @@
 // "rock paper scissors @alien"
 // > @za has challenged @alien to a game of rock paper scissors
 // Both @za and @alien see a message specific to them that includes three buttons (R/P/S)
-// > @za has thrown, waiting for @alien... 
+// > @za has thrown, waiting for @alien...
 // > Rock beats scissors, @alien wins vs @za!
 //
 
-var feature = new FeaturePack({
-  apiKey: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
-  id: 'rockpaperscissors',
-  version: '0.1'
-})
+const feature = new FeaturePack({
+  name: 'rockpaperscissors',
+  version: '0.0.1',
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
+});
 
 var otherchat = new Otherchat( feature )
 
@@ -37,9 +38,9 @@ rpsCommand.on( 'didAction', selected => {
     channel: otherchat.client.currentChannel,
     challenger: otherchat.client.me,
     challengee: selected.user,
-    history: [
+    history: {
       _didAppend: RPS.playerDidTakeAction
-    ],
+    },
     _didAppendedTo: RPS.startGame
   })
 
@@ -47,7 +48,7 @@ rpsCommand.on( 'didAction', selected => {
 
 
 let RPS = {
-  
+
   startGame: gameRef => {
 
     let historyRef = gameRef.child( 'history' ),
@@ -71,11 +72,11 @@ let RPS = {
     return game.channel
       .post( startGameMessage )
       .post( rpsMessages )
-    
+
   },
 
-  whoWins: ( throwA, throwB ) => { 
-  
+  whoWins: ( throwA, throwB ) => {
+
     let qs = [throwA.throw, throwB.throw].map( action => math.Quaternion(0, action == 'Rock', action == 'Scissors', action == 'Paper') ),
         result = qs[0]*qs[1]
 
@@ -115,12 +116,12 @@ let RPS = {
       msg.text = result.type == 'tie'
                     ? `${game.info.challenger} and ${game.info.challengee} both threw ${firstThrow.action} for a tie!`
                     : `${result.winningThrow.action} beats ${result.losingThrow.action}, ${result.winningThrow.by} wins vs ${result.losingThrow.by}!`
-      
+
       return channel.post( msg )
 
     }
   }
-  
+
 }
 
 
