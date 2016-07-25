@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // RECHAT
 //
@@ -10,7 +10,7 @@ const {FeaturePack} = require('other');
 // > 'rechat from #foo by @blah'
 //
 
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'Rechat Simple (Stopgap)',
   version: '0.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)

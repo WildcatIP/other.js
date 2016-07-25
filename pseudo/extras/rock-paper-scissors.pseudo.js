@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // A Rock Paper Scissors Game
 //
@@ -13,7 +13,7 @@ const {FeaturePack} = require('other');
 // > Rock beats scissors, @alien wins vs @za!
 //
 
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'rockpaperscissors',
   version: '0.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'

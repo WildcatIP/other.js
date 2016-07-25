@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // CHANNEL MENTION
 //
@@ -10,7 +10,7 @@ const {FeaturePack} = require('other');
 //
 // Builds from the patterns in points.pseudo.js
 
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'Channel Mention Backlink',
   version: 'channel-mention.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)

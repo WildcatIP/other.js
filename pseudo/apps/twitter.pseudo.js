@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // TWITTER FEATURE
 
@@ -6,7 +6,7 @@ const {FeaturePack} = require('other');
 
 let Twitter = require('http://...') // 3rd party API
 
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'Twitter',
   description: 'A Twitter in your home channel.',
   version: '0.0.2',

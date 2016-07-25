@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // POINTS
 // Give and take away points by posting @adam-- or @alien++ in a message, then
@@ -17,7 +17,7 @@ const {FeaturePack} = require('other');
 // This implementation instead is run by the client, and the behavior installed
 // on a user.
 
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'Points++',
   description: 'Give points to people with @user++, take them away with @user--.',
   version: '0.0.2',

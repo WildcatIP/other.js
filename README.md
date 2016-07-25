@@ -45,7 +45,7 @@ See [motivation](MOTIVATION.md).
 - **Bot**: A Feature which also has its own Identity.
 - **Identity Feature** and **Account Feature**: Features which are carried by a user to channels.
 - **Channel Feature**: Features which are installed on channels.
-- **Feature Pack**: A package of multiple related Features.
+- **Feature**: A package of functionality (e.g. one more more Commands) which extend the Chatternet and/or a user agent.
 
 See the [Features specification](FEATURES.md).
 

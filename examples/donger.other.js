@@ -1,4 +1,4 @@
-const {ChatCompleteResult, Command, FeaturePack} = require('other');
+const {ChatCompleteResult, Command, Feature} = require('other');
 
 const DONGERS = [
   "⊂(▀¯▀⊂)",
@@ -18,7 +18,7 @@ const DONGERS = [
   "[ * ༎ຶ _ ༎ຶ * ]"
 ];
 
-module.exports = new FeaturePack({
+module.exports = new Feature({
   name: 'Donger',
   version: '0.0.1',
   commands: [

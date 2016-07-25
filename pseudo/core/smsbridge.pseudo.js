@@ -1,6 +1,6 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
-const feature = new FeaturePack({
+const feature = new Feature({
   version: '00.1',
   name: 'SMS Bride nOG',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)

@@ -126,7 +126,7 @@ class Command {
  * A package that extends Chatternet and/or Other Chat user agent functionality.
  * This is the base unit of other.js.
  */
-class FeaturePack {
+class Feature {
   /**
    * @param {Object} metadata - metadata describing the package.
    * @param {string} metadata.name - User facing name.
@@ -157,4 +157,4 @@ class FeaturePack {
   }
 }
 
-module.exports = {ChatCompleteResult, Command, FeaturePack};
+module.exports = {ChatCompleteResult, Command, Feature};

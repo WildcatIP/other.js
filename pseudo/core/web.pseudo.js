@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // WEB
 // Either does a web search or opens a URL
@@ -9,7 +9,7 @@ const {FeaturePack} = require('other');
 // without leaving Other Chat. Think a much better version of the web
 // snippets thing on Twitter.
 
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'web-bundle',
   version: '0.0.1',
   identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'

@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // PepClock
 //
@@ -8,7 +8,7 @@ const {FeaturePack} = require('other');
 // The server just holds the message until a given time and then passes it back
 // to the client to be acted on.
 
-var feature = new FeaturePack({
+var feature = new Feature({
   name: 'Pep Clock!',
   version: '0.1',
   identity: 'dfjklsaj3-87da-4546-b08b-b656461042dfjh4'
@@ -32,7 +32,7 @@ pepclockCommand.on('didQuery', (context, doFinish) => {
   var pepParser = new PepParser();
   [user, message, timestamp] = pepParser(context.query)
 
-  // Then it behaves similarly to the @mention FeaturePack except instead of
+  // Then it behaves similarly to the @mention Feature except instead of
   // filtering by one user and the action being whisper, we have each user listed
   // twice with the option to send the pep as a whisper or to their homeroom
 

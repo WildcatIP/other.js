@@ -1,4 +1,4 @@
-const {FeaturePack} = require('other');
+const {Feature} = require('other');
 
 // This sketch of other.js is centered around trying to build as much of
 // Otherchat's features in other.js as possible. It focuses on the base
@@ -6,7 +6,7 @@ const {FeaturePack} = require('other');
 // model, this exploration focuses on letting us build quickly.
 
 // The API key is tied to the developer and dictates the overall permissions of
-// the other.js. Permissions for specific feature packs and commands can be
+// the other.js. Permissions for specific features and commands can be
 // set from a web interface and/or in code.
 //
 // Data storage is built-in to Other Script. Both user and channel objects have
@@ -18,7 +18,7 @@ const {FeaturePack} = require('other');
 // features that share an API key to share data.
 //
 // Further data security measures are, without a doubt, needed.
-const feature = new FeaturePack({
+const feature = new Feature({
   name: 'Other Chat Base Behaviors',
   description: 'The basic behaviors of Other Chat',
   version: '0.0.1',
