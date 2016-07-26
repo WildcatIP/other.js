@@ -47,15 +47,16 @@ class Chatternet extends EventEmitter {
   }
 }
 
+/** @constant Event carrying a payload of {text} indicating unsent message text input by the user. */
+const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
+
 /**
  * An interface for Features to interact with an Other Chat user agent.
- *
- * Supported events and their arguments:
- *   SET_STAGED_MESSAGE: {text}
  *
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {
+
   /** @return {Channel} The currently active channel. */
   channel() {
     return new Channel() // TODO: Implement me.
@@ -105,7 +106,7 @@ class Command {
   constructor({tokens, onQuery}) {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
     this._onQuery = onQuery
-    userAgent.on('SET_STAGED_MESSAGE', event => {
+    userAgent.on(SET_STAGED_MESSAGE, event => {
       for (const token of this._tokens) {
         if (event.text.startsWith(token)) {
           this._onQuery(token, event.text.substring(token.length)).then(results => {
