@@ -100,12 +100,8 @@ class Command {
    * @param {onQueryCallback} args.onQuery - Called when one of the tokens is invoked by the user.
    */
   constructor({tokens, onQuery}) {
-    this._tokens = tokens
+    this.tokens = tokens
     this._onQuery = onQuery
-  }
-
-  get tokens() {
-    return this._tokens
   }
 
   /** @param {onQueryCallback} callback - Called when one of the tokens is invoked by the user. */
@@ -144,8 +140,6 @@ class Feature {
     this.commands = commands
     this._chatternet = identity ? new Chatternet({identity}) : null
     this._userAgent = new UserAgent()
-
-    console.log(`Created feature: ${name} ${version}`) // TODO: Remove.
   }
 
   /** @return {Chatternet} The global chatternet as seen by this feature's identity or null if the feature doesn't have access. */
