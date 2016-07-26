@@ -33,7 +33,7 @@ module.exports = new Feature({
         }
 
         const results = shuffledDongers.map(donger => new ChatCompleteResult({text: donger}))
-        return new Promise().resolve(results)
+        return Promise.resolve(results)
       }
     })
   ]
