@@ -53,6 +53,14 @@ class Chatternet extends EventEmitter {
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {
+  constructor() {
+    super()
+    this.on("SET_STAGED_MESSAGE", event => {
+      console.log(`Staged message ${event.text}`)
+      // TODO: Implement me
+    })
+  }
+
   /** @return {Channel} The currently active channel. */
   channel() {
     return new Channel() // TODO: Implement me.
