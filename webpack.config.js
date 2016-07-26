@@ -1,5 +1,5 @@
 const path = require('path')
-const validate = require('webpack-validator')
+const {validateRoot} = require('webpack-validator')
 const webpack = require('webpack')
 
 const isProd = (process.env.NODE_ENV === 'production')
@@ -25,7 +25,7 @@ function getPlugins() {
   return plugins
 }
 
-module.exports = validate({
+module.exports = validateRoot({
   devtool: isProd ? 'source-map' : 'eval-source-map',
   entry: {
     other: './other.js'
