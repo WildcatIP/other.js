@@ -28,7 +28,7 @@ const feature = new Feature({
 // This is the object used to script the Other Chat client. It's permissions
 // are scoped by the feature passed in. Many of the features used in this file
 // would not be available in this unguarded fashion to extension authors.
-const userAgent = feature.userAgent()
+const userAgent = feature.userAgent
 
 // AT MESSAGE COMPLETE
 

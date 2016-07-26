@@ -27,7 +27,7 @@ module.exports = new Feature({
       onQuery(token, query, promise) {
         let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random())
 
-        if (query.length > 1) {
+        if (query.length) {
           const sampleSize = Math.round(DONGERS.length / Math.pow(query.length, 2))
           shuffledDongers = shuffledDongers.slice(0, sampleSize)
         }

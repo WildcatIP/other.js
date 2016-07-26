@@ -91,7 +91,7 @@ class ChatCompleteResult {
 /**
  * A command which users may run from the input area.
  *
- * TODO: Rationalize this in terms of a more a UserAgent input area onChange event.
+ * TODO: Rationalize this in terms of a UserAgent input area onChange event.
  */
 class Command {
   /**
@@ -142,18 +142,20 @@ class Feature {
     this.version = version
     this.identity = identity
     this.commands = commands
+    this._chatternet = identity ? new Chatternet({identity}) : null
+    this._userAgent = new UserAgent()
+
     console.log(`Created feature: ${name} ${version}`) // TODO: Remove.
   }
 
   /** @return {Chatternet} The global chatternet as seen by this feature's identity or null if the feature doesn't have access. */
-  chatternet() {
-    const {identity} = this
-    return identity ? new Chatternet({identity}) : null
+  get chatternet() {
+    return this._chatternet
   }
 
   /** @return {UserAgent} The user agent's current browsing context. */
-  userAgent() {
-    return new UserAgent()
+  get userAgent() {
+    return this._userAgent
   }
 }
 
