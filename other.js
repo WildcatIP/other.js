@@ -50,17 +50,12 @@ class Chatternet extends EventEmitter {
 /**
  * An interface for Features to interact with an Other Chat user agent.
  *
+ * Supported events and their arguments:
+ *   SET_STAGED_MESSAGE: {text}
+ *
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {
-  constructor() {
-    super()
-    this.on("SET_STAGED_MESSAGE", event => {
-      console.log(`Staged message ${event.text}`)
-      // TODO: Implement me
-    })
-  }
-
   /** @return {Channel} The currently active channel. */
   channel() {
     return new Channel() // TODO: Implement me.
@@ -87,6 +82,8 @@ class UserAgent extends EventEmitter {
   }
 }
 
+const userAgent = new UserAgent()
+
 /**
  * An item which may be displayed as a chat complete result.
  */
@@ -98,8 +95,6 @@ class ChatCompleteResult {
 
 /**
  * A command which users may run from the input area.
- *
- * TODO: Rationalize this in terms of a UserAgent input area onChange event.
  */
 class Command {
   /**
@@ -108,21 +103,30 @@ class Command {
    * @param {onQueryCallback} args.onQuery - Called when one of the tokens is invoked by the user.
    */
   constructor({tokens, onQuery}) {
-    this.tokens = tokens
+    this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
     this._onQuery = onQuery
+    userAgent.on('SET_STAGED_MESSAGE', event => {
+      for (const token of this._tokens) {
+        if (event.text.startsWith(token)) {
+          this._onQuery(token, event.text.substring(token.length)).then(results => {
+            console.log(results)
+          })
+          break
+        }
+      }
+    })
   }
 
   /** @param {onQueryCallback} callback - Called when one of the tokens is invoked by the user. */
   onQuery(callback) {
     this._onQuery = callback
-    // TODO: Implement me.
   }
 
   /**
    * @callback onQueryCallback
    * @param {string} token - The token that was invoked.
    * @param {string} query - The user's query (i.e. all text entered after the token).
-   * @param {Promise} promise - Resolve this with a list of ChatCompleteResults.
+   * @return {Promise} - A Promise to an array of ChatCompleteResults.
    */
 }
 
@@ -147,7 +151,6 @@ class Feature {
     this.identity = identity
     this.commands = commands
     this._chatternet = identity ? new Chatternet({identity}) : null
-    this._userAgent = new UserAgent()
   }
 
   /** @return {Chatternet} The global chatternet as seen by this feature's identity or null if the feature doesn't have access. */
@@ -157,7 +160,7 @@ class Feature {
 
   /** @return {UserAgent} The user agent's current browsing context. */
   get userAgent() {
-    return this._userAgent
+    return userAgent
   }
 }
 

@@ -24,7 +24,7 @@ module.exports = new Feature({
   commands: [
     new Command({
       tokens: ['donger'],
-      onQuery(token, query, promise) {
+      onQuery(token, query) {
         let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random())
 
         if (query.length) {
@@ -33,7 +33,7 @@ module.exports = new Feature({
         }
 
         const results = shuffledDongers.map(donger => new ChatCompleteResult({text: donger}))
-        promise.resolve(results)
+        return new Promise().resolve(results)
       }
     })
   ]
