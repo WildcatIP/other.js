@@ -10,9 +10,7 @@ See [motivation](MOTIVATION.md).
 
 ## Get started
 
-*TBD: Create user docs*
-
-[API documentation](https://apps.other.chat/docs/index.html)
+Start here for [feature creation documentation](https://apps.other.chat/docs/index.html).
 
 ## Examples
 
@@ -51,4 +49,6 @@ See the [Features specification](FEATURES.md).
 
 ## Contribute
 
-[contributing](CONTRIBUTING.md)
+See [contribution instructions](CONTRIBUTING.md) to contribute to the other.js library.
+
+See [embedding instructions](EMBEDDING.md) for embedding other.js in a client.

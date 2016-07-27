@@ -1,5 +1,9 @@
 # Contributing
 
+Interested in contributing to the other.js library itself? Read on.
+
+Or see how to [embed other.js](EMBEDDING.md) or [create a feature](https://apps.other.chat/docs/index.html).
+
 ## Initial setup
 
 These instructions assume you're running macOS and using the [Homebrew](http://brew.sh/) package manager. They should be trivially adaptable to Linux or other package managers.
