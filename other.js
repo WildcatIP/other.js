@@ -47,15 +47,31 @@ class Chatternet extends EventEmitter {
   }
 }
 
-/** @constant Event carrying a payload of |text| indicating unsent message text input by the user. */
+/**
+ * Event indicating the staged message has been updated.
+ *
+ * @event module:other#SET_STAGED_MESSAGE
+ * @type {!Object}
+ * @property {!string} text - unsent message text input by the user.
+ */
 const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
 
-/** @constant Event carrying a payload of |replyTo, results[]| to be displayed to the user. */
+/**
+ * Event conveying chat complete results to be displayed to the user.
+ *
+ * @event module:other#SET_CHAT_COMPLETE_RESULTS
+ * @type {!Object}
+ * @property {!string} replyTo - textual content of the staged message these results apply to.
+ * @property {Object[]} results - array of results to be displayed to the user.
+ * @property {string} results.text - textual content of the result to display.
+ */
 const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
 
 /**
  * An interface for Features to interact with an Other Chat user agent.
  *
+ * @fires module:other#SET_CHAT_COMPLETE_RESULTS
+ * @listens module:other#SET_STAGED_MESSAGE
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {

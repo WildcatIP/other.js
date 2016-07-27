@@ -28,6 +28,6 @@ module.exports.userAgent.on('SET_CHAT_COMPLETE_RESULTS', event => {
 })
 ```
 
-For now the above two events are the only requirements on the host. This will grow rapidly and documentation links are coming soon.
+For full reference, see the [event documentation](file:///work/other.js/dist/docs/module-other.html).
 
 For an example, see the web client's [FeatureHost](https://github.com/other-xyz/other-chat-web/blob/master/middleware/features.js).
