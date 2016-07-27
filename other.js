@@ -47,10 +47,10 @@ class Chatternet extends EventEmitter {
   }
 }
 
-/** @constant Event carrying a payload of {text} indicating unsent message text input by the user. */
+/** @constant Event carrying a payload of |text| indicating unsent message text input by the user. */
 const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
 
-/** @constant Event carrying a payload of {replyTo, [results]} to be displayed to the user. */
+/** @constant Event carrying a payload of |replyTo, results[]| to be displayed to the user. */
 const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
 
 /**
