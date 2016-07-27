@@ -2,7 +2,7 @@
 
 Interested in contributing to the other.js library itself? Read on.
 
-Or see how to [embed other.js](EMBEDDING.md) or [create a feature](https://apps.other.chat/docs/index.html).
+Or see how to [embed other.js](EMBEDDING.md) or [create a feature](https://apps.other.chat/docs/module-other.html).
 
 ## Initial setup
 

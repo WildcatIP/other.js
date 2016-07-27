@@ -10,7 +10,7 @@ See [motivation](MOTIVATION.md).
 
 ## Get started
 
-Start here for [feature creation documentation](https://apps.other.chat/docs/index.html).
+Start here for [feature creation documentation](https://apps.other.chat/docs/module-other.html).
 
 ## Examples
 
