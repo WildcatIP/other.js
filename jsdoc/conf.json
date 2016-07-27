@@ -3,7 +3,9 @@
     "destination": "./dist/docs/",
     "pedantic": true
   },
-  "plugins": [],
+  "plugins": [
+    "plugins/markdown"
+  ],
   "source": {
     "excludePattern": "(^|\\/|\\\\)_",
     "includePattern": ".+\\.js(doc)?$"

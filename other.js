@@ -62,7 +62,7 @@ const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
  * @event module:other#SET_CHAT_COMPLETE_RESULTS
  * @type {!Object}
  * @property {!string} replyTo - textual content of the staged message these results apply to.
- * @property {Object[]} results - array of results to be displayed to the user.
+ * @property {ChatCompleteResult[]} results - array of results to be displayed to the user.
  * @property {string} results.text - textual content of the result to display.
  */
 const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
