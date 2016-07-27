@@ -70,7 +70,7 @@ const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
 /**
  * An interface for Features to interact with an Other Chat user agent.
  *
- * @fires module:other#SET_CHAT_COMPLETE_RESULTS
+ * @emits module:other#SET_CHAT_COMPLETE_RESULTS
  * @listens module:other#SET_STAGED_MESSAGE
  * @inheritdoc
  */
@@ -114,13 +114,20 @@ class ChatCompleteResult {
 }
 
 /**
+ * @callback module:other#onQueryCallback
+ * @param {string} token - The token that was invoked.
+ * @param {string} query - The user's query (i.e. all text entered after the token).
+ * @return {Promise} - A Promise to an array of ChatCompleteResults.
+ */
+
+/**
  * A command which users may run from the input area.
  */
 class Command {
   /**
    * @param {Object} args - destructured args.
    * @param {string[]} args.tokens - Keyword tokens which the user may type at the beginning of the input area to invoke this command.
-   * @param {onQueryCallback} args.onQuery - Called when one of the tokens is invoked by the user.
+   * @param {module:other#onQueryCallback} args.onQuery - Called when one of the tokens is invoked by the user.
    */
   constructor({tokens, onQuery}) {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
@@ -137,17 +144,10 @@ class Command {
     })
   }
 
-  /** @param {onQueryCallback} callback - Called when one of the tokens is invoked by the user. */
+  /** @param {module:other#onQueryCallback} callback - Called when one of the tokens is invoked by the user. */
   onQuery(callback) {
     this._onQuery = callback
   }
-
-  /**
-   * @callback onQueryCallback
-   * @param {string} token - The token that was invoked.
-   * @param {string} query - The user's query (i.e. all text entered after the token).
-   * @return {Promise} - A Promise to an array of ChatCompleteResults.
-   */
 }
 
 /**
