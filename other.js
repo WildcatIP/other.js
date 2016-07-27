@@ -50,6 +50,9 @@ class Chatternet extends EventEmitter {
 /** @constant Event carrying a payload of {text} indicating unsent message text input by the user. */
 const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
 
+/** @constant Event carrying a payload of {replyTo, [results]} to be displayed to the user. */
+const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
+
 /**
  * An interface for Features to interact with an Other Chat user agent.
  *
@@ -110,7 +113,7 @@ class Command {
       for (const token of this._tokens) {
         if (event.text.startsWith(token)) {
           this._onQuery(token, event.text.substring(token.length)).then(results => {
-            console.log(results)
+            userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: event.text, results})
           })
           break
         }
