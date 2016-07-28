@@ -138,9 +138,10 @@ class Command {
           this._onQuery(token, event.text.substring(token.length)).then(results => {
             userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: event.text, results})
           })
-          break
+          return
         }
       }
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: event.text, results: []})
     })
   }
 
