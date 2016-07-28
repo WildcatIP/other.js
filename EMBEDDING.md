@@ -28,6 +28,6 @@ module.exports.userAgent.on('SET_CHAT_COMPLETE_RESULTS', event => {
 })
 ```
 
-For full reference, see the [event documentation](file:///work/other.js/dist/docs/module-other.html).
+For full reference of supported events and their semantics, see the [event documentation](https://apps.other.chat/docs/module-other.html).
 
 For an example, see the web client's [FeatureHost](https://github.com/other-xyz/other-chat-web/blob/master/middleware/features.js).
