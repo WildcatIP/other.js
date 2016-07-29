@@ -1,80 +1,156 @@
-/** @module other */
-
 const EventEmitter = require('events')
 
+const ADD_MESSAGE = 'ADD_MESSAGE'
+const UPDATE_MESSAGES = 'UPDATE_MESSAGES'
+const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
+const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
+
+/** A message */
+class Message {
+  constructor({avatarUrl, attachments, format, identityId, text, time}) {
+    this.avatarUrl = avatarUrl
+    this.attachments = attachments
+    this.format = format
+    this.identityId = identityId
+    this.text = text
+    this.time = time
+  }
+}
+
+/** An interface for interacting with a chatternet channel. */
+class Channel {
+  /**
+   * @callback Channel#onReceiveCallback
+   * @param {Message} message - The message that was received.
+   */
+
+  /**
+   * @param {!string} id - Identifier of the channel.
+   * @param {!Chatternet} chatternet - Scope for channel interactions.
+   */
+  constructor({id, chatternet}) {
+    this.id = id
+    this._chatternet = chatternet
+    this._onReceive = null
+  }
+
+  /**
+   * @param {Channel#onReceiveCallback} callback - Called when a new message is
+   *        received from another identity. Note: {Chatternet.identity}'s own
+   *        messages do not invoke this callback.
+   */
+  onReceive(callback) {
+    this._onReceive = callback
+    this._chatternet.on(UPDATE_MESSAGES, (channelId, messages) => {
+      if (channelId !== this.id) return
+      messages.forEach(this._onReceive)
+    })
+  }
+
+  /**
+   * Sends the given message from {Chatternet.identity} to the channel.
+   * @param {Message} message - The message to send. Note that
+   *        {Message.identity} is replaced with {Chatternet.identity}.
+   */
+  send(message) {
+    this._chatternet.emit(ADD_MESSAGE, this.id, Object.assign({}, message, {identityId: this._chatternet.identity}))
+  }
+}
+
 /** @inheritdoc */
-class Channel extends EventEmitter {
+class Account {
  // TODO: Implement me.
 }
 
 /** @inheritdoc */
-class Account extends EventEmitter {
- // TODO: Implement me.
-}
-
-/** @inheritdoc */
-class Identity extends EventEmitter {
+class Identity {
   // TODO: Implement me.
 }
 
 /**
- * An interface for Features to interact with the chatternet.
- *
+ * An interface for interacting with the global Chatternet.
+ * @emits Chatternet#ADD_MESSAGE
+ * @listens Chatternet#UPDATE_MESSAGES
  * @inheritdoc
  */
 class Chatternet extends EventEmitter {
   /**
-   * @param {Object} args - destructured args.
-   * @param {string} args.identity - Scope for chatternet interactions.
+   * Event conveying that channel messages have been updated.
+   * @event Chatternet#UPDATE_MESSAGES
+   * @param {!string} channelId - The channel to update.
+   * @param {Message[]} messages - A list of messages to update in the given
+   *        channelId. Messages are uniquely identified by their {Message.time}
+   *        and the messages in this update may reflect new messages or updates
+   *        to existing messages.
+   */
+
+  /**
+   * Event conveying a message to add to the channel.
+   * @event Chatternet#ADD_MESSAGE
+   * @param {!string} channelId - The channel to add the message to.
+   * @param {!Message} message - The message to add.
+   */
+
+  /**
+   * @param {string} identity - Scope for Chatternet interactions.
    */
   constructor({identity}) {
     super()
+    this.identity = identity
   }
 
-  /** @return {Channel} The channel associated witht he given id or else null if it doesn't exist. */
+  /**
+   * @param {string} id - The id of the channel to lookup.
+   * @return {?Channel} The channel associated with the given id or else null if
+   *         it wasn't found or the identity cannot access it.
+   */
   channel({id}) {
-    return new Channel() // TODO: Implement me.
+    return new Channel({id, chatternet: this}) // TODO: Implement me.
   }
 
-  /** @return {Account} The account associated witht he given id or else null if it doesn't exist. */
+  /**
+   * @param {string} id - The id of the account to lookup.
+   * @return {?Account} The account associated with the given id or else null if
+   *         it wasn't found or the identity cannot access it.
+   */
   account({id}) {
-    return new Account() // TODO: Implement me.
+    return new Account({id, chatternet: this}) // TODO: Implement me.
   }
 
-  /** @return {Identity} The identity associated witht he given id or else null if it doesn't exist. */
+  /**
+   * @param {string} id - The id of the identity to lookup.
+   * @return {?Identity} The identity associated with the given id or else null
+   *         if it wasn't found or the identity cannot access it.
+   */
   identity({id}) {
-    return new Identity() // TODO: Implement me.
+    return new Identity({id, chatternet: this}) // TODO: Implement me.
   }
 }
 
 /**
- * Event indicating the staged message has been updated.
- *
- * @event module:other#SET_STAGED_MESSAGE
- * @type {!Object}
- * @property {!string} text - unsent message text input by the user.
- */
-const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
-
-/**
- * Event conveying chat complete results to be displayed to the user.
- *
- * @event module:other#SET_CHAT_COMPLETE_RESULTS
- * @type {!Object}
- * @property {!string} replyTo - textual content of the staged message these results apply to.
- * @property {ChatCompleteResult[]} results - array of results to be displayed to the user.
- * @property {string} results.text - textual content of the result to display.
- */
-const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
-
-/**
- * An interface for Features to interact with an Other Chat user agent.
- *
- * @emits module:other#SET_CHAT_COMPLETE_RESULTS
- * @listens module:other#SET_STAGED_MESSAGE
+ * An interface for interacting with an Other Chat user agent.
+ * @emits UserAgent#SET_CHAT_COMPLETE_RESULTS
+ * @listens UserAgent#SET_STAGED_MESSAGE
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {
+  /**
+   * Event conveying chat complete results to be displayed to the user.
+   * @event UserAgent#SET_CHAT_COMPLETE_RESULTS
+   * @type {!Object}
+   * @property {!string} replyTo - textual content of the staged message these
+   *           results apply to.
+   * @property {ChatCompleteResult[]} results - array of results to be displayed
+   *           to the user.
+   * @property {string} results.text - textual content of the result to display.
+   */
+
+  /**
+   * Event conveying that the staged message has been updated.
+   * @event UserAgent#SET_STAGED_MESSAGE
+   * @type {!Object}
+   * @property {!string} text - unsent message text input by the user.
+   */
 
   /** @return {Channel} The currently active channel. */
   channel() {
@@ -93,9 +169,10 @@ class UserAgent extends EventEmitter {
 
   /**
    * Navigates to the given channel id.
-   *
-   * @param {Object} target - The navigation target.
-   * @param {string} target.channelId - The channel identifier to navigate to. May be (1) identityId for identity channels (2) channelId for standard channels or (3) lowerIdentityId:upperIdentityId for whisper channels.
+   * @param {string} channelId - The channel identifier to navigate to. May be:
+   *        * An identity id for identity channels
+   *        * A channel id for standard channels
+   *        * OR lowerIdentityId:upperIdentityId for whisper channels
    */
   navigate({channelId}) {
     // TODO: Implement me.
@@ -114,20 +191,22 @@ class ChatCompleteResult {
 }
 
 /**
- * @callback module:other#onQueryCallback
- * @param {string} token - The token that was invoked.
- * @param {string} query - The user's query (i.e. all text entered after the token).
- * @return {Promise} - A Promise to an array of ChatCompleteResults.
- */
-
-/**
  * A command which users may run from the input area.
  */
 class Command {
   /**
-   * @param {Object} args - destructured args.
-   * @param {string[]} args.tokens - Keyword tokens which the user may type at the beginning of the input area to invoke this command.
-   * @param {module:other#onQueryCallback} args.onQuery - Called when one of the tokens is invoked by the user.
+   * @callback Command#onQueryCallback
+   * @param {string} token - The token that was invoked.
+   * @param {string} query - The user's query (i.e. all text entered after the
+   *        token).
+   * @return {Promise} - A Promise to an array of ChatCompleteResults.
+   */
+
+  /**
+   * @param {string[]} tokens - Keyword tokens which the user may type at the
+   *        beginning of the input area to invoke this command.
+   * @param {Command#onQueryCallback} onQuery - Called when one of the tokens is
+   *        invoked by the user.
    */
   constructor({tokens, onQuery}) {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
@@ -145,7 +224,10 @@ class Command {
     })
   }
 
-  /** @param {module:other#onQueryCallback} callback - Called when one of the tokens is invoked by the user. */
+  /**
+   * @param {Command#onQueryCallback} callback - Called when one of the tokens
+   *        is invoked by the user.
+   */
   onQuery(callback) {
     this._onQuery = callback
   }
@@ -157,12 +239,13 @@ class Command {
  */
 class Feature {
   /**
-   * @param {Object} metadata - metadata describing the package.
-   * @param {string} metadata.name - User facing name.
-   * @param {string} metadata.description - User facing, one-line description .
-   * @param {string} metadata.version - {@link http://semver.org/|Semantic Version} used for determining compatibility with clients and other features.
-   * @param {string} metadata.identity - Feature developer's Chatternet Identity under which all Chatternet operations are performed.
-   * @param {Command[]} metadata.commands - Commands to register.
+   * @param {string} name - User facing name.
+   * @param {string} description - User facing, one-line description.
+   * @param {string} version - {@link http://semver.org/|Semantic Version} used
+   *        for determining compatibility with clients and other features.
+   * @param {string} identity - Feature developer's Chatternet identity under
+   *        which all Chatternet operations are performed.
+   * @param {Command[]} commands - Commands to register.
    */
   constructor({name, description, version, identity, commands = []}) {
     // TODO: Validation
@@ -174,15 +257,22 @@ class Feature {
     this._chatternet = identity ? new Chatternet({identity}) : null
   }
 
-  /** @return {Chatternet} The global chatternet as seen by this feature's identity or null if the feature doesn't have access. */
+  /**
+   * The global Chatternet as seen by this feature's identity or
+   * null if the feature doesn't have a valid identity.
+   * @type {?Chatternet}
+   */
   get chatternet() {
     return this._chatternet
   }
 
-  /** @return {UserAgent} The user agent's current browsing context. */
+  /**
+   * The user agent's current browsing context.
+   * @type {UserAgent}
+   */
   get userAgent() {
     return userAgent
   }
 }
 
-module.exports = {ChatCompleteResult, Command, Feature}
+module.exports = {ChatCompleteResult, Command, Feature, Message}

@@ -10,7 +10,7 @@ See an [example](https://github.com/other-xyz/other-chat-web/blob/master/feature
 
 To execute a feature, the feature's source must be fetched and injected as a [commonjs2](http://requirejs.org/docs/commonjs.html) module into a freshly [prepared environment](#environment-preparation) (ie. one that has no other features in it). Then the module's default `export` must be executed with the ability to `require` the `other.js` module.
 
-## Feature host requirements
+## Feature host process
 
 Embedders must provide a host which interacts with the other.js library by emitting and handling events.
 
@@ -28,6 +28,10 @@ module.exports.userAgent.on('SET_CHAT_COMPLETE_RESULTS', event => {
 })
 ```
 
-For full reference of supported events and their semantics, see the [event documentation](https://apps.other.chat/docs/module-other.html).
+An embedder may choose to implement any set of events. The set of events it implements determines whether a particular feature can execute within that host. For example, a server-side host should implement all [Chatternet](https://apps.other.chat/docs/Chatternet.html) events but cannot implement [UserAgent](https://apps.other.chat/docs/UserAgent.html) events. While a client-side host should implement applicable [UserAgent](https://apps.other.chat/docs/UserAgent.html) events and may optionally implement [Chatternet](https://apps.other.chat/docs/Chatternet.html) events.
 
-For an example, see the web client's [FeatureHost](https://github.com/other-xyz/other-chat-web/blob/master/middleware/features.js).
+## Reference
+
+For full reference of supported events and their semantics, see the [event documentation](https://apps.other.chat/docs/index.html).
+
+For a reference embedder implementation, see the web client's [FeatureHost](https://github.com/other-xyz/other-chat-web/blob/master/middleware/features.js).
