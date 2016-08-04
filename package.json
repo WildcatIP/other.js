@@ -37,7 +37,7 @@
       "require-jsdoc": "off",
       "no-warning-comments": "off",
       "max-len": "off",
-      "camelcase": "off",
+      "camelcase": "error",
       "consistent-return": "error",
       "curly": [
         "error",
