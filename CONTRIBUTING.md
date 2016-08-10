@@ -24,4 +24,7 @@ npm test
 
 ## Deployment
 
-Assuming the tests pass, [Jenkins](http://build.oregon.theother.io:8080/job/other.js/) automatically deploys the `examples` directory to [https://apps.other.chat](https://apps.other.chat/) upon each commit.
+Upon each commit, assuming the tests pass, [Jenkins](http://build.oregon.theother.io:8080/job/other.js/) automatically deploys to [https://apps.other.chat](https://apps.other.chat/) via:
+```sh
+npm run deploy
+```

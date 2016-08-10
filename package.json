@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "webpack",
+    "deploy": "./deploy.sh",
     "dist": "NODE_ENV=production webpack && jsdoc ./other.js -c ./jsdoc/conf.json",
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' ."
   },
