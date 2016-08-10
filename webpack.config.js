@@ -1,8 +1,11 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const path = require('path')
 const validate = require('webpack-validator').validateRoot
 const webpack = require('webpack')
 
 const isProd = (process.env.NODE_ENV === 'production')
+const version = require('./package.json').version + '+' + new GitRevisionPlugin().version()
 
 function getPlugins() {
   const plugins = [
@@ -10,7 +13,10 @@ function getPlugins() {
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }
-    })
+    }),
+    new CopyWebpackPlugin([
+      {from: 'examples', to: 'examples'}
+    ])
   ]
   if (isProd) {
     plugins.push(new webpack.optimize.UglifyJsPlugin({
@@ -40,10 +46,10 @@ module.exports = validate({
     ]
   },
   output: {
-    filename: './other.min.js',
+    filename: `./otherjs/${version}/[name].min.js`,
     libraryTarget: 'commonjs2',
     path: path.resolve(__dirname, 'dist'),
-    sourceMapFilename: "./[name].js.map"
+    sourceMapFilename: `./otherjs/${version}/[name].js.map`
   },
   plugins: getPlugins()
 })
