@@ -490,6 +490,9 @@ const DONGERS = [
 module.exports = new Feature({
   name: 'Donger',
   version: '0.0.1',
+  dependencies: {
+    otherjs: '0.x'
+  },
   commands: [
     new Command({
       tokens: ['donger'],

@@ -3,6 +3,9 @@ const {Feature} = require('other')
 const feature = new Feature({
   name: 'Echo',
   version: '0.0.1',
+  dependencies: {
+    otherjs: '0.x'
+  },
   identity: '5db2ae95f72b4785ae2348d76c463270'
 })
 
