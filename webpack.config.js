@@ -36,6 +36,11 @@ module.exports = validate({
   devServer: {
     headers: {
       'Access-Control-Allow-Origin': '*'
+    },
+    historyApiFallback: {
+      rewrites: [
+        {from: /^\/otherjs\/[0-9x.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`}
+      ]
     }
   },
   devtool: isProd ? 'source-map' : 'eval-source-map',
