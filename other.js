@@ -1,9 +1,9 @@
 const EventEmitter = require('events')
 
 const ADD_MESSAGE = 'ADD_MESSAGE'
-const UPDATE_MESSAGES = 'UPDATE_MESSAGES'
 const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
-const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
+const UPDATE_MESSAGES = 'UPDATE_MESSAGES'
+const UPDATE_STAGED_MESSAGE = 'UPDATE_STAGED_MESSAGE'
 
 /** A message */
 class Message {
@@ -130,7 +130,8 @@ class Chatternet extends EventEmitter {
 /**
  * An interface for interacting with an Other Chat user agent.
  * @emits UserAgent#SET_CHAT_COMPLETE_RESULTS
- * @listens UserAgent#SET_STAGED_MESSAGE
+ * @emits UserAgent#UPDATE_STAGED_MESSAGE
+ * @listens UserAgent#UPDATE_STAGED_MESSAGE
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {
@@ -147,9 +148,10 @@ class UserAgent extends EventEmitter {
 
   /**
    * Event conveying that the staged message has been updated.
-   * @event UserAgent#SET_STAGED_MESSAGE
+   * @event UserAgent#UPDATE_STAGED_MESSAGE
    * @type {!Object}
-   * @property {!string} text - unsent message text input by the user.
+   * @property {!Message} message - unsent message input by the user and/or
+   *           features. May be sparse, i.e. omitted fields remain unchanged.
    */
 
   /** @return {Channel} The currently active channel. */
@@ -191,6 +193,19 @@ class ChatCompleteResult {
 }
 
 /**
+ * An update to the currently staged message.
+ */
+class StagedMessageResult {
+  /**
+   * @param {!Message} message - Sparse message representating an update to the
+   *        staged message, i.e. omitted fields remain unchanged.
+   */
+  constructor(message) {
+    this.message = message
+  }
+}
+
+/**
  * A command which users may run from the input area.
  */
 class Command {
@@ -199,7 +214,8 @@ class Command {
    * @param {string} token - The token that was invoked.
    * @param {string} query - The user's query (i.e. all text entered after the
    *        token).
-   * @return {Promise} - A Promise to an array of ChatCompleteResults.
+   * @return {Promise} - A Promise to either an array of {ChatCompleteResult}s
+   *         or a single {StagedMessageResult}.
    */
 
   /**
@@ -211,16 +227,22 @@ class Command {
   constructor({tokens, onQuery}) {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
     this._onQuery = onQuery
-    userAgent.on(SET_STAGED_MESSAGE, event => {
+
+    userAgent.on(UPDATE_STAGED_MESSAGE, event => {
+      const {text} = event.message
       for (const token of this._tokens) {
-        if (event.text.startsWith(token)) {
-          this._onQuery(token, event.text.substring(token.length)).then(results => {
-            userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: event.text, results})
-          })
+        if (text.startsWith(token)) {
+          const promise = this._onQuery(token, text.substring(token.length))
+          // TODO: Revert staged message.
+          if (promise instanceof StagedMessageResult) {
+            promise.then(message => userAgent.emit(UPDATE_STAGED_MESSAGE, message))
+          } else if (promise instanceof Array) {
+            promise.then(results => userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results}))
+          }
           return
         }
       }
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: event.text, results: []})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: []})
     })
   }
 
@@ -275,4 +297,4 @@ class Feature {
   }
 }
 
-module.exports = {ChatCompleteResult, Command, Feature, Message}
+module.exports = {ChatCompleteResult, Command, Feature, Message, StagedMessageResult}

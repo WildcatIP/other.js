@@ -15,6 +15,7 @@ function getPlugins() {
       }
     }),
     new CopyWebpackPlugin([
+      {from: 'builtins', to: 'builtins'},
       {from: 'examples', to: 'examples'}
     ])
   ]

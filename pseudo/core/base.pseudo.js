@@ -190,7 +190,7 @@ invite.on('didFinish', (context, doFinish) => {
     // channel marking the invitation.
     channel.addMembers(info.users).then(() => {
       channel.post({
-        type: 'system',
+        format: 'system',
         body: `${info.by} invited ${info.users} to ${channel}`
       })
     })

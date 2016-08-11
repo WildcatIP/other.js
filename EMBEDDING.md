@@ -17,7 +17,7 @@ Embedders must provide a host which interacts with the other.js library by emitt
 To emit an event, invoke `emit()` on any other.js object that extends `EventEmitter`. For example:
 
 ```js
-module.exports.userAgent.emit('SET_STAGED_MESSAGE', {text: 'hello world'})
+module.exports.userAgent.emit('UPDATE_STAGED_MESSAGE', {text: 'hello world'})
 ```
 
 To listen for events, invoke `on()`, `once()` or similar on any other.js object that extends `EventEmitter`. For example:

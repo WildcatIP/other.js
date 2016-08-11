@@ -491,7 +491,7 @@ module.exports = new Feature({
   name: 'Donger',
   version: '0.0.1',
   dependencies: {
-    otherjs: '0.x'
+    otherjs: '1.x'
   },
   commands: [
     new Command({
