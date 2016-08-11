@@ -2,7 +2,7 @@
 
 ## Environment preparation
 
-To prepare an environment, embedding clients must inject [other.min.js](https://apps.other.chat/other.min.js) as a [commonjs2](http://requirejs.org/docs/commonjs.html) module into a fully sandboxed, [es6](http://es6-features.org/) compliant execution environment. Sandboxed means that the script must be incapable of accessing any information or producing any effects outside of the environment (e.g. no disk access, no network access, no window object, no DOM access).
+To prepare an environment, embedding clients must inject a [supported version](#versioning) of `other.min.js` (e.g. https://apps.other.chat/otherjs/0.0.x/other.min.js) as a [commonjs2](http://requirejs.org/docs/commonjs.html) module into a fully sandboxed, [es6](http://es6-features.org/) compliant execution environment. Sandboxed means that the script must be incapable of accessing any information or producing any effects outside of the environment (e.g. no disk access, no network access, no window object, no DOM access).
 
 See an [example](https://github.com/other-xyz/other-chat-web/blob/master/feature.html) of such an environment running in a web browser.
 
@@ -29,6 +29,12 @@ module.exports.userAgent.on('SET_CHAT_COMPLETE_RESULTS', event => {
 ```
 
 An embedder may choose to implement any set of events. The set of events it implements determines whether a particular feature can execute within that host. For example, a server-side host should implement all [Chatternet](https://apps.other.chat/docs/Chatternet.html) events but cannot implement [UserAgent](https://apps.other.chat/docs/UserAgent.html) events. While a client-side host should implement applicable [UserAgent](https://apps.other.chat/docs/UserAgent.html) events and may optionally implement [Chatternet](https://apps.other.chat/docs/Chatternet.html) events.
+
+## Versioning
+
+* An embedder must implement compatibility with one or more `MAJOR.MINOR.x` versions of other.js. It should remain agnostic of `PATCH`. Compatibility means supporting all of the [events](#feature-host-process) expected by that version of other.js.
+* When [preparing the environment](#environment-preparation) to execute a feature, the embedder must verify that it can satisfy the feature's dependencies.
+* Since each feature is completely isolated in its runtime context, an embedder may inject different versions of other.js into different containers. As long as dependency requirements are met, features are guaranteed to work together even across different `MAJOR` versions of other.js.
 
 ## Reference
 
