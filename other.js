@@ -2,6 +2,7 @@ const EventEmitter = require('events')
 
 const ADD_MESSAGE = 'ADD_MESSAGE'
 const SET_CHAT_COMPLETE_RESULTS = 'SET_CHAT_COMPLETE_RESULTS'
+const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
 const UPDATE_MESSAGES = 'UPDATE_MESSAGES'
 const UPDATE_STAGED_MESSAGE = 'UPDATE_STAGED_MESSAGE'
 
@@ -131,7 +132,7 @@ class Chatternet extends EventEmitter {
  * An interface for interacting with an Other Chat user agent.
  * @emits UserAgent#SET_CHAT_COMPLETE_RESULTS
  * @emits UserAgent#UPDATE_STAGED_MESSAGE
- * @listens UserAgent#UPDATE_STAGED_MESSAGE
+ * @listens UserAgent#SET_STAGED_MESSAGE
  * @inheritdoc
  */
 class UserAgent extends EventEmitter {
@@ -147,11 +148,19 @@ class UserAgent extends EventEmitter {
    */
 
   /**
+   * Event conveying that the staged message has been set.
+   * @event UserAgent#SET_STAGED_MESSAGE
+   * @type {!Object}
+   * @property {!Message} message - unsent message input by the user and/or
+   *           features. Replaces the staged message entirely.
+   */
+
+  /**
    * Event conveying that the staged message has been updated.
    * @event UserAgent#UPDATE_STAGED_MESSAGE
    * @type {!Object}
-   * @property {!Message} message - unsent message input by the user and/or
-   *           features. May be sparse, i.e. omitted fields remain unchanged.
+   * @property {!Message} message - Sparse representation of an update to
+   *           make to the staged message, i.e. omitted fields remain unchanged.
    */
 
   /** @return {Channel} The currently active channel. */
@@ -228,7 +237,7 @@ class Command {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
     this._onQuery = onQuery
 
-    userAgent.on(UPDATE_STAGED_MESSAGE, event => {
+    userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
       for (const token of this._tokens) {
         if (text.startsWith(token)) {
