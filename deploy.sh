@@ -2,10 +2,10 @@
 set -ex
 
 # Copy all features.
-aws --region=us-west-2 s3 sync --acl public-read --exclude ./dist/otherjs ./dist/ s3://apps.other.chat/
+aws --region=us-west-2 s3 sync --acl public-read --exclude "./dist/otherjs/" ./dist/ s3://apps.other.chat/
 
 # Copy the library (cachable for 1 year).
-aws --region=us-west-2 s3 sync --acl public-read --cache-control "max-age=31536000, public" ./dist/otherjs s3://apps.other.chat/otherjs
+aws --region=us-west-2 s3 sync --acl public-read --cache-control "max-age=31536000, public" ./dist/otherjs/ s3://apps.other.chat/otherjs/
 
 # Create semantic version redirects (cachable for 24 hours).
 VERSION=`grep -o '"version": "[^"]*"' package.json | cut -d'"' -f4`
