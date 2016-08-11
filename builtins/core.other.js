@@ -4,7 +4,7 @@ const feature = new Feature({
   name: 'Core',
   version: '0.0.1',
   dependencies: {
-    otherjs: '1.x'
+    otherjs: '1.1.x'
   }
 })
 
