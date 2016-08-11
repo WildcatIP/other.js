@@ -2,7 +2,7 @@ const {Command, Feature, StagedMessageResult} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.0.1',
+  version: '0.0.2',
   dependencies: {
     otherjs: '1.1.x'
   }
