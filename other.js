@@ -252,6 +252,7 @@ class Command {
           return
         }
       }
+      // TODO: This works, but emits way too often.
       userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: []})
     })
   }

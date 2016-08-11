@@ -11,8 +11,10 @@ const feature = new Feature({
 feature.commands.push(new Command({
   tokens: ['/blockquote', '/caption', '/h1', '/h2', '/h3', '/p', '/s'],
   onQuery(token, query) {
-    const format = token === '/s' ? 'system' : token.substring(1)
-    return Promise.resolve(new StagedMessageResult({format}))
+    return Promise.resolve(new StagedMessageResult({
+      format: token === '/s' ? 'system' : token.substring(1),
+      text: query.replace(/^\s/, '')
+    }))
   }
 }))
 
