@@ -240,14 +240,15 @@ class Command {
     userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
       for (const token of this._tokens) {
-        if (text.startsWith(token)) {
-          const promise = this._onQuery(token, text.substring(token.length))
-          // TODO: Revert staged message.
-          if (promise instanceof StagedMessageResult) {
-            promise.then(message => userAgent.emit(UPDATE_STAGED_MESSAGE, message))
-          } else if (promise instanceof Array) {
-            promise.then(results => userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results}))
-          }
+        if (text && text.startsWith(token)) {
+          this._onQuery(token, text.substring(token.length)).then(result => {
+            if (result instanceof StagedMessageResult) {
+              // TODO: Revert staged message.
+              userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result})
+            } else if (result instanceof Array) {
+              userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: result})
+            }
+          })
           return
         }
       }
