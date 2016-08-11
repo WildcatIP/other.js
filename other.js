@@ -244,7 +244,7 @@ class Command {
           this._onQuery(token, text.substring(token.length)).then(result => {
             if (result instanceof StagedMessageResult) {
               // TODO: Revert staged message.
-              userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result})
+              userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result.message})
             } else if (result instanceof Array) {
               userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: result})
             }
