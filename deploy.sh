@@ -1,11 +1,13 @@
 #!/bin/bash
 set -ex
 
-# Copy all the assets.
-# TODO: Make /otherjs/* immutable.
-aws --region=us-west-2 s3 sync --acl public-read --exclude ".*" ./dist/ s3://apps.other.chat/
+# Copy all features.
+aws --region=us-west-2 s3 sync --acl public-read --exclude ./dist/otherjs ./dist/ s3://apps.other.chat/
 
-# Create semantic version redirects.
+# Copy the library (cachable for 1 year).
+aws --region=us-west-2 s3 sync --acl public-read --cache-control "max-age=31536000, public" ./dist/otherjs s3://apps.other.chat/otherjs
+
+# Create semantic version redirects (cachable for 24 hours).
 VERSION=`grep -o '"version": "[^"]*"' package.json | cut -d'"' -f4`
 MAJOR=`echo $VERSION | cut -d. -f1`
 MINOR=`echo $VERSION | cut -d. -f2`
