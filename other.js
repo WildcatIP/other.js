@@ -37,8 +37,8 @@ class Channel {
 
   /**
    * @param {Channel#onReceiveCallback} callback - Called when a new message is
-   *        received from another identity. Note: {Chatternet.identity}'s own
-   *        messages do not invoke this callback.
+   *     received from another identity. Note: {Chatternet.identity}'s own
+   *     messages do not invoke this callback.
    */
   onReceive(callback) {
     this._onReceive = callback
@@ -51,7 +51,7 @@ class Channel {
   /**
    * Sends the given message from {Chatternet.identity} to the channel.
    * @param {Message} message - The message to send. Note that
-   *        {Message.identity} is replaced with {Chatternet.identity}.
+   *     {Message.identity} is replaced with {Chatternet.identity}.
    */
   send(message) {
     this._chatternet.emit(ADD_MESSAGE, this.id, Object.assign({}, message, {identityId: this._chatternet.identity}))
@@ -80,9 +80,9 @@ class Chatternet extends EventEmitter {
    * @event Chatternet#UPDATE_MESSAGES
    * @param {!string} channelId - The channel to update.
    * @param {Message[]} messages - A list of messages to update in the given
-   *        channelId. Messages are uniquely identified by their {Message.time}
-   *        and the messages in this update may reflect new messages or updates
-   *        to existing messages.
+   *     channelId. Messages are uniquely identified by their {Message.time}
+   *     and the messages in this update may reflect new messages or updates
+   *     to existing messages.
    */
 
   /**
@@ -103,7 +103,7 @@ class Chatternet extends EventEmitter {
   /**
    * @param {string} id - The id of the channel to lookup.
    * @return {?Channel} The channel associated with the given id or else null if
-   *         it wasn't found or the identity cannot access it.
+   *     it wasn't found or the identity cannot access it.
    */
   channel({id}) {
     return new Channel({id, chatternet: this}) // TODO: Implement me.
@@ -112,7 +112,7 @@ class Chatternet extends EventEmitter {
   /**
    * @param {string} id - The id of the account to lookup.
    * @return {?Account} The account associated with the given id or else null if
-   *         it wasn't found or the identity cannot access it.
+   *     it wasn't found or the identity cannot access it.
    */
   account({id}) {
     return new Account({id, chatternet: this}) // TODO: Implement me.
@@ -121,7 +121,7 @@ class Chatternet extends EventEmitter {
   /**
    * @param {string} id - The id of the identity to lookup.
    * @return {?Identity} The identity associated with the given id or else null
-   *         if it wasn't found or the identity cannot access it.
+   *     if it wasn't found or the identity cannot access it.
    */
   identity({id}) {
     return new Identity({id, chatternet: this}) // TODO: Implement me.
@@ -141,9 +141,9 @@ class UserAgent extends EventEmitter {
    * @event UserAgent#SET_CHAT_COMPLETE_RESULTS
    * @type {!Object}
    * @property {!string} replyTo - textual content of the staged message these
-   *           results apply to.
+   *     results apply to.
    * @property {ChatCompleteResult[]} results - array of results to be displayed
-   *           to the user.
+   *     to the user.
    * @property {string} results.text - textual content of the result to display.
    */
 
@@ -152,7 +152,7 @@ class UserAgent extends EventEmitter {
    * @event UserAgent#SET_STAGED_MESSAGE
    * @type {!Object}
    * @property {!Message} message - unsent message input by the user and/or
-   *           features. Replaces the staged message entirely.
+   *     features. Replaces the staged message entirely.
    */
 
   /**
@@ -160,7 +160,7 @@ class UserAgent extends EventEmitter {
    * @event UserAgent#UPDATE_STAGED_MESSAGE
    * @type {!Object}
    * @property {!Message} message - Sparse representation of an update to
-   *           make to the staged message, i.e. omitted fields remain unchanged.
+   *     make to the staged message, i.e. omitted fields remain unchanged.
    */
 
   /** @return {Channel} The currently active channel. */
@@ -181,9 +181,9 @@ class UserAgent extends EventEmitter {
   /**
    * Navigates to the given channel id.
    * @param {string} channelId - The channel identifier to navigate to. May be:
-   *        * An identity id for identity channels
-   *        * A channel id for standard channels
-   *        * OR lowerIdentityId:upperIdentityId for whisper channels
+   *     * An identity id for identity channels
+   *     * A channel id for standard channels
+   *     * OR lowerIdentityId:upperIdentityId for whisper channels
    */
   navigate({channelId}) {
     // TODO: Implement me.
@@ -207,7 +207,7 @@ class ChatCompleteResult {
 class StagedMessageResult {
   /**
    * @param {!Message} message - Sparse message representating an update to the
-   *        staged message, i.e. omitted fields remain unchanged.
+   *     staged message, i.e. omitted fields remain unchanged.
    */
   constructor(message) {
     this.message = message
@@ -222,16 +222,17 @@ class Command {
    * @callback Command#onQueryCallback
    * @param {string} token - The token that was invoked.
    * @param {string} query - The user's query (i.e. all text entered after the
-   *        token).
-   * @return {Promise} - A Promise to either an array of {ChatCompleteResult}s
-   *         or a single {StagedMessageResult}.
+   *     token).
+   * @return {?(Promise|ChatCompleteResult[]|StagedMessageResult)} - The
+   *     resulting action that the user agent should take in response to this
+   *     query.
    */
 
   /**
    * @param {string[]} tokens - Keyword tokens which the user may type at the
-   *        beginning of the input area to invoke this command.
+   *     beginning of the input area to invoke this command.
    * @param {Command#onQueryCallback} onQuery - Called when one of the tokens is
-   *        invoked by the user.
+   *     invoked by the user.
    */
   constructor({tokens, onQuery}) {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
@@ -241,7 +242,9 @@ class Command {
       const {text} = event.message
       for (const token of this._tokens) {
         if (text && text.startsWith(token)) {
-          this._onQuery(token, text.substring(token.length)).then(result => {
+          const result = this._onQuery(token, text.substring(token.length))
+          const promise = result instanceof Promise ? result : Promise.resolve(result)
+          promise.then(result => {
             if (result instanceof StagedMessageResult) {
               // TODO: Revert staged message.
               userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result.message})
@@ -259,7 +262,7 @@ class Command {
 
   /**
    * @param {Command#onQueryCallback} callback - Called when one of the tokens
-   *        is invoked by the user.
+   *     is invoked by the user.
    */
   onQuery(callback) {
     this._onQuery = callback
@@ -275,9 +278,9 @@ class Feature {
    * @param {string} name - User facing name.
    * @param {string} description - User facing, one-line description.
    * @param {string} version - {@link http://semver.org/|Semantic Version} used
-   *        for determining compatibility with clients and other features.
+   *     for determining compatibility with clients and other features.
    * @param {string} identity - Feature developer's Chatternet identity under
-   *        which all Chatternet operations are performed.
+   *     which all Chatternet operations are performed.
    * @param {Command[]} commands - Commands to register.
    */
   constructor({name, description, version, identity, commands = []}) {

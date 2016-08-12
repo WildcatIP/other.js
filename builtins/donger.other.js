@@ -489,9 +489,9 @@ const DONGERS = [
 
 module.exports = new Feature({
   name: 'Donger',
-  version: '0.0.1',
+  version: '0.0.2',
   dependencies: {
-    otherjs: '1.x'
+    otherjs: '1.2.x'
   },
   commands: [
     new Command({
@@ -504,8 +504,7 @@ module.exports = new Feature({
           shuffledDongers = shuffledDongers.slice(0, sampleSize)
         }
 
-        const results = shuffledDongers.map(donger => new ChatCompleteResult({text: donger}))
-        return Promise.resolve(results)
+        return shuffledDongers.map(donger => new ChatCompleteResult({text: donger}))
       }
     })
   ]
