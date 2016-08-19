@@ -1,21 +1,20 @@
-const {Command, Feature, StagedMessageResult} = require('other')
+const {Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.0.3',
+  version: '0.0.4',
   dependencies: {
-    otherjs: '1.2.x'
+    otherjs: '2.x'
   }
 })
 
-feature.commands.push(new Command({
-  tokens: ['/blockquote', '/caption', '/h1', '/h2', '/h3', '/p', '/s'],
-  onQuery(token, query) {
-    return new StagedMessageResult({
-      format: token === '/s' ? 'system' : token.substring(1),
-      text: query.replace(/^\s/, '')
-    })
+feature.listen({
+  to: {commands: ['blockquote', 'caption', 'h1', 'h2', 'h3', 'p', 's']},
+  on({command, args}) {
+    return {
+      stagedMessage: {format: command === 's' ? 'system' : command}
+    }
   }
-}))
+})
 
 module.exports = feature

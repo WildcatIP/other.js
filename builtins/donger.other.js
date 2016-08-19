@@ -1,4 +1,4 @@
-const {ChatCompleteResult, Command, Feature} = require('other')
+const {Feature} = require('other')
 
 const DONGERS = [
   "⊂(▀¯▀⊂)",
@@ -489,23 +489,21 @@ const DONGERS = [
 
 module.exports = new Feature({
   name: 'Donger',
-  version: '0.0.2',
+  version: '0.0.3',
   dependencies: {
-    otherjs: '1.2.x'
+    otherjs: '2.x'
   },
-  commands: [
-    new Command({
-      tokens: ['donger'],
-      onQuery(token, query) {
-        let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random())
+  listeners: [{
+    to: {words: ['donger']},
+    on({word, rest}) {
+      let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random())
 
-        if (query.length) {
-          const sampleSize = Math.round(DONGERS.length / Math.pow(query.length, 2))
-          shuffledDongers = shuffledDongers.slice(0, sampleSize)
-        }
-
-        return shuffledDongers.map(donger => new ChatCompleteResult({text: donger}))
+      if (rest.length) {
+        const sampleSize = Math.round(DONGERS.length / Math.pow(rest.length, 2))
+        shuffledDongers = shuffledDongers.slice(0, sampleSize)
       }
-    })
-  ]
+
+      return shuffledDongers.map(donger => ({stagedMessage: {text: donger}}))
+    }
+  }]
 })

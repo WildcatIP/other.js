@@ -6,17 +6,23 @@ const SET_STAGED_MESSAGE = 'SET_STAGED_MESSAGE'
 const UPDATE_MESSAGES = 'UPDATE_MESSAGES'
 const UPDATE_STAGED_MESSAGE = 'UPDATE_STAGED_MESSAGE'
 
-/** A message */
-class Message {
-  constructor({avatarUrl, attachments, format, identityId, text, time}) {
-    this.avatarUrl = avatarUrl
-    this.attachments = attachments
-    this.format = format
-    this.identityId = identityId
-    this.text = text
-    this.time = time
-  }
-}
+/**
+ * An attachment.
+ * TODO: Define fields
+ * @typedef {object} Attachment
+ */
+
+/**
+ * A message.
+ * @typedef {object} Message
+ * @property {?string} avatarUrl URL of the avatar image.
+ * @property {?Attachment[]} attachments Array of attachments objects.
+ * @property {?string} format String indicating message format (e.g. "markdown").
+ * @property {?string} identityId UUID of the sender's identity encoded as a
+ *     base-16 string.
+ * @property {?string} text Plain text of the message.
+ * @property {?double} time Sent timestamp. Used as a unique identifier.
+ */
 
 /** An interface for interacting with a chatternet channel. */
 class Channel {
@@ -58,12 +64,10 @@ class Channel {
   }
 }
 
-/** @inheritdoc */
 class Account {
  // TODO: Implement me.
 }
 
-/** @inheritdoc */
 class Identity {
   // TODO: Implement me.
 }
@@ -80,9 +84,8 @@ class Chatternet extends EventEmitter {
    * @event Chatternet#UPDATE_MESSAGES
    * @param {!string} channelId - The channel to update.
    * @param {Message[]} messages - A list of messages to update in the given
-   *     channelId. Messages are uniquely identified by their {Message.time}
-   *     and the messages in this update may reflect new messages or updates
-   *     to existing messages.
+   *     channelId. The messages in this update may reflect new messages or
+   *     updates to existing messages.
    */
 
   /**
@@ -192,66 +195,70 @@ class UserAgent extends EventEmitter {
 
 const userAgent = new UserAgent()
 
-/**
- * An item which may be displayed as a chat complete result.
- */
-class ChatCompleteResult {
-  constructor({text}) {
-    this.text = text
+/** Base class for Listeners. */
+class Listener {
+  /**
+   * An item to be displayed as a chat completion.
+   * @typedef {object} Listener~ChatCompletion
+   * @property {string} text Plain text to be displayed to the user.
+   */
+
+  /**
+   * Resulting action to perform in response to this command.
+   * @typedef {object} Listener~Result
+   * @property {?Message} stagedMessage Sparse message representating an update
+   *     to the staged message, i.e. omitted fields remain unchanged.
+   * @property {?Listener~ChatCompletion[]} chatCompletions Array of
+   *     items which may be displayed as chat complete results.
+   */
+
+  constructor({on}) {
+    this._on = on
+  }
+
+  _handleResult(text, result) {
+    if (result.stagedMessage) {
+      // TODO: Revert staged message.
+      userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result.stagedMessage})
+    }
+    if (result.chatCompletions) {
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: result.chatCompletions})
+    }
   }
 }
 
 /**
- * An update to the currently staged message.
+ * Listens for commands entered by the user.
+ *
+ * Commands are invoked by a "/", followed by the command, then a space. A
+ * command's arguments consist of everything following the space.
+ * @inheritdoc
  */
-class StagedMessageResult {
+class CommandListener extends Listener {
   /**
-   * @param {!Message} message - Sparse message representating an update to the
-   *     staged message, i.e. omitted fields remain unchanged.
-   */
-  constructor(message) {
-    this.message = message
-  }
-}
-
-/**
- * A command which users may run from the input area.
- */
-class Command {
-  /**
-   * @callback Command#onQueryCallback
-   * @param {string} token - The token that was invoked.
-   * @param {string} query - The user's query (i.e. all text entered after the
-   *     token).
-   * @return {?(Promise|ChatCompleteResult[]|StagedMessageResult)} - The
-   *     resulting action that the user agent should take in response to this
-   *     query.
+   * @callback CommandListener#onCallback
+   * @param {string} command - The command that was invoked.
+   * @param {string} args - All text entered after the command.
+   * @return {?(Promise|Listener~Result)} - The resulting action that the
+   *     user agent should take in response to this command.
    */
 
   /**
-   * @param {string[]} tokens - Keyword tokens which the user may type at the
-   *     beginning of the input area to invoke this command.
-   * @param {Command#onQueryCallback} onQuery - Called when one of the tokens is
+   * @param {string[]} commands - Keyword commands which the user may invoke by
+   *     typing a "/{COMMAND} " at the beginning of the input area.
+   * @param {CommandListener#onCallback} on - Called when one of the commands is
    *     invoked by the user.
    */
-  constructor({tokens, onQuery}) {
-    this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
-    this._onQuery = onQuery
-
+  constructor({commands, on}) {
+    super({on})
+    this._commands = commands.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest command is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
-      for (const token of this._tokens) {
-        if (text && text.startsWith(token)) {
-          const result = this._onQuery(token, text.substring(token.length))
+      for (const command of this._commands) {
+        if (text && text.startsWith(`/${command} `)) {
+          const result = this._on({command, args: text.substring(command.length + 2)})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => {
-            if (result instanceof StagedMessageResult) {
-              // TODO: Revert staged message.
-              userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result.message})
-            } else if (result instanceof Array) {
-              userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: result})
-            }
-          })
+          promise.then(result => this._handleResult(text, result))
           return
         }
       }
@@ -259,13 +266,45 @@ class Command {
       userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: []})
     })
   }
+}
+
+/**
+ * Listens for words entered by the user.
+ *
+ * Words are space delimited and may appear anywhere in a message.
+ * @inheritdoc
+ */
+class WordListener extends Listener {
+  /**
+   * @callback WordListener#onCallback
+   * @param {string} word - The word that was invoked.
+   * @param {string} rest - All text of the message.
+   * @return {?(Promise|Listener~Result)} - The resulting action that the
+   *     user agent should take in response to this word.
+   */
 
   /**
-   * @param {Command#onQueryCallback} callback - Called when one of the tokens
-   *     is invoked by the user.
+   * @param {string[]} words - Words which invoke this listener if typed
+   *     anywhere in the message (ie. " {WORD} ").
+   * @param {WordListener#onCallback} on - Called when one of the words is
+   *     typed by the user.
    */
-  onQuery(callback) {
-    this._onQuery = callback
+  constructor({words, on}) {
+    super({on})
+    this._words = words.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest word is matched
+    userAgent.on(SET_STAGED_MESSAGE, event => {
+      const {text} = event.message
+      for (const word of this._words) {
+        if (text && new RegExp(`\b${word}\b`).test(text)) {
+          const result = this._on({word, rest: text})
+          const promise = result instanceof Promise ? result : Promise.resolve(result)
+          promise.then(result => this._handleResult(text, result))
+          return
+        }
+      }
+      // TODO: This works, but emits way too often.
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: []})
+    })
   }
 }
 
@@ -283,14 +322,14 @@ class Feature {
    *     which all Chatternet operations are performed.
    * @param {Command[]} commands - Commands to register.
    */
-  constructor({name, description, version, identity, commands = []}) {
+  constructor({name, description, version, identity, listeners = []}) {
     // TODO: Validation
     this.name = name
     this.description = description
     this.version = version
     this.identity = identity
-    this.commands = commands
     this._chatternet = identity ? new Chatternet({identity}) : null
+    listeners.forEach(l => this.listen(l))
   }
 
   /**
@@ -309,6 +348,23 @@ class Feature {
   get userAgent() {
     return userAgent
   }
+
+  /**
+   * TODO: Return a function that unlistens.
+   */
+  listen({to, on}) {
+    console.assert(to && on, "listen() requires 'to' and 'on' params")
+    if (to.commands) {
+      this._listeners.push(new CommandListener({commands: to.commands, on}))
+    }
+    if (to.words) {
+      this._listeners.push(new WordListener({words: to.words, on}))
+    }
+    // TODO: Support tokens (e.g. :emoji:)
+    // if (to.tokens) {
+    //  this._listeners.push(new TokenListener({tokens: to.tokens, on}))
+    // }
+  }
 }
 
-module.exports = {ChatCompleteResult, Command, Feature, Message, StagedMessageResult}
+module.exports = {Chatternet, CommandListener, Feature, WordListener, UserAgent}
