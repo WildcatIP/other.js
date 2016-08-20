@@ -258,7 +258,7 @@ class CommandListener extends Listener {
         if (text && text.startsWith(`/${command} `)) {
           const result = this._on({command, args: text.substring(command.length + 2)})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => this._handleResult(text, result))
+          promise.then(result => super._handleResult(text, result))
           return
         }
       }
@@ -295,7 +295,7 @@ class WordListener extends Listener {
     userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
       for (const word of this._words) {
-        if (text && new RegExp(`\b${word}\b`).test(text)) {
+        if (text && new RegExp(`\\b${word}\\b`).test(text)) {
           const result = this._on({word, rest: text})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
           promise.then(result => this._handleResult(text, result))
@@ -329,6 +329,7 @@ class Feature {
     this.version = version
     this.identity = identity
     this._chatternet = identity ? new Chatternet({identity}) : null
+    this._listeners = []
     listeners.forEach(l => this.listen(l))
   }
 

@@ -503,7 +503,7 @@ module.exports = new Feature({
         shuffledDongers = shuffledDongers.slice(0, sampleSize)
       }
 
-      return shuffledDongers.map(donger => ({stagedMessage: {text: donger}}))
+      return {chatCompletions: shuffledDongers.map(donger => ({text: donger}))}
     }
   }]
 })
