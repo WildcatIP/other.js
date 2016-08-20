@@ -497,12 +497,10 @@ module.exports = new Feature({
     to: {words: ['donger']},
     on({word, rest}) {
       let shuffledDongers = DONGERS.sort(() => 0.5 - Math.random())
-
       if (rest.length) {
         const sampleSize = Math.round(DONGERS.length / Math.pow(rest.length, 2))
         shuffledDongers = shuffledDongers.slice(0, sampleSize)
       }
-
       return {chatCompletions: shuffledDongers.map(donger => ({text: donger}))}
     }
   }]

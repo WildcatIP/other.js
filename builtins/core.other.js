@@ -11,9 +11,7 @@ const feature = new Feature({
 feature.listen({
   to: {commands: ['blockquote', 'caption', 'h1', 'h2', 'h3', 'p', 's']},
   on({command, args}) {
-    return {
-      stagedMessage: {format: command === 's' ? 'system' : command}
-    }
+    return {stagedMessage: {format: command === 's' ? 'system' : command}}
   }
 })
 
