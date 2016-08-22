@@ -219,7 +219,7 @@ class Listener {
   _handleResult(text, result) {
     if (result.stagedMessage) {
       // TODO: Revert staged message.
-      userAgent.emit(UPDATE_STAGED_MESSAGE, {message: result.stagedMessage})
+      userAgent.emit(UPDATE_STAGED_MESSAGE, {replyTo: text, message: result.stagedMessage})
     }
     if (result.chatCompletions) {
       userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: result.chatCompletions})
@@ -256,9 +256,13 @@ class CommandListener extends Listener {
       const {text} = event.message
       for (const command of this._commands) {
         if (text && text.startsWith(`/${command} `)) {
-          const result = this._on({command, args: text.substring(command.length + 2)})
+          const args = text.substring(command.length + 2)
+          const result = this._on({command, args})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => super._handleResult(text, result))
+          promise.then(result => {
+            if (!result.stagedMessage || !result.stagedMessage.text) result.stagedMessage.text = args
+            super._handleResult(text, result)
+          })
           return
         }
       }
