@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 const EventEmitter = require('events')
 
 const ADD_MESSAGE = 'ADD_MESSAGE'
