@@ -254,8 +254,12 @@ class CommandListener extends Listener {
     this._commands = commands.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest command is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
-      for (const command of this._commands) {
-        if (text && text.startsWith(`/${command} `)) {
+      const chatCompleteResults = []
+      if (text && text.startsWith('/')) {
+        const command = text.substring(1).split(' ')[0]
+        const potentialCommands = this._commands.filter(c => c.startsWith(command))
+        chatCompleteResults.push(...potentialCommands.map(c => ({text: `/${c} `})))
+        if (potentialCommands.includes(command) && text.length >= command.length + 2) {
           const args = text.substring(command.length + 2)
           const result = this._on({command, args})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
@@ -263,11 +267,10 @@ class CommandListener extends Listener {
             if (!result.stagedMessage || !result.stagedMessage.text) result.stagedMessage.text = args
             super._handleResult(text, result)
           })
-          return
         }
       }
       // TODO: This works, but emits way too often.
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: []})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: chatCompleteResults})
     })
   }
 }
