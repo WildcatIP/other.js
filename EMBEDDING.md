@@ -38,6 +38,6 @@ An embedder may choose to implement any set of events. The set of events it impl
 
 ## Reference
 
-For full reference of supported events and their semantics, see the [event documentation](https://apps.other.chat/docs/index.html).
+For full reference of supported events and their semantics, see the [event documentation](https://apps.other.chat/docs/index.html). The set of supported events is primitive. With time it'll converge towards [more client events](https://github.com/other-xyz/other-chat-web/blob/master/constants/ActionTypes.js).
 
 For a reference embedder implementation, see the web client's [FeatureHost](https://github.com/other-xyz/other-chat-web/blob/master/middleware/features.js).
