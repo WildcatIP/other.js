@@ -290,7 +290,7 @@ class CommandListener extends Listener {
         }
       }
       // TODO: This works, but emits way too often.
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: chatCompleteResults})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: tag, results: chatCompleteResults})
     })
   }
 }
@@ -330,7 +330,7 @@ class WordListener extends Listener {
         }
       }
       // TODO: This works, but emits way too often.
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: []})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: tag, results: []})
     })
   }
 }
