@@ -273,7 +273,7 @@ class CommandListener extends Listener {
     super({on})
     this._commands = commands.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest command is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
-      const {tag, text} = event.message
+      const {text} = event.message
       const chatCompleteResults = []
       if (text && text.startsWith('/')) {
         const command = text.substring(1).split(' ')[0]
@@ -285,12 +285,12 @@ class CommandListener extends Listener {
           const promise = result instanceof Promise ? result : Promise.resolve(result)
           promise.then(result => {
             if (!result.stagedMessage || !result.stagedMessage.text) result.stagedMessage.text = args
-            super._handleResult(tag, result)
+            super._handleResult(event.tag, result)
           })
         }
       }
       // TODO: This works, but emits way too often.
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: tag, results: chatCompleteResults})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: event.tag, results: chatCompleteResults})
     })
   }
 }
@@ -320,17 +320,17 @@ class WordListener extends Listener {
     super({on})
     this._words = words.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest word is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
-      const {tag, text} = event.message
+      const {text} = event.message
       for (const word of this._words) {
         if (text && new RegExp(`\\b${word}\\b`).test(text)) {
           const result = this._on({word, rest: text})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => this._handleResult(tag, result))
+          promise.then(result => this._handleResult(event.tag, result))
           return
         }
       }
       // TODO: This works, but emits way too often.
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: tag, results: []})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: event.tag, results: []})
     })
   }
 }
