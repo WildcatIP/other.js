@@ -491,7 +491,7 @@ module.exports = new Feature({
   name: 'Donger',
   version: '0.0.3',
   dependencies: {
-    otherjs: '2.x'
+    otherjs: '3.x'
   },
   listeners: [{
     to: {words: ['donger']},

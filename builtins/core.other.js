@@ -11,7 +11,7 @@ const feature = new Feature({
 feature.listen({
   to: {commands: ['blockquote', 'caption', 'h1', 'h2', 'h3', 'p', 'small']},
   on({command, args}) {
-    // TODO: Remove this small -> system hack once the ioS client understands small.
+    // TODO: Remove this small -> system hack once the iOS client understands small.
     return {stagedMessage: {format: command === 'small' ? 'system' : command}}
   }
 })
