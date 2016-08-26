@@ -9,6 +9,21 @@ const UPDATE_MESSAGES = 'UPDATE_MESSAGES'
 const UPDATE_STAGED_MESSAGE = 'UPDATE_STAGED_MESSAGE'
 
 /**
+ * An asynchronous message which may be associated with another message.
+ *
+ * In order to ensure a responsive architecture, all other.js events are
+ * asynchronous. However, it's often useful to treat messages as replies to
+ * other messages. To accomplish this, tagged messages may contain a unique
+ * identifier that other messages may refer to.
+ *
+ * @mixin
+ * @event TAGGED_MESSAGE
+ * @property {?Number} tag - A number that uniquely identifies this message.
+ * @property {?Number} replyTag - The tag of another message to which this message
+ *     replies.
+ */
+
+/**
  * An attachment.
  * TODO: Define fields
  * @typedef {object} Attachment
@@ -84,6 +99,7 @@ class Chatternet extends EventEmitter {
   /**
    * Event conveying that channel messages have been updated.
    * @event Chatternet#UPDATE_MESSAGES
+   * @mixes event:TAGGED_MESSAGE
    * @param {!string} channelId - The channel to update.
    * @param {Message[]} messages - A list of messages to update in the given
    *     channelId. The messages in this update may reflect new messages or
@@ -93,6 +109,7 @@ class Chatternet extends EventEmitter {
   /**
    * Event conveying a message to add to the channel.
    * @event Chatternet#ADD_MESSAGE
+   * @mixes event:TAGGED_MESSAGE
    * @param {!string} channelId - The channel to add the message to.
    * @param {!Message} message - The message to add.
    */
@@ -144,9 +161,8 @@ class UserAgent extends EventEmitter {
   /**
    * Event conveying chat complete results to be displayed to the user.
    * @event UserAgent#SET_CHAT_COMPLETE_RESULTS
+   * @mixes event:TAGGED_MESSAGE
    * @type {!Object}
-   * @property {!string} replyTo - textual content of the staged message these
-   *     results apply to.
    * @property {ChatCompleteResult[]} results - array of results to be displayed
    *     to the user.
    * @property {string} results.text - textual content of the result to display.
@@ -155,6 +171,7 @@ class UserAgent extends EventEmitter {
   /**
    * Event conveying that the staged message has been set.
    * @event UserAgent#SET_STAGED_MESSAGE
+   * @mixes event:TAGGED_MESSAGE
    * @type {!Object}
    * @property {!Message} message - unsent message input by the user and/or
    *     features. Replaces the staged message entirely.
@@ -163,6 +180,7 @@ class UserAgent extends EventEmitter {
   /**
    * Event conveying that the staged message has been updated.
    * @event UserAgent#UPDATE_STAGED_MESSAGE
+   * @mixes event:TAGGED_MESSAGE
    * @type {!Object}
    * @property {!Message} message - Sparse representation of an update to
    *     make to the staged message, i.e. omitted fields remain unchanged.
@@ -218,13 +236,13 @@ class Listener {
     this._on = on
   }
 
-  _handleResult(text, result) {
+  _handleResult(tag, result) {
     if (result.stagedMessage) {
       // TODO: Revert staged message.
-      userAgent.emit(UPDATE_STAGED_MESSAGE, {replyTo: text, message: result.stagedMessage})
+      userAgent.emit(UPDATE_STAGED_MESSAGE, {replyTag: tag, message: result.stagedMessage})
     }
     if (result.chatCompletions) {
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTo: text, results: result.chatCompletions})
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: tag, results: result.chatCompletions})
     }
   }
 }
@@ -255,7 +273,7 @@ class CommandListener extends Listener {
     super({on})
     this._commands = commands.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest command is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
-      const {text} = event.message
+      const {tag, text} = event.message
       const chatCompleteResults = []
       if (text && text.startsWith('/')) {
         const command = text.substring(1).split(' ')[0]
@@ -267,7 +285,7 @@ class CommandListener extends Listener {
           const promise = result instanceof Promise ? result : Promise.resolve(result)
           promise.then(result => {
             if (!result.stagedMessage || !result.stagedMessage.text) result.stagedMessage.text = args
-            super._handleResult(text, result)
+            super._handleResult(tag, result)
           })
         }
       }
@@ -302,12 +320,12 @@ class WordListener extends Listener {
     super({on})
     this._words = words.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest word is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
-      const {text} = event.message
+      const {tag, text} = event.message
       for (const word of this._words) {
         if (text && new RegExp(`\\b${word}\\b`).test(text)) {
           const result = this._on({word, rest: text})
           const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => this._handleResult(text, result))
+          promise.then(result => this._handleResult(tag, result))
           return
         }
       }
