@@ -25,12 +25,16 @@ These instructions assume you're running macOS and using the [Homebrew](http://b
 
 1. Start an Other Chat client using `http://localhost:8888` as its otherjs host. [Web client instructions](https://github.com/other-xyz/other-chat-web/blob/master/README.md#otherjs)
 
-
 ## Testing
 
-Run all tests via:
+Run all tests once via:
 ```sh
 npm test
+```
+
+Automatically re-run tests upon each save via:
+```sh
+npm run test:watch
 ```
 
 ## Deployment
