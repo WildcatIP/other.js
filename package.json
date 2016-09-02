@@ -13,7 +13,7 @@
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' .",
     "start": "webpack-dev-server --port=8888",
     "test": "NODE_ENV=test jest",
-    "test:watch": "npm test -- --watch=all"
+    "test:watch": "npm test -- --watchAll"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
@@ -28,7 +28,7 @@
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.6.0",
     "git-revision-webpack-plugin": "^2.3.1",
-    "jest-cli": "^15.0.2",
+    "jest-cli": "^15.1.1",
     "jsdoc": "^3.4.0",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1",
