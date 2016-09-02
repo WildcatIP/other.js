@@ -278,7 +278,6 @@ class CommandListener extends Listener {
       if (text && text.startsWith('/')) {
         const command = text.substring(1).split(' ')[0]
         const potentialCommands = this._commands.filter(c => c.startsWith(command))
-        chatCompleteResults.push(...potentialCommands.map(c => ({text: `/${c} `})))
         if (potentialCommands.includes(command) && text.length >= command.length + 2) {
           const args = text.substring(command.length + 2)
           const result = this._on({command, args})
@@ -287,9 +286,10 @@ class CommandListener extends Listener {
             if (!result.stagedMessage || !result.stagedMessage.text) result.stagedMessage.text = args
             super._handleResult(event.tag, result)
           })
+        } else {
+          chatCompleteResults.push(...potentialCommands.map(c => ({text: `/${c} `})))
         }
       }
-      // TODO: This works, but emits way too often.
       userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: event.tag, results: chatCompleteResults})
     })
   }
