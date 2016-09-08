@@ -18,9 +18,10 @@ feature.listen({
 })
 
 // Emoji tokens
+// TODO: Support http://www.webpagefx.com/tools/emoji-cheat-sheet/
 feature.listen({
   to: {tokens: ['smile']},
-  on({token, args}) {
+  on({token}) {
     return {text: '😊'}
   }
 })

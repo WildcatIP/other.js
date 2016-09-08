@@ -236,6 +236,15 @@ class Listener {
     this._on = on
   }
 
+  _requestResult(args, resultCallback) {
+    const resultOrPromise = this._on(args)
+    if (resultOrPromise instanceof Promise) {
+      resultOrPromise.then(resultCallback)
+    } else {
+      process.nextTick(resultCallback, resultOrPromise)
+    }
+  }
+
   _handleResult(tag, result) {
     if (result.stagedMessage) {
       // TODO: Revert staged message.
@@ -280,9 +289,7 @@ class CommandListener extends Listener {
         const potentialCommands = this._commands.filter(c => c.startsWith(command))
         if (potentialCommands.includes(command) && text.length >= command.length + 2) {
           const args = text.substring(command.length + 2)
-          const result = this._on({command, args})
-          const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => {
+          super._requestResult({command, args}, result => {
             if (!result.stagedMessage || !result.stagedMessage.text) result.stagedMessage.text = args
             super._handleResult(event.tag, result)
           })
@@ -323,9 +330,7 @@ class WordListener extends Listener {
       const {text} = event.message
       for (const word of this._words) {
         if (text && new RegExp(`\\b${word}\\b`).test(text)) {
-          const result = this._on({word, rest: text})
-          const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => this._handleResult(event.tag, result))
+          super._requestResult({word, rest: text}, result => this._handleResult(event.tag, result))
           return
         }
       }
@@ -360,16 +365,19 @@ class TokenListener extends Listener {
     this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
     userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
+      // TODO: This is O(N^2)! Use a little parser to make it O(N).
+      // TODO: Send chat complete results while typing.
       for (const token of this._tokens) {
-        if (text && new RegExp(`\\b:${token}:\\b`).test(text)) {
-          const result = this._on({token})
-          const promise = result instanceof Promise ? result : Promise.resolve(result)
-          promise.then(result => this._handleResult(event.tag, result))
+        if (text) {
+          const match = new RegExp(`(^|[\\s\\n])(:${token}:)(?=$|[\\s\\n])`, 'gim').exec(text)
+          if (!match) return
+          super._requestResult({token}, result => {
+            const newText = text.replace(`:${token}:`, result.text)
+            this._handleResult(event.tag, {stagedMessage: {text: newText}})
+          })
           return
         }
       }
-      // TODO: This works, but emits way too often.
-      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: event.tag, results: []})
     })
   }
 }
@@ -427,10 +435,9 @@ class Feature {
     if (to.words) {
       this._listeners.push(new WordListener({words: to.words, on}))
     }
-    // TODO: Support tokens (e.g. :emoji:)
-    // if (to.tokens) {
-    //  this._listeners.push(new TokenListener({tokens: to.tokens, on}))
-    // }
+    if (to.tokens) {
+      this._listeners.push(new TokenListener({tokens: to.tokens, on}))
+    }
   }
 }
 
