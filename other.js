@@ -336,6 +336,45 @@ class WordListener extends Listener {
 }
 
 /**
+ * Listens for tokens entered by the user.
+ *
+ * Tokens consist of " :token: " and may appear anywhere in a message.
+ * @inheritdoc
+ */
+class TokenListener extends Listener {
+  /**
+   * @callback TokenListener#onCallback
+   * @param {string} token - The token that was invoked.
+   * @return {?(Promise|Listener~ChatCompletion)} - The chat completion content
+   *     which should replace this token.
+   */
+
+  /**
+   * @param {string[]} tokens - Tokens which invoke this listener if typed
+   *     anywhere in the message (ie. " :{TOKEN}: ").
+   * @param {TokenListener#onCallback} on - Called when one of the tokens is
+   *     typed by the user.
+   */
+  constructor({tokens, on}) {
+    super({on})
+    this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
+    userAgent.on(SET_STAGED_MESSAGE, event => {
+      const {text} = event.message
+      for (const token of this._tokens) {
+        if (text && new RegExp(`\\b:${token}:\\b`).test(text)) {
+          const result = this._on({token})
+          const promise = result instanceof Promise ? result : Promise.resolve(result)
+          promise.then(result => this._handleResult(event.tag, result))
+          return
+        }
+      }
+      // TODO: This works, but emits way too often.
+      userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: event.tag, results: []})
+    })
+  }
+}
+
+/**
  * A package that extends Chatternet and/or Other Chat user agent functionality.
  * This is the base unit of other.js.
  */
@@ -395,4 +434,4 @@ class Feature {
   }
 }
 
-module.exports = {Chatternet, CommandListener, Feature, WordListener, UserAgent}
+module.exports = {Chatternet, CommandListener, Feature, TokenListener, WordListener, UserAgent}
