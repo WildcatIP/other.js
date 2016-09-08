@@ -370,7 +370,7 @@ class TokenListener extends Listener {
       for (const token of this._tokens) {
         if (text) {
           const match = new RegExp(`(^|[\\s\\n])(:${token}:)(?=$|[\\s\\n])`, 'gim').exec(text)
-          if (!match) return
+          if (!match) continue
           super._requestResult({token}, result => {
             const newText = text.replace(`:${token}:`, result.text)
             this._handleResult(event.tag, {stagedMessage: {text: newText}})
