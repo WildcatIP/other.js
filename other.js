@@ -330,7 +330,7 @@ class WordListener extends Listener {
       const {text} = event.message
       for (const word of this._words) {
         if (text && new RegExp(`\\b${word}\\b`).test(text)) {
-          super._requestResult({word, rest: text}, result => this._handleResult(event.tag, result))
+          super._requestResult({word, rest: text}, result => super._handleResult(event.tag, result))
           return
         }
       }
@@ -362,22 +362,36 @@ class TokenListener extends Listener {
    */
   constructor({tokens, on}) {
     super({on})
-    this._tokens = tokens.sort((a, b) => b.length - a.length)  // Sort by length descending so that longest token is matched
+    // Sort by length descending so that longest token is matched.
+    const sortedTokens = tokens.sort((a, b) => b.length - a.length)
+    const nonWhitespaceOrColon = '[^: \\f\\n\\r\\t\\v\\u00a0\\u1680\\u180e\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]'
+    const partialTokenRegExp = new RegExp(`(?:^|[\\s\\n]):(${nonWhitespaceOrColon}+)$`, 'gim')
+    const fullTokenRegExp = new RegExp(`(?:^|[\\s\\n])(:(${nonWhitespaceOrColon}+):)(?=$|[\\s\\n])`, 'gim')
     userAgent.on(SET_STAGED_MESSAGE, event => {
       const {text} = event.message
-      // TODO: This is O(N^2)! Use a little parser to make it O(N).
-      // TODO: Send chat complete results while typing.
-      for (const token of this._tokens) {
-        if (text) {
-          const match = new RegExp(`(^|[\\s\\n])(:${token}:)(?=$|[\\s\\n])`, 'gim').exec(text)
-          if (!match) continue
-          super._requestResult({token}, result => {
-            const newText = text.replace(`:${token}:`, result.text)
-            this._handleResult(event.tag, {stagedMessage: {text: newText}})
-          })
-          return
-        }
+      if (!text) return
+
+      const partialMatch = partialTokenRegExp.exec(text)
+      if (partialMatch) {
+        const partialToken = partialMatch[1]
+        const partialTokenMatches = sortedTokens.filter(t => t.startsWith(partialToken))
+        if (!partialTokenMatches.length) return
+        // const results = [{text: partialTokenMatches[0]}] // TODO: Lookup and return all
+        // userAgent.emit(SET_CHAT_COMPLETE_RESULTS, {replyTag: event.tag, results})
+        return
       }
+
+      const fullMatch = fullTokenRegExp.exec(text)
+      if (!fullMatch) return
+
+      const toReplace = fullMatch[1]
+      const token = fullMatch[2]
+      if (!sortedTokens.includes(token)) return
+
+      super._requestResult({token}, result => {
+        const newText = text.replace(toReplace, result.text)
+        super._handleResult(event.tag, {stagedMessage: {text: newText}})
+      })
     })
   }
 }

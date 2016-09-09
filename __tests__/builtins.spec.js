@@ -52,5 +52,29 @@ describe('core', () => {
         done()
       })
     })
+/*
+    it('autocompletes', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello :bow'}, tag: 123})
+      process.nextTick(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {
+          results: [
+            {text: 'bowling'}
+          ],
+          replyTag: 123
+        })
+        done()
+      })
+    })
+*/
+    it('dismisses autocomplete', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello :bow '}, tag: 123})
+      process.nextTick(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
   })
 })
