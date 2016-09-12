@@ -1,4 +1,4 @@
-import {default as core} from '../builtins/core.other'
+import {default as core} from '../core.other'
 
 describe('core', () => {
   beforeEach(() => {

@@ -15,8 +15,8 @@ function getPlugins() {
       }
     }),
     new CopyWebpackPlugin([
-      {from: 'builtins', to: 'builtins'},
-      {from: 'examples', to: 'examples'}
+      {from: 'builtins/*.other.js'},
+      {from: 'examples/*.other.js'}
     ])
   ]
   if (isProd) {
