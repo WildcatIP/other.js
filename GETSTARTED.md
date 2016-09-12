@@ -1,3 +1,5 @@
+## Writing a Feature
+
 [Feature](https://apps.other.chat/docs/Feature.html) is the base unit of other.js. Perhaps unsurprisingly, a Chatternet features is simply an ES6 module that exports an instance of the Feature class.
 
 From there, nearly all features will want to use its high level API to listen and respond to events. For example, to automatically replace the word "The" with "Teh" in all user input, one could write:
@@ -22,6 +24,7 @@ feature.userAgent.on(Events.SET_STAGED_MESSAGE, event => {
   }
 })
 ```
+
 
 ## Examples
 
