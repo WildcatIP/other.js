@@ -68,7 +68,8 @@ describe('core', () => {
         expect(core.userAgent.emit.calls.count()).toEqual(2)
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {
           results: [
-            {text: 'bowling'}
+            {text: '🎳'},
+            {text: '🙇'}
           ],
           replyTag: 123
         })
