@@ -60,6 +60,7 @@
       "no-eval": "error",
       "no-extra-bind": "error",
       "no-extra-label": "error",
+      "no-extra-parens": "error",
       "no-fallthrough": "error",
       "no-implicit-globals": "error",
       "no-implied-eval": "error",
@@ -74,7 +75,9 @@
       "no-return-assign": "error",
       "no-self-compare": "error",
       "no-shadow-restricted-names": "error",
+      "no-template-curly-in-string": "error",
       "no-undef-init": "error",
+      "no-unsafe-negation": "error",
       "no-unused-expressions": "error",
       "no-useless-call": "error",
       "no-useless-computed-key": "error",
@@ -89,7 +92,9 @@
       "prefer-arrow-callback": "error",
       "prefer-const": "error",
       "semi": ["error", "never"],
-      "strict": "error"
+      "sort-imports": ["error", {}],
+      "strict": "error",
+      "valid-jsdoc": "error"
     }
   },
   "jest": {

@@ -4,7 +4,7 @@ const path = require('path')
 const validate = require('webpack-validator').validateRoot
 const webpack = require('webpack')
 
-const isProd = (process.env.NODE_ENV === 'production')
+const isProd = process.env.NODE_ENV === 'production'
 const version = require('./package.json').version + '+' + new GitRevisionPlugin().version()
 
 function getPlugins() {
