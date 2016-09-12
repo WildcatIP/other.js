@@ -2,7 +2,7 @@ const {Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.1.1',
+  version: '0.1.2',
   dependencies: {
     otherjs: '3.1.x'
   }
