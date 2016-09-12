@@ -9,7 +9,7 @@
   "scripts": {
     "build": "webpack",
     "deploy": "./deploy.sh",
-    "dist": "NODE_ENV=production webpack && jsdoc ./other.js lib/*.js -c ./jsdoc/conf.json",
+    "dist": "NODE_ENV=production webpack && jsdoc ./other.js lib/*.js -c ./jsdoc/conf.json -R ./README.md",
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' .",
     "start": "webpack-dev-server --port=8888",
     "test": "NODE_ENV=test jest",
