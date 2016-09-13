@@ -25,6 +25,14 @@ feature.userAgent.on(Events.SET_STAGED_MESSAGE, event => {
 })
 ```
 
+### Using the network
+
+The [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) is exported by other.js and available to features in the `global` object. Fetching JSON, for example, looks like:
+```js
+fetch('https://example.com/endpoint').then(response => response.json()).then(json => {
+  console.log(json)
+})
+```
 
 ## Examples
 

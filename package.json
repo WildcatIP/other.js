@@ -1,6 +1,6 @@
 {
   "name": "other.js",
-  "version": "3.1.3",
+  "version": "3.2.0",
   "description": "The Chatternet feature platform",
   "author": "Tony Gentilcore <tony@other.xyz>",
   "repository": "other-xyz/other.js",
@@ -14,6 +14,9 @@
     "start": "webpack-dev-server --port=8888",
     "test": "NODE_ENV=test jest",
     "test:watch": "npm test -- --watchAll"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
@@ -91,8 +94,14 @@
       "object-shorthand": "error",
       "prefer-arrow-callback": "error",
       "prefer-const": "error",
-      "semi": ["error", "never"],
-      "sort-imports": ["error", {}],
+      "semi": [
+        "error",
+        "never"
+      ],
+      "sort-imports": [
+        "error",
+        {}
+      ],
       "strict": "error",
       "valid-jsdoc": "error"
     }

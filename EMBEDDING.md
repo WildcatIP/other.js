@@ -28,7 +28,7 @@ module.exports.userAgent.on('SET_CHAT_COMPLETE_RESULTS', event => {
 })
 ```
 
-An embedder may choose to implement any set of events. The set of events it implements determines whether a particular feature can execute within that host. For example, a server-side host should implement all [Chatternet](https://apps.other.chat/docs/Chatternet.html) events but cannot implement [UserAgent](https://apps.other.chat/docs/UserAgent.html) events. While a client-side host should implement applicable [UserAgent](https://apps.other.chat/docs/UserAgent.html) events and may optionally implement [Chatternet](https://apps.other.chat/docs/Chatternet.html) events.
+An embedder may choose to implement any set of events. The set of events it implements determines whether a particular feature can execute within that host. For example, a server-side host should implement all [Chatternet](https://apps.other.chat/docs/Chatternet.html) events but cannot implement [UserAgent](https://apps.other.chat/docs/UserAgent.html) events. While a client-side host should implement applicable [UserAgent](https://apps.other.chat/docs/UserAgent.html) events and may optionally implement [Chatternet](https://apps.other.chat/docs/Chatternet.html) events. All embedders should implement [Environment](https://apps.other.chat/docs/Environment.html).
 
 ## Versioning
 
