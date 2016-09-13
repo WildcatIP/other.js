@@ -47,19 +47,19 @@
 
 html {
   overflow: auto;
-  background-color: #fff;
+  background-color: var(--theme-background-color);
   font-size: 15px;
 }
 
 body {
   font-family: Nhu;
   line-height: 1.5;
-  color: #555;
-  background-color: #fff;
+  color: var(--theme-medium-text-color);
+  background-color: var(--theme-background-color);
 }
 
 a, a:visited, a:active {
-  color: #919cff;
+  color: var(--theme-link-color);
   text-decoration: none;
 }
 
@@ -77,8 +77,8 @@ tt, code, kbd, samp {
 }
 
 .class-description {
-  font-size: 130%;
-  line-height: 140%;
+  font-size: 110%;
+  line-height: 130%;
   margin-bottom: 1em;
   margin-top: 1em;
 }
@@ -98,7 +98,7 @@ article dl {
 
 section {
   display: block;
-  background-color: #fff;
+  background-color: var(--theme-background-color);
   padding: 12px 24px;
   border-bottom: 1px solid var(--theme-border-color);
   margin-right: 30px;
@@ -110,7 +110,7 @@ section {
 
 .signature-attributes {
   font-size: 60%;
-  color: #b7b7b7;
+  color: var(--theme-ultralight-text-color);
   font-style: italic;
   font-weight: lighter;
 }
@@ -138,7 +138,7 @@ nav ul a, nav ul a:visited, nav ul a:active {
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
   font-size: 90%;
   line-height: 18px;
-  color: #555;
+  color: var(--theme-medium-text-color);
 }
 
 nav h3 {
@@ -170,7 +170,7 @@ h1, h2, h3, h4 {
 
 h1 {
   color: var(--theme-medium-text-color);
-  font-size: 32px;
+  font-size: 30px;
   margin: 12px 24px 20px;
 }
 
@@ -225,16 +225,16 @@ td, th {
 }
 
 thead tr {
-  background-color: #f9f9f9;
+  background-color: var(--theme-highlight-color);
   font-weight: bold;
 }
 
 th { border-right: 1px solid var(--theme-border-color); }
 tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 
-.ancestors { color: #999; }
+.ancestors { color: var(--theme-light-text-color); }
 .ancestors a {
-  color: #999 !important;
+  color: var(--theme-light-text-color) !important;
   text-decoration: none;
 }
 
@@ -252,7 +252,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 }
 
 .type-signature {
-  color: #aaa;
+  color: var(--theme-ultralight-text-color);
 }
 
 .name, .signature {
@@ -295,8 +295,8 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
   display: block;
   padding: 4px 12px;
   margin: 0;
-  background-color: #fff;
-  color: #555;
+  background-color: var(--theme-background-color);
+  color: var(--theme-medium-text-color);
 }
 
 .prettyprint code span.line {
@@ -332,7 +332,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 }
 
 .params .name, .props .name, .name code {
-  color: #555;
+  color: var(--theme-medium-text-color);
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
   font-size: 80%;
 }
@@ -350,7 +350,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 }
 
 .disabled {
-  color: #555;
+  color: var(--theme-medium-text-color);
 }
 
 :root {
