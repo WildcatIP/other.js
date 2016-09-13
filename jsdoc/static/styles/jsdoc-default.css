@@ -126,7 +126,7 @@ nav {
 }
 
 nav ul {
-  font-family: 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
+  font-family: Nhu;
   font-size: 100%;
   line-height: 17px;
   padding: 0;
@@ -136,12 +136,19 @@ nav ul {
 
 nav ul a, nav ul a:visited, nav ul a:active {
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-size: 90%;
   line-height: 18px;
   color: #555;
 }
 
 nav h3 {
   margin-top: 12px;
+  text-transform: lowercase;
+}
+
+nav h2 {
+  margin-top: 12px;
+  text-transform: lowercase;
 }
 
 nav li {
@@ -283,7 +290,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 }
 
 .prettyprint code {
-  font-size: 90%;
+  font-size: 80%;
   line-height: 18px;
   display: block;
   padding: 4px 12px;
@@ -327,7 +334,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 .params .name, .props .name, .name code {
   color: #555;
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
-  font-size: 90%;
+  font-size: 80%;
 }
 
 .params td.description > p:first-child,
