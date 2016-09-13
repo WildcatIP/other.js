@@ -1,27 +1,48 @@
 @font-face {
-  font-family: 'Open Sans';
-  font-weight: normal;
-  font-style: normal;
-  src: url('../fonts/OpenSans-Regular-webfont.eot');
-  src:
-    local('Open Sans'),
-    local('OpenSans'),
-    url('../fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-    url('../fonts/OpenSans-Regular-webfont.woff') format('woff'),
-    url('../fonts/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
+  font-family: Nhu;
+  src: url("../fonts/nhu.otf") format("opentype");
 }
 
 @font-face {
-  font-family: 'Open Sans Light';
+  font-family: NhuItalic;
   font-weight: normal;
-  font-style: normal;
-  src: url('../fonts/OpenSans-Light-webfont.eot');
-  src:
-    local('Open Sans Light'),
-    local('OpenSans Light'),
-    url('../fonts/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
-    url('../fonts/OpenSans-Light-webfont.woff') format('woff'),
-    url('../fonts/OpenSans-Light-webfont.svg#open_sanslight') format('svg');
+  src: url("../fonts/nhu-italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: NhuMedium;
+  font-weight: normal;
+  src: url("../fonts/nhu-medium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: NhuMediumItalic;
+  font-weight: normal;
+  src: url("../fonts/nhu-medium-italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: NhuBold;
+  font-weight: normal;
+  src: url("../fonts/nhu-bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: NhuBoldItalic;
+  font-weight: normal;
+  src: url("../fonts/nhu-bold-italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: NhuLight;
+  font-weight: normal;
+  src: url("../fonts/nhu-light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: NhuLightItalic;
+  font-weight: normal;
+  src: url("../fonts/nhu-light-italic.otf") format("opentype");
 }
 
 html {
@@ -31,7 +52,7 @@ html {
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: Nhu;
   line-height: 1.5;
   color: #555;
   background-color: #fff;
@@ -136,27 +157,26 @@ footer {
 }
 
 h1, h2, h3, h4 {
-  font-weight: 200;
   margin: 0;
 }
 
 h1 {
-  font-family: 'Open Sans Light', sans-serif;
-  font-size: 48px;
-  letter-spacing: -2px;
+  color: var(--theme-medium-text-color);
+  font-size: 36px;
   margin: 12px 24px 20px;
 }
 
 h2, h3.subsection-title {
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -1px;
+  color: var(--theme-medium-text-color);
+  font-family: NhuLight;
+  font-size: 28px;
   margin-bottom: 12px;
 }
 
 h3 {
-  font-size: 24px;
-  letter-spacing: -0.5px;
+  color: var(--theme-medium-text-color);
+  font-family: NhuLight;
+  font-size: 22px;
   margin-bottom: 12px;
 }
 
@@ -323,4 +343,15 @@ tr > th:last-child { border-right: 1px solid #efefef; }
 
 .disabled {
   color: #555;
+}
+
+:root {
+  --theme-background-color: #fff;
+  --theme-highlight-color: #f9f9f9;
+  --theme-border-color: #efefef;
+  --theme-link-color: #919cff;
+  --theme-primary-text-color: #000;
+  --theme-medium-text-color: #555;
+  --theme-light-text-color: #888;
+  --theme-ultralight-text-color: #b7b7b7;
 }
