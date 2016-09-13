@@ -1,10 +1,10 @@
-const {Feature} = require('other')
+const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.1.2',
+  version: '0.2.0',
   dependencies: {
-    otherjs: '3.1.x'
+    otherjs: '3.2.x'
   }
 })
 
@@ -14,6 +14,17 @@ feature.listen({
   on({command, args}) {
     // TODO: Remove this small -> system hack once the iOS client understands small.
     return {stagedMessage: {format: command === 'small' ? 'system' : command}}
+  }
+})
+
+// Giphy search
+feature.listen({
+  to: {words: ['gif']},
+  on({word, rest}) {
+    const q = encodeURIComponent(rest.replace(word, ''))
+    return fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&limit=10&q=${q}`).then(response => response.json()).then(json => {
+      console.log(json)  // TODO: Do something w/ the response
+    })
   }
 })
 
