@@ -17,7 +17,12 @@
   "templates": {
     "cleverLinks": true,
     "default": {
-      "layoutFile": "layout.tmpl"
+      "layoutFile": "./jsdoc/layout.tmpl",
+      "staticFiles": {
+        "include": [
+          "./jsdoc/static"
+        ]
+      }
     },
     "monospaceLinks": false
   }
