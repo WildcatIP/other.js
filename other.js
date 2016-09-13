@@ -1,3 +1,5 @@
+// Copyright 2016 Post Social, inc.
+
 import 'babel-polyfill'
 
 import Chatternet from './lib/Chatternet'
