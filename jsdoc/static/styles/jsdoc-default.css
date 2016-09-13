@@ -48,7 +48,7 @@
 html {
   overflow: auto;
   background-color: #fff;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 body {
@@ -100,7 +100,7 @@ section {
   display: block;
   background-color: #fff;
   padding: 12px 24px;
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid var(--theme-border-color);
   margin-right: 30px;
 }
 
@@ -121,7 +121,7 @@ nav {
   margin-top: 28px;
   width: 30%;
   box-sizing: border-box;
-  border-left: 1px solid #efefef;
+  border-left: 1px solid var(--theme-border-color);
   padding-left: 16px;
 }
 
@@ -149,11 +149,12 @@ nav li {
 }
 
 footer {
+  color: var(--theme-light-text-color);
   display: block;
-  padding: 6px;
+  font-family: NhuItalic;
+  font-size: 12px;
   margin-top: 12px;
-  font-style: italic;
-  font-size: 90%;
+  padding: 6px;
 }
 
 h1, h2, h3, h4 {
@@ -181,10 +182,10 @@ h3 {
 }
 
 h4 {
-  font-size: 18px;
-  letter-spacing: -0.33px;
+  color: var(--theme-medium-text-color);
+  font-family: NhuLight;
+  padding-left: 20px;
   margin-bottom: 12px;
-  color: #555;
 }
 
 h5, .container-overview .subsection-title {
@@ -208,7 +209,7 @@ table {
 }
 
 td, th {
-  border: 1px solid #efefef;
+  border: 1px solid var(--theme-border-color);
   margin: 0px;
   text-align: left;
   vertical-align: top;
@@ -221,8 +222,8 @@ thead tr {
   font-weight: bold;
 }
 
-th { border-right: 1px solid #efefef; }
-tr > th:last-child { border-right: 1px solid #efefef; }
+th { border-right: 1px solid var(--theme-border-color); }
+tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 
 .ancestors { color: #999; }
 .ancestors a {
@@ -251,7 +252,7 @@ tr > th:last-child { border-right: 1px solid #efefef; }
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
 }
 
-.details { margin-top: 14px; border-left: 2px solid #efefef; }
+.details { margin-top: 14px; border-left: 2px solid var(--theme-border-color); }
 .details dt { width: 120px; float: left; padding-left: 10px;  padding-top: 6px; }
 .details dd { margin-left: 70px; }
 .details ul { margin: 0; }
@@ -272,7 +273,7 @@ tr > th:last-child { border-right: 1px solid #efefef; }
 }
 
 .prettyprint {
-  border: 1px solid #efefef;
+  border: 1px solid var(--theme-border-color);
   width: 80%;
   overflow: auto;
 }
@@ -308,7 +309,7 @@ tr > th:last-child { border-right: 1px solid #efefef; }
 }
 
 .prettyprint.linenums li {
-  border-left: 3px #efefef solid;
+  border-left: 3px solid var(--theme-border-color);
 }
 
 .prettyprint.linenums li.selected,
