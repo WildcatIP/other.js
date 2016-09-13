@@ -163,14 +163,14 @@ h1, h2, h3, h4 {
 
 h1 {
   color: var(--theme-medium-text-color);
-  font-size: 36px;
+  font-size: 32px;
   margin: 12px 24px 20px;
 }
 
 h2, h3.subsection-title {
   color: var(--theme-medium-text-color);
   font-family: NhuLight;
-  font-size: 28px;
+  font-size: 26px;
   margin-bottom: 12px;
 }
 
@@ -283,7 +283,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 }
 
 .prettyprint code {
-  font-size: 100%;
+  font-size: 90%;
   line-height: 18px;
   display: block;
   padding: 4px 12px;
@@ -327,7 +327,7 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 .params .name, .props .name, .name code {
   color: #555;
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
-  font-size: 100%;
+  font-size: 90%;
 }
 
 .params td.description > p:first-child,
