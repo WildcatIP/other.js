@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.2.0',
+  version: '0.3.0',
   dependencies: {
     otherjs: '3.2.x'
   }
@@ -21,9 +21,18 @@ feature.listen({
 feature.listen({
   to: {words: ['gif']},
   on({word, rest}) {
-    const q = encodeURIComponent(rest.replace(word, ''))
-    return fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&limit=10&q=${q}`).then(response => response.json()).then(json => {
-      console.log(json)  // TODO: Do something w/ the response
+    const host = 'https://api.giphy.com'
+    const apiKeyParam = 'api_key=dc6zaTOxFJmzC' // TODO: Provide a way for features to access keys from the environment
+    const limitParam = 'limit=7'
+    const query = encodeURIComponent(rest.replace(word, '').trim())
+    const url = query ? `${host}/v1/gifs/search?${apiKeyParam}&q=${query}&${limitParam}` : `${host}/v1/gifs/trending?${apiKeyParam}&${limitParam}`
+    return fetch(url).then(response => response.json()).then(json => {
+      if (!json.data) return null
+      const chatCompletions = json.data.map(d => {
+        const {original} = d.images
+        return {media: {type: "image", url: original.url, size: {height: parseInt(original.height, 10), width: parseInt(original.width, 10)}}}
+      })
+      return {chatCompletions}
     })
   }
 })
