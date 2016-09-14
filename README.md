@@ -8,7 +8,7 @@ A JavaScript library for building Chatternet features.
 
 ## Get started
 
-Start with the [feature creation documentation](https://apps.other.chat/docs/index.html). Read about the [motivation](MOTIVATION.md) or dive deeper into the [design](DESIGN.md).
+Start with the [feature creation documentation](https://apps.other.chat/docs/index.html).
 
 ## Contribute
 
