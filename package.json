@@ -43,7 +43,8 @@
       "google"
     ],
     "parserOptions": {
-      "ecmaVersion": 6
+      "ecmaVersion": 6,
+      "sourceType": "module"
     },
     "rules": {
       "no-console": "off",
