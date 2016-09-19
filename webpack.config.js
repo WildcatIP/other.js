@@ -45,7 +45,7 @@ module.exports = validate({
   },
   devtool: isProd ? 'source-map' : 'eval-source-map',
   entry: {
-    other: './other.js'
+    other: './index.js'
   },
   module: {
     loaders: [
