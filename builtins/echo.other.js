@@ -2,7 +2,7 @@ const {Feature} = require('other')
 
 const feature = new Feature({
   name: 'Echo',
-  version: '0.0.3',
+  version: '0.0.4',
   dependencies: {
     otherjs: '3.2.x'
   },
@@ -10,6 +10,10 @@ const feature = new Feature({
 })
 
 const channel = feature.chatternet.channel({id: '03c2f076c78744dd8e345138ee28ba7f'})
-channel.onReceive(message => channel.send(message))
+channel.onReceive(message => {
+  // Everyone knows that a quack doesn't echo ;-)
+  const text = message.text === 'quack' ? 'silence' : message.text
+  channel.send({format: 'system', text})
+})
 
 module.exports = feature
