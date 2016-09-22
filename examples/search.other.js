@@ -4,7 +4,7 @@ const feature = new Feature({
   name: 'Duck Duck Go',
   version: '0.0.1',
   dependencies: {
-    otherjs: '3.2.x'
+    otherjs: '^3.2.x'
   }
 })
 

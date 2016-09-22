@@ -21,7 +21,18 @@ REVISION=$(git rev-parse --short HEAD)
 cd dist/otherjs/${VERSION}+${REVISION}
 for FILE in *
 do
+  # Exact version: https://docs.npmjs.com/misc/semver#versions
   aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/${MAJOR}.${MINOR}.${PATCH}/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
+
+  # TODO: Range support is extremely limited. Fill it out.
+
+  # X ranges: https://docs.npmjs.com/misc/semver#x-ranges-12x-1x-12-
   aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/${MAJOR}.${MINOR}.x/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
   aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/${MAJOR}.x/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
+
+  # Caret ranges: https://docs.npmjs.com/misc/semver#caret-ranges-123-025-004
+  for i in $(seq 0 $MINOR)
+  do
+    aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/^${MAJOR}.${i}.x/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
+  done
 done
