@@ -30,6 +30,12 @@ do
   aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/${MAJOR}.${MINOR}.x/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
   aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/${MAJOR}.x/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
 
+  # Tilde ranges: https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1
+  for i in $(seq 0 $PATCH)
+  do
+    aws --region=us-west-2 s3api put-object --bucket apps.other.chat --acl public-read --key otherjs/~${MAJOR}.${MINOR}.${i}/${FILE} --website-redirect-location /otherjs/${VERSION}+${REVISION}/${FILE} --content-type application/javascript --cache-control "max-age=86400, public"
+  done
+
   # Caret ranges: https://docs.npmjs.com/misc/semver#caret-ranges-123-025-004
   for i in $(seq 0 $MINOR)
   do

@@ -32,7 +32,8 @@ An embedder may choose to implement any set of events. The set of events it impl
 
 ## Versioning
 
-* An embedder must implement compatibility with one or more `MAJOR.MINOR.x` versions of other.js. It should remain agnostic of `PATCH`. Compatibility means supporting all of the [events](#feature-host-process) expected by that version of other.js.
+* An embedder must implement compatibility with one or more `MAJOR.MINOR` versions of other.js. Compatibility means supporting all of the [events](#feature-host-process) expected by that version of other.js.
+* The recommended way to depend on the latest compatible version is via [tilde ranges](https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1), e.g. `~1.2.3` (equivalent to `>=1.2.3 <1.3.0`). This ensures only backwards compatible other.js updates to the expected event contract are accepted.
 * When [preparing the environment](#environment-preparation) to execute a feature, the embedder must verify that it can satisfy the feature's dependencies.
 * Since each feature is completely isolated in its runtime context, an embedder may inject different versions of other.js into different containers. As long as dependency requirements are met, features are guaranteed to work together even across different `MAJOR` versions of other.js.
 
