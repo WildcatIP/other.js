@@ -12,7 +12,7 @@ const feature = new Feature({
   dependencies: {
     otherjs: '^3.2.x'
   },
-  identity: '5db2ae95f72b4785ae2348d76c463270'
+  identity: 'fffd90068a6249638d804323b7c93ffb'
 })
 
 feature.listen({
