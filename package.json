@@ -12,10 +12,11 @@
     "dist": "NODE_ENV=production webpack && jsdoc ./index.js lib/*.js -c ./jsdoc/conf.json -R ./GETSTARTED.md",
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' .",
     "start": "webpack-dev-server --port=8888",
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:watch": "npm test -- --watchAll"
   },
   "dependencies": {
+    "coveralls": "^2.11.14",
     "node-fetch": "^1.6.1",
     "whatwg-fetch": "^1.0.0"
   },
