@@ -18,7 +18,9 @@ describe('donger', () => {
     donger.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'donger'}, tag: 123})
     setImmediate(() => {
       expect(donger.userAgent.emit.calls.count()).toEqual(2)
-      expect(donger.userAgent.emit.calls.argsFor(1)[1].results.length).toEqual(13)
+      const {layout, results} = donger.userAgent.emit.calls.argsFor(1)[1]
+      expect(results.length).toEqual(13)
+      expect(layout).toEqual('tile')
       done()
     })
   })

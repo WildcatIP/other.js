@@ -14,7 +14,7 @@
     "pretest": "eslint --ignore-path .gitignore --ignore-pattern 'pseudo/*' .",
     "start": "webpack-dev-server --port=8888",
     "test": "NODE_ENV=test jest --coverage",
-    "test:watch": "npm test -- --watchAll"
+    "test:watch": "NODE_ENV=test jest --watchAll"
   },
   "dependencies": {
     "node-fetch": "^1.6.1",

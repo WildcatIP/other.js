@@ -20,6 +20,7 @@ describe('core', () => {
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(2)
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {
+          layout: 'tile',
           results: [
             {text: '/h1 '},
             {text: '/h2 '},
@@ -67,6 +68,7 @@ describe('core', () => {
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(2)
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {
+          layout: 'tile',
           results: [
             {text: '🎳'},
             {text: '🙇'}
