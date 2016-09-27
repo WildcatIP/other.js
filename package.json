@@ -1,6 +1,6 @@
 {
   "name": "other",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "The Chatternet feature platform",
   "author": "Tony Gentilcore <tony@other.xyz>",
   "repository": "other-xyz/other.js",
@@ -62,6 +62,7 @@
         "consistent"
       ],
       "default-case": "error",
+      "max-nested-callbacks": ["error", 5],
       "no-duplicate-imports": "error",
       "no-else-return": "error",
       "no-eval": "error",

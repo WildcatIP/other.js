@@ -62,5 +62,10 @@ module.exports = validate({
     path: path.resolve(__dirname, 'dist'),
     sourceMapFilename: `./otherjs/${version}/[name].js.map`
   },
+  resolve: {
+    alias: {
+      'node-fetch': 'whatwg-fetch'
+    }
+  },
   plugins: getPlugins()
 })
