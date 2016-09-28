@@ -39,7 +39,7 @@ module.exports = validate({
     },
     historyApiFallback: {
       rewrites: [
-        {from: /^\/otherjs\/[0-9x.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`}
+        {from: /^\/otherjs\/[0-9x~.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`}
       ]
     }
   },
