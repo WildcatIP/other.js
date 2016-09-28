@@ -122,5 +122,13 @@ describe('core', () => {
         })
       })
     })
+
+    it('does not match .gif extensions', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'simpsons.gif'}, tag: 123})
+      setImmediate(() => {
+        expect(core.environment.emit.calls.count()).toEqual(0)
+        done()
+      })
+    })
   })
 })
