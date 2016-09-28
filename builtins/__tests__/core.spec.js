@@ -6,6 +6,15 @@ describe('core', () => {
     spyOn(core.environment, 'emit').and.callThrough()
   })
 
+  it('clears chat complete for empty messages', done => {
+    core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: ''}, tag: 123})
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(2)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+      done()
+    })
+  })
+
   describe('format command', () => {
     it('ignores messages without format commands', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello'}, tag: 123})
