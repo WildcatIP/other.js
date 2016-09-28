@@ -17,20 +17,20 @@
     "test:watch": "NODE_ENV=test jest --watchAll"
   },
   "dependencies": {
-    "node-fetch": "^1.6.1",
+    "node-fetch": "^1.6.3",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "^6.14.0",
+    "babel-core": "^6.16.0",
     "babel-jest": "^15.0.0",
     "babel-loader": "^6.2.5",
-    "babel-polyfill": "^6.13.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-stage-2": "^6.13.0",
-    "babel-register": "^6.14.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-stage-2": "^6.16.0",
+    "babel-register": "^6.16.0",
     "copy-webpack-plugin": "^3.0.1",
     "coveralls": "^2.11.14",
-    "eslint": "^3.5.0",
+    "eslint": "^3.6.1",
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.6.0",
     "git-revision-webpack-plugin": "^2.4.0",
