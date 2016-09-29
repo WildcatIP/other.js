@@ -99,7 +99,7 @@ describe('core', () => {
     })
   })
 
-  describe('gif words', () => {
+  describe('gif word', () => {
     it('searches for gifs', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'gif simpsons'}, tag: 123})
       setImmediate(() => {
@@ -129,6 +129,14 @@ describe('core', () => {
           expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {layout: 'row', results: [result], replyTag: 123})
           done()
         })
+      })
+    })
+
+    it('is case insensitive', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'Gif simpsons'}, tag: 123})
+      setImmediate(() => {
+        expect(core.environment.emit.calls.count()).toEqual(1)
+        done()
       })
     })
 
