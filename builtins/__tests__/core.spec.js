@@ -42,8 +42,18 @@ describe('core', () => {
       })
     })
 
-    it('applies caption', done => {
+    it('applies caption when typed', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '/caption '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '', format: 'caption'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('applies caption from chat completion', done => {
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {text: '/caption'}, message: {text: '/capt'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
         expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '', format: 'caption'}, replyTag: 123})
@@ -80,11 +90,21 @@ describe('core', () => {
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {
           layout: 'tile',
           results: [
-            {text: '🎳'},
-            {text: '🙇'}
+            {text: '🎳', actions: ['default']},
+            {text: '🙇', actions: ['default']}
           ],
           replyTag: 123
         })
+        done()
+      })
+    })
+
+    it('replaces partial completions', done => {
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {text: '🙇'}, message: {text: 'hello :bow'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'hello 🙇'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
     })
