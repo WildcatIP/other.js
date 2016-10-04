@@ -24,4 +24,14 @@ describe('donger', () => {
       done()
     })
   })
+
+  it('replaces whole message with donger', done => {
+    donger.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {text: 'ᵔᴥᵔ'}, message: {text: 'hello donger goodbye'}, tag: 123})
+    setImmediate(() => {
+      expect(donger.userAgent.emit.calls.count()).toEqual(3)
+      expect(donger.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'ᵔᴥᵔ'}, replyTag: 123})
+      expect(donger.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+      done()
+    })
+  })
 })
