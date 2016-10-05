@@ -70,6 +70,15 @@ describe('core', () => {
         done()
       })
     })
+
+    it('clears results after partial match miss', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '/s '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
   })
 
   describe('emoji tokens', () => {
