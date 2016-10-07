@@ -3,16 +3,17 @@ const {Feature} = require('other')
 const dongers = getDongers()
 module.exports = new Feature({
   name: 'Donger',
-  version: '0.0.3',
+  version: '0.0.4',
   dependencies: {
     otherjs: '3.x'
   },
   listeners: [{
     to: {words: ['donger']},
     on({word, rest}) {
+      const query = rest.replace(word, '').trim()
       let shuffledDongers = dongers.sort(() => 0.5 - Math.random())
-      if (rest.length) {
-        const sampleSize = Math.round(dongers.length / Math.pow(rest.length, 2))
+      if (query.length) {
+        const sampleSize = Math.round(dongers.length / Math.pow(query.length, 2))
         shuffledDongers = shuffledDongers.slice(0, sampleSize)
       }
       return {chatCompletions: shuffledDongers.map(donger => ({text: donger}))}

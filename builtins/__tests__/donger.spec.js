@@ -19,7 +19,7 @@ describe('donger', () => {
     setImmediate(() => {
       expect(donger.userAgent.emit.calls.count()).toEqual(2)
       const {layout, results} = donger.userAgent.emit.calls.argsFor(1)[1]
-      expect(results.length).toEqual(13)
+      expect(results.length).toEqual(484)
       expect(layout).toEqual('tile')
       done()
     })
