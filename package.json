@@ -34,11 +34,11 @@
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.6.0",
     "git-revision-webpack-plugin": "^2.4.0",
-    "jest-cli": "^16.0.0",
+    "jest-cli": "^16.0.1",
     "jsdoc": "^3.4.2",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1",
-    "webpack-validator": "^2.2.8"
+    "webpack-dev-server": "^1.16.2",
+    "webpack-validator": "^2.2.9"
   },
   "eslintConfig": {
     "extends": [
