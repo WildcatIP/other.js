@@ -1,6 +1,6 @@
 {
   "name": "other",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "The Chatternet feature platform",
   "author": "Tony Gentilcore <tony@other.xyz>",
   "repository": "other-xyz/other.js",
@@ -17,6 +17,7 @@
     "test:watch": "NODE_ENV=test jest --watchAll"
   },
   "dependencies": {
+    "es6-promise": "^4.0.5",
     "node-fetch": "^1.6.3",
     "whatwg-fetch": "^1.0.0"
   },
@@ -62,7 +63,10 @@
         "consistent"
       ],
       "default-case": "error",
-      "max-nested-callbacks": ["error", 5],
+      "max-nested-callbacks": [
+        "error",
+        5
+      ],
       "no-duplicate-imports": "error",
       "no-else-return": "error",
       "no-eval": "error",
