@@ -34,6 +34,7 @@
     "eslint": "^3.7.1",
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.6.0",
+    "eslint-plugin-no-unsafe-regex": "^1.0.0",
     "git-revision-webpack-plugin": "^2.4.0",
     "jest-cli": "^16.0.1",
     "jsdoc": "^3.4.2",
@@ -50,6 +51,9 @@
       "ecmaVersion": 6,
       "sourceType": "module"
     },
+    "plugins": [
+      "no-unsafe-regex"
+    ],
     "rules": {
       "no-console": "off",
       "require-jsdoc": "off",
@@ -63,6 +67,7 @@
         "consistent"
       ],
       "default-case": "error",
+      "no-unsafe-regex/no-unsafe-regex": "error",
       "max-nested-callbacks": [
         "error",
         5
