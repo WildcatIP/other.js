@@ -81,6 +81,198 @@ describe('core', () => {
     })
   })
 
+  describe('mentions', () => {
+    beforeEach(() => {
+      const entities = {
+        234: {
+          name: 'archer',
+          isIdentity: true
+        },
+        345: {
+          name: 'cheryl',
+          isIdentity: true
+        },
+        456: {
+          name: 'cyril',
+          isIdentity: true
+        },
+        567: {
+          name: 'krieger',
+          isIdentity: true
+        },
+        678: {
+          name: 'krieger',
+          isIdentity: true
+        },
+        789: {
+          name: 'isis'
+        },
+        890: {
+          name: 'espionage',
+          parentId: '789'
+        },
+        901: {
+          name: 'dangerzone',
+          parentId: '234'
+        }
+      }
+      core.chatternet.emit('UPDATE_ENTITIES', {entities})
+    })
+
+    it('mentions identity', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello @archer, whats up?'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'hello <@234>, whats up?'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions identity channel', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'check out the #archer channel'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'check out the <@234> channel'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions channel', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#isis '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#789> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('completes multiple with different names', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@c'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '345',
+            name: 'cheryl',
+            isIdentity: true
+          },
+          {
+            id: '456',
+            name: 'cyril',
+            isIdentity: true
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('completes multiple with same name', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@krieger'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '567',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '678',
+            name: 'krieger',
+            isIdentity: true
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions ambiguous identity', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'Who is @krieger and who is the clone?'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'Who is <@567> and who is the clone?'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions selected completion', done => {
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieger'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'The clone is <@678>'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('ignores unknown channel', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#pam '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions subchannel by name', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#espionage '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#890> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions subchannel by full path', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#isis/espionage '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#890> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('ignores incorrect parent', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#cia/espionage '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('autocompletes subchannels', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#isis/'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '890',
+            name: 'espionage',
+            parentId: '789'
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('mentions identity subchannel', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@archer/dangerzone '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(3)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#901> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+  })
+
   describe('emoji tokens', () => {
     it('recognizes smile', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello :smile:'}, tag: 123})

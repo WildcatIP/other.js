@@ -30,92 +30,6 @@ const feature = new Feature({
 // would not be available in this unguarded fashion to extension authors.
 const userAgent = feature.userAgent
 
-// AT MESSAGE COMPLETE
-
-// The most basic of all chat completes is the @mention. It also shows the
-// basics of writing a chat complete command. This command, runs entirely
-// on the client.
-//
-//   token - what the user types to get the command
-//   accepts - the kinds of things the command for input
-//
-// accepts is a dictionary that maps a type to the property it is accessible by
-// in the context argument of a handler. For example, in this command the string
-// containing what the user typed after the command token will accessible
-// in context.query. Generally speaking, all commands accept at least this type.
-
-const mentionCommand = feature.command({
-  tokens: ['@'],
-  version: 'user.0.1',
-  name: '@mention complete',
-  accepts: {query: String}
-})
-
-// The didQuery event handler is trigger when the user enters something after
-// the command token. The handler is passed two arguments:
-//
-//   context - all the things the event handler needs to do its thing
-//   didQuery - the promise by which the handler communnicates with the caller
-
-mentionCommand.on('didQuery', (context, didQuery) => {
-  // Find all users the client knows that match the query
-  otherchat.client.users.find(context.query).then(users => {
-    // Then sort those users by membership in the current channel first,
-    // then by their .relevance (a server calculated value) second
-    const sortedUsers = users.sortBy(user => [user.isMemberOf(otherchat.client.currentChannel), user.relevance])
-
-    // Then pass back the list of sorted, matching users to the Other Chat
-    // client (which is who made the call) as chat complete results.
-    //
-    // {user: user, action: 'whisper'} is short for:
-    // otherchat.types.chatCompleteResult({ user: user, action: 'whisper' })
-    //
-    // The promise interprets dictionaries as the default chat complete result
-    // type.
-    //
-    //   user - the client knows how to display a result based on the properties
-    //          set, in this case each row is displayed as a user
-    //   action - the name of the action button
-    const results = sortedUsers.map(user => ({user, action: 'whisper'}))
-    didQuery.resolve(results)
-  })
-  // Something went wrong with the search, abort!
-  .catch(reason => didQuery.reject(reason))
-})
-
-// When the action button is tapped, cause the client to navigate to the
-// selected user's whipser channel.
-
-mentionCommand.on('didAction', selected => {
-  userAgent.navigate(selected.user.whisperChannel)
-})
-
-// CHANNEL COMPLETE
-
-// Very similar to the last. The promise is passed on object with the channel
-// property set, so they display as a channel chat complete row.
-
-const hashCommand = feature.command({
-  tokens: ['#'],
-  version: 'channel.0.1',
-  name: '#channel complete',
-  accepts: {query: String}
-})
-
-hashCommand.on('didQuery', (context, didQuery) => {
-  otherchat.client.channels.find(context.query).then(channels => {
-    const results = channels
-      .map(channel => ({channel, action: 'go'}))
-      .sortBy(['relevance', 'createdAt'])
-
-    didQuery.resolve(results)
-  }).catch(reason => didQuery.reject(reason))
-})
-
-hashCommand.on('didAction', selected => {
-  userAgent.navigate(selected.channel)
-})
-
 // INVITE COMMAND
 //
 // The invite command introduces three concepts. Accepting types other than
@@ -200,7 +114,6 @@ invite.on('didFinish', (context, doFinish) => {
 })
 
 // TODO: Mute
-// TODO: Rechat
 // TODO: Todo app
 
 // NOTES:
