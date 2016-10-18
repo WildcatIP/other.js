@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.4.0',
+  version: '0.5.0',
   dependencies: {
     otherjs: '^3.2.x'
   }
@@ -14,6 +14,30 @@ feature.listen({
   on({command, args}) {
     // TODO: Remove this small -> system hack once the iOS client understands small.
     return {stagedMessage: {format: command === 'small' ? 'system' : command}}
+  }
+})
+
+// Mentions
+// TODO:
+// - Sort by relevance (e.g. membership in current channel, freshness)
+// - Add whisper action to identities.
+// - Add completions create channels.
+feature.listen({
+  to: 'mention',
+  on({mention}) {
+    const {entities} = feature.chatternet
+    const queryParts = mention.substring(1).split('/')
+    const getByPrefix = query => Object.keys(entities).filter(id => entities[id].name.startsWith(query)).map(id => Object.assign({id}, entities[id]))
+
+    if (queryParts.length < 1 || queryParts.length > 2) return null
+
+    const parentQuery = queryParts[0]
+    const parentResults = getByPrefix(parentQuery)
+    if (queryParts.length === 1) return parentResults
+
+    const subQuery = queryParts[1]
+    const subResults = getByPrefix(subQuery)
+    return subResults.filter(s => parentResults.map(p => p.id).includes(s.parentId))
   }
 })
 
