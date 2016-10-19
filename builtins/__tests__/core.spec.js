@@ -212,7 +212,7 @@ describe('core', () => {
     })
 
     it('mentions selected completion', done => {
-      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieger'}, tag: 123})
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieg'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
         expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
@@ -275,8 +275,7 @@ describe('core', () => {
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
           {
             id: '890',
-            name: 'espionage',
-            parentId: '789'
+            name: 'isis/espionage'
           }
         ], layout: 'column', replyTag: 123})
         done()

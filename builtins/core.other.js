@@ -37,7 +37,17 @@ feature.listen({
 
     const subQuery = queryParts[1]
     const subResults = getByPrefix(subQuery)
-    return subResults.filter(s => parentResults.map(p => p.id).includes(s.parentId)).map(s => Object.assign({}, s, {isIdentity: parentResults[0].isIdentity}))
+    return subResults.reduce((total, current) => {
+      const parent = parentResults.find(p => p.id === current.parentId)
+      if (parent) {
+        total.push({
+          id: current.id,
+          name: `${parent.name}/${current.name}`,
+          isIdentity: parent.isIdentity
+        })
+      }
+      return total
+    }, [])
   }
 })
 
