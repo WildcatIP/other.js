@@ -215,7 +215,10 @@ describe('core', () => {
       core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieger'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'The clone is <@678>'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: 'The clone is @krieger',
+          entities: [{id: '678', isIdentity: true, start: 13, length: 8}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
