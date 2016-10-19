@@ -37,7 +37,7 @@ feature.listen({
 
     const subQuery = queryParts[1]
     const subResults = getByPrefix(subQuery)
-    return subResults.filter(s => parentResults.map(p => p.id).includes(s.parentId))
+    return subResults.filter(s => parentResults.map(p => p.id).includes(s.parentId)).map(s => Object.assign({}, s, {isIdentity: parentResults[0].isIdentity}))
   }
 })
 

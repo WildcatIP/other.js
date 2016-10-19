@@ -123,7 +123,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello @archer, whats up?'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'hello <@234>, whats up?'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: 'hello @archer, whats up?',
+          entities: [{id: '234', isIdentity: true, start: 6, length: 7}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -133,7 +136,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'check out the #archer channel'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'check out the <@234> channel'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: 'check out the @archer channel',
+          entities: [{id: '234', isIdentity: true, start: 14, length: 7}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -143,7 +149,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#isis '}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#789> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: '#isis ',
+          entities: [{id: '789', isIdentity: false, start: 0, length: 5}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -193,7 +202,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'Who is @krieger and who is the clone?'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'Who is <@567> and who is the clone?'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: 'Who is @krieger and who is the clone?',
+          entities: [{id: '567', isIdentity: true, start: 7, length: 8}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -222,7 +234,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#espionage '}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#890> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: '#espionage ',
+          entities: [{id: '890', isIdentity: false, start: 0, length: 10}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -232,7 +247,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#isis/espionage '}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#890> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: '#isis/espionage ',
+          entities: [{id: '890', isIdentity: false, start: 0, length: 15}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -266,7 +284,10 @@ describe('core', () => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@archer/dangerzone '}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: '<#901> '}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
+          text: '@archer/dangerzone ',
+          entities: [{id: '901', isIdentity: true, start: 0, length: 18}]
+        }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
