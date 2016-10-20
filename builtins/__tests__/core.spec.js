@@ -229,7 +229,16 @@ describe('core', () => {
       })
     })
 
-    it('mentions selected completion', done => {
+    it('preserves mention of two different identities with same alias', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@krieger is the clone, this is the real @krieger ', entities: [{id: '678', isIdentity: true, start: 0, length: 8}, {id: '567', isIdentity: true, start: 40, length: 8}]}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('applies selected completion', done => {
       core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieg'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
