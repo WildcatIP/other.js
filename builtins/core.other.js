@@ -34,7 +34,7 @@ feature.listen({
             const entity = entities[id]
             return (!requireOnlyIdentities ||
                     entity.isIdentity ||
-                    entity.parentId && entities[entity.parentId].isIdentity) &&
+                    entity.parentId && (entities[entity.parentId] || {}).isIdentity) &&
                    entity.name.startsWith(query)
           })
           .map(id => Object.assign({id}, entities[id]))
