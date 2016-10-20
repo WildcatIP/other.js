@@ -114,6 +114,9 @@ describe('core', () => {
         901: {
           name: 'dangerzone',
           parentId: '234'
+        },
+        987: {
+          name: 'kgb'
         }
       }
       core.chatternet.emit('UPDATE_ENTITIES', {entities})
@@ -192,6 +195,50 @@ describe('core', () => {
             id: '678',
             name: 'krieger',
             isIdentity: true
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('completes only identities for @', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@k'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '567',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '678',
+            name: 'krieger',
+            isIdentity: true
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('completes only identities and channels for #', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#k'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '567',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '678',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '987',
+            name: 'kgb'
           }
         ], layout: 'column', replyTag: 123})
         done()
