@@ -71,6 +71,51 @@ feature.listen({
   }
 })
 
+// Media Picker
+// Paste in a URL and if we understand it, show a chat complete to embed
+// the URL
+
+feature.listen({
+  to: 'link',
+  on: function({url}) {
+
+    // Savedeo seems to 500 error with https urls
+    const videoURL = url.replace(/https/, 'http')
+
+    return fetch( 'https://savedeo.p.mashape.com/download', {
+      method:'POST',
+      body: `url=${videoURL}`,
+      headers: {
+        'X-Mashape-Key':'249RMQR2QbmshxAArl8lInJnrDM0p1Tgt3UjsnXmcTbcTqqMLp',
+        'Content-Type':'application/x-www-form-urlencoded'
+    }})
+    .then( response => { return response.json() })
+    .then( videoData => {
+
+      var mp4s = videoData.formats.filter( v => v.ext == 'mp4' )
+      if( mp4s.length == 0 ) return
+
+      const mp4 = mp4s[0]
+      // Instagram videos don't have a height/width in their JSON
+      // Could parse it out from the format field, but being lazy.
+      let size = { height: mp4.height || 640, width: mp4.width || 640 }
+
+      // The link format for YouTube doesn't include an .mp4 at the end, which
+      // means Other Chat doesn't know how to display it.
+      //
+      // @tony suggests we use {stageMessage: attachments[]} in the LinkListener
+      // but currently that doesn't seem to be getting called.
+
+      return {
+        chatCompletions: [ { media: { type:'video', url: mp4.url, size: size } } ]
+      }
+
+    })
+
+  }
+})
+
+
 // Emoji tokens
 const emoji = getEmoji()
 feature.listen({
