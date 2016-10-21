@@ -135,6 +135,15 @@ describe('core', () => {
       })
     })
 
+    it('does not mention partial matches', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello @arch '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
     it('mentions identity channel', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'check out the #archer channel'}, tag: 123})
       setImmediate(() => {
