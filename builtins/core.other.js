@@ -116,8 +116,6 @@ feature.listen({
         // @tony suggests we use {stageMessage: attachments[]} in the LinkListener
         // but currently that doesn't seem to be getting called.
 
-        console.log( JSON.stringify([{media: {type: 'video', url: mp4.url, size}}]) )
-
         return {
           chatCompletions: [{media: {type: 'video', url: mp4.url, size}}]
         }
@@ -132,6 +130,7 @@ feature.listen({
         }
       }
 
+      return {chatCompletions: []}
     })
   }
 })
