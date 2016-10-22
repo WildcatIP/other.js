@@ -296,6 +296,24 @@ describe('core', () => {
     })
   })
 
+  describe('media links', () => {
+    it('recognize vimeo link', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'https://vimeo.com/channels/staffpicks/182359265'}, tag: 123})
+      setImmediate(() => {
+        const result = [{media: {type: 'video', url: 'https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1471/7/182359265/598591373.mp4?token=580bd041_0x7c0f833a1498c994291875b53acdb7a682c60bb3', size: {height: 1080, width: 1920}}}]
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: result, replyTag: 123})
+      })
+    })
+
+    it('recognize instagram link', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'https://www.instagram.com/p/5XcsWuERgS/?taken-by=azaaza'}, tag: 123})
+      setImmediate(() => {
+        const result = [{media: {type: "video", url: 'https://scontent.cdninstagram.com/t50.2886-16/11773248_1618146288461442_1339867767_n.mp4', size: {height: 640, width: 640}}}]
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: result, replyTag: 123})
+      })
+    })
+  })
+
   describe('emoji tokens', () => {
     it('recognizes smile', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello :smile:'}, tag: 123})
