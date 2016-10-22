@@ -114,6 +114,9 @@ describe('core', () => {
         901: {
           name: 'dangerzone',
           parentId: '234'
+        },
+        987: {
+          name: 'kgb'
         }
       }
       core.chatternet.emit('UPDATE_ENTITIES', {entities})
@@ -127,6 +130,15 @@ describe('core', () => {
           text: 'hello @archer, whats up?',
           entities: [{id: '234', isIdentity: true, start: 6, length: 7}]
         }, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('does not mention partial matches', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello @arch '}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
@@ -198,6 +210,68 @@ describe('core', () => {
       })
     })
 
+    it('completes only identities for @', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@k'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '567',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '678',
+            name: 'krieger',
+            isIdentity: true
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('completes only identities and channels for #', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#k'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '567',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '678',
+            name: 'krieger',
+            isIdentity: true
+          },
+          {
+            id: '987',
+            name: 'kgb'
+          }
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('ignores completed entities at start', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hi @krieger', entities: [{id: '567', isIdentity: true, start: 3, length: 8}]}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('ignores completed entities at start', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@krieger', entities: [{id: '567', isIdentity: true, start: 0, length: 8}]}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
     it('mentions ambiguous identity', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'Who is @krieger and who is the clone?'}, tag: 123})
       setImmediate(() => {
@@ -211,7 +285,16 @@ describe('core', () => {
       })
     })
 
-    it('mentions selected completion', done => {
+    it('preserves mention of two different identities with same alias', done => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@krieger is the clone, this is the real @krieger ', entities: [{id: '678', isIdentity: true, start: 0, length: 8}, {id: '567', isIdentity: true, start: 40, length: 8}]}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('applies selected completion', done => {
       core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieg'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
@@ -268,7 +351,7 @@ describe('core', () => {
       })
     })
 
-    it('autocompletes subchannels', done => {
+    it('completes subchannels', done => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#isis/'}, tag: 123})
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(2)
