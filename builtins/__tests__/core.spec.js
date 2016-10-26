@@ -85,7 +85,7 @@ describe('core', () => {
     beforeEach(() => {
       const entities = {
         234: {
-          name: 'archer',
+          name: 'Archer',
           isIdentity: true
         },
         345: {
@@ -127,7 +127,7 @@ describe('core', () => {
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
         expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
-          text: 'hello @archer, whats up?',
+          text: 'hello @Archer, whats up?',
           entities: [{id: '234', isIdentity: true, start: 6, length: 7}]
         }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
@@ -149,7 +149,7 @@ describe('core', () => {
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
         expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
-          text: 'check out the @archer channel',
+          text: 'check out the @Archer channel',
           entities: [{id: '234', isIdentity: true, start: 14, length: 7}]
         }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
@@ -370,7 +370,7 @@ describe('core', () => {
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
         expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
-          text: '@archer/dangerzone ',
+          text: '@Archer/dangerzone ',
           entities: [{id: '901', isIdentity: true, start: 0, length: 18}]
         }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})

@@ -29,13 +29,14 @@ feature.listen({
     const requireOnlyIdentities = mention[0] === '@'
     const queryParts = mention.substring(1).split('/')
     const getByPrefix = query => {
+      const lowerQuery = query.toLowerCase()
       return Object.keys(entities)
           .filter(id => {
             const entity = entities[id]
             return (!requireOnlyIdentities ||
                     entity.isIdentity ||
                     entity.parentId && (entities[entity.parentId] || {}).isIdentity) &&
-                   entity.name.startsWith(query)
+                   entity.name.toLowerCase().startsWith(lowerQuery)
           })
           .map(id => Object.assign({id}, entities[id]))
     }
