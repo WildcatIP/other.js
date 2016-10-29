@@ -13,7 +13,7 @@ const {Feature} = require('other')
 const feature = new Feature({
   name: 'Channel Mention Backlink',
   version: 'channel-mention.0.1',
-  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
 })
 
 const command = feature.command()
@@ -35,13 +35,13 @@ command.on('messageDidPost', (context, didPostMentions) => {
   const message = context.message
   const channelPosts = []
 
-  message.mentionedChannels.each(channel => {
+  message.mentionedChannels.each((channel) => {
     const link = command.types.link({text: 'mentioned', to: message})
 
     channel
       .post({
         type: 'system',
-        text: `${context.message.author} ${link} this channel in ${channel}`
+        text: `${context.message.author} ${link} this channel in ${channel}`,
       })
       .appendTo(channelPosts)
   })
@@ -59,12 +59,12 @@ command.on('messageDidPost', (context, didPostMentions) => {
   feature.runAsServer(info, (serverContext, serverSuccess) => {
     const message = serverContext.info.message
 
-    message.mentionedChannels.each(channel => {
+    message.mentionedChannels.each((channel) => {
       const link = command.types.link({text: 'mentioned', to: message})
 
       channel.post({
         type: 'system',
-        text: `${message.author} ${link} this channel in ${channel}`
+        text: `${message.author} ${link} this channel in ${channel}`,
       })
       .endsWith(serverSuccess)
     })

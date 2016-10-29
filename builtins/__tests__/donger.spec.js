@@ -5,7 +5,7 @@ describe('donger', () => {
     spyOn(donger.userAgent, 'emit').and.callThrough()
   })
 
-  it('ignores messages without donger', done => {
+  it('ignores messages without donger', (done) => {
     donger.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello world'}, tag: 123})
     setImmediate(() => {
       expect(donger.userAgent.emit.calls.count()).toEqual(2)
@@ -14,7 +14,7 @@ describe('donger', () => {
     })
   })
 
-  it('recognizes donger', done => {
+  it('recognizes donger', (done) => {
     donger.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'donger'}, tag: 123})
     setImmediate(() => {
       expect(donger.userAgent.emit.calls.count()).toEqual(2)
@@ -25,7 +25,7 @@ describe('donger', () => {
     })
   })
 
-  it('replaces whole message with donger', done => {
+  it('replaces whole message with donger', (done) => {
     donger.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {text: 'ᵔᴥᵔ'}, message: {text: 'hello donger goodbye'}, tag: 123})
     setImmediate(() => {
       expect(donger.userAgent.emit.calls.count()).toEqual(3)

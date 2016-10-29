@@ -23,7 +23,7 @@ const {Feature} = require('other')
 const feature = new Feature({
   name: 'Rechat',
   version: '0.1',
-  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
 })
 
 const otherchat = new Otherchat(feature)
@@ -43,22 +43,22 @@ const rechatCommand = feature.command({
   accepts: {
     message: otherchat.type.message, // populated by long-holding a message (if we allowed multi-select, would be an array)
     channels: [otherchat.type.channels], // the to-rechat-to channels
-    query: String
+    query: String,
   },
-  allowsMultipleSelection: true
+  allowsMultipleSelection: true,
 })
 
 rechatCommand.on('didFinish', (context, doFinish) => {
   const currentChannel = otherchat.client.currentChannel
 
-  context.channels.each(toChannel => {
+  context.channels.each((toChannel) => {
     // repost the message, and then post a system message
 
     toChannel
       .post(context.message)
       .post({
         type: 'system', // Could also add a 'rechat' type for custom rechatty display
-        text: `rechat from ${currentChannel} by ${otherchat.client.me}`
+        text: `rechat from ${currentChannel} by ${otherchat.client.me}`,
       })
       .endsWith(doFinish)
 

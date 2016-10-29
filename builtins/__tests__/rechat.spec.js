@@ -5,7 +5,7 @@ describe('rechat', () => {
     spyOn(rechat.chatternet, 'emit').and.callThrough()
   })
 
-  it('does incorrect simplified rechat', done => {
+  it('does incorrect simplified rechat', (done) => {
     rechat.chatternet.emit('UPDATE_MESSAGES', 123, [{text: '/rechat <#03aea5a92a124d679c866e8dc97bdf1d> hello', identityId: '234'}])
     setImmediate(() => {
       expect(rechat.chatternet.emit.calls.count()).toEqual(3)
@@ -15,7 +15,7 @@ describe('rechat', () => {
     })
   })
 
-  it('ignores other commands', done => {
+  it('ignores other commands', (done) => {
     rechat.chatternet.emit('UPDATE_MESSAGES', 123, [{text: '/something else', identityId: '5db2ae95f72b4785ae2348d76c463270'}])
     setImmediate(() => {
       expect(rechat.chatternet.emit.calls.count()).toEqual(1)

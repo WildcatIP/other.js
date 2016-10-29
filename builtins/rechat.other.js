@@ -10,9 +10,9 @@ const feature = new Feature({
   name: 'Rechat Simple (Stopgap)',
   version: '0.0.1',
   dependencies: {
-    otherjs: '^3.2.x'
+    otherjs: '^3.2.x',
   },
-  identity: 'fffd90068a6249638d804323b7c93ffb'
+  identity: 'fffd90068a6249638d804323b7c93ffb',
 })
 
 feature.listen({
@@ -28,7 +28,7 @@ feature.listen({
     const targetChannel = feature.chatternet.channel({id: command.channelId})
     targetChannel.send({format: 'system', text: command.text})
     targetChannel.send({format: 'system', text: `rechat from <#${channel.id}> by <@${identityId}>`})
-  }
+  },
 })
 
 module.exports = feature
@@ -45,7 +45,7 @@ function parseCommand(text) {
   if (targetChannelPosition === -1) return null
   return {
     channelId: args.substring(targetChannelPosition + 2, 34),
-    text: args.replace(channelRegexp, '').trim()
+    text: args.replace(channelRegexp, '').trim(),
   }
 }
 // </mess>

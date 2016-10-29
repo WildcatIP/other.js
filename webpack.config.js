@@ -11,17 +11,17 @@ function getPlugins() {
   const plugins = [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-      }
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+      },
     }),
     new CopyWebpackPlugin([
       {from: 'builtins/*.other.js'},
-      {from: 'examples/*.other.js'}
-    ])
+      {from: 'examples/*.other.js'},
+    ]),
   ]
   if (isProd) {
     plugins.push(new webpack.optimize.UglifyJsPlugin({
-      compress: {warnings: false}
+      compress: {warnings: false},
       // TODO: Mangling reduces bundle size by 20%, but breaks things.
       // Need to figure out the right set of exceptions.
       // mangle: {props: true}
@@ -35,37 +35,37 @@ function getPlugins() {
 module.exports = validate({
   devServer: {
     headers: {
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
     },
     historyApiFallback: {
       rewrites: [
-        {from: /^\/otherjs\/[0-9x~.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`}
-      ]
-    }
+        {from: /^\/otherjs\/[0-9x~.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`},
+      ],
+    },
   },
   devtool: isProd ? 'source-map' : 'eval-source-map',
   entry: {
-    other: './index.js'
+    other: './index.js',
   },
   module: {
     loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel']
-      }
-    ]
+        loaders: ['babel'],
+      },
+    ],
   },
   output: {
     filename: `./otherjs/${version}/[name].min.js`,
     libraryTarget: 'commonjs2',
     path: path.resolve(__dirname, 'dist'),
-    sourceMapFilename: `./otherjs/${version}/[name].js.map`
+    sourceMapFilename: `./otherjs/${version}/[name].js.map`,
   },
   resolve: {
     alias: {
-      'node-fetch': 'whatwg-fetch'
-    }
+      'node-fetch': 'whatwg-fetch',
+    },
   },
-  plugins: getPlugins()
+  plugins: getPlugins(),
 })

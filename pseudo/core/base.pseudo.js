@@ -22,7 +22,7 @@ const feature = new Feature({
   name: 'Other Chat Base Behaviors',
   description: 'The basic behaviors of Other Chat',
   version: '0.0.1',
-  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e' // root ;)
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e', // root ;)
 })
 
 // This is the object used to script the Other Chat client. It's permissions
@@ -45,19 +45,19 @@ const invite = feature.command({
   accepts: {users: [otherchat.types.user], query: String},
 
   // Chat completes allow for multiple selection, huzzah!
-  allowsMultipleSelection: true
+  allowsMultipleSelection: true,
 })
 
 // When the invite command is invoked...
 invite.on('didQuery', (context, didQuery) => {
   // Search for the user's who match the query
-  otherchat.client.users.find(context.query).then(users => {
+  otherchat.client.users.find(context.query).then((users) => {
     // Map the users to user chat completes with invite action
-    const results = users.map(user => ({user, action: 'invite'}))
+    const results = users.map((user) => ({user, action: 'invite'}))
 
     // And display them
     return didQuery.resolve(results)
-  }).catch(reason => didQuery.reject(reason))
+  }).catch((reason) => didQuery.reject(reason))
 })
 
 // TODO: How are we showing hint/explanation text for these multi-selection
@@ -97,7 +97,7 @@ invite.on('didFinish', (context, doFinish) => {
   // Everything done within a .runAsServer closure is atomic. If one error is
   // thown, everything is rolled back so that nothing is left in a weird or
   // inconsistent state.
-  currentChannel.runAsServer(info, serverContext => {
+  currentChannel.runAsServer(info, (serverContext) => {
     const {channel, info} = serverContext
 
     // Make the user a member of the channel, and post a system message to the
@@ -105,12 +105,12 @@ invite.on('didFinish', (context, doFinish) => {
     channel.addMembers(info.users).then(() => {
       channel.post({
         format: 'system',
-        body: `${info.by} invited ${info.users} to ${channel}`
+        body: `${info.by} invited ${info.users} to ${channel}`,
       })
     })
   })
   .then(() => doFinish.resolve())
-  .catch(reason => doFinish.reject(reason))
+  .catch((reason) => doFinish.reject(reason))
 })
 
 // TODO: Mute

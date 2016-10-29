@@ -3,50 +3,48 @@ const {Feature} = require('other')
 const feature = new Feature({
   name: 'mapping-and-finding',
   version: '0.0.1',
-  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e'
+  identity: 'cdb6b77b-99c3-454e-8e89-185badc4644e',
 })
 const otherchat = new Otherchat( feature )
-const Places = require('other-places'); // our extended-local place search
+const Places = require('other-places') // our extended-local place search
 
 //
 // MAP COMMAND
 // map me, map sushi, map active club
 //
 
-var mapCmd = feature.command({
+const mapCmd = feature.command({
   tokens: ['map'],
   version: 'map.0.2', // can be separately versioned from the feature,
-  accepts: {place: Place, query: String}
+  accepts: {place: Place, query: String},
 })
 
 mapCmd.on('didQuery', (context, promise) => {
-  var query = context.query
+  const query = context.query
 
   // "map me" displays the map of where you are
   // "map sushi" displays a list of sushi places
 
-  if( ['me', 'here'].contains(query) ){
+  if( ['me', 'here'].contains(query) ) {
     // Centering on a user object continually updates the map with the
     // user's location
-    var map = otherchat.types.mapChatComplete({ center: client.me, zoom: 17 })
+    const map = otherchat.types.mapChatComplete({center: client.me, zoom: 17})
     return promise.resolve( map )
   }
 
-  otherchat.client.location().then( loc => {
-    findAndDisplayMapResults({ center: loc.latLng, query: query }, promise )
+  otherchat.client.location().then( (loc) => {
+    findAndDisplayMapResults({center: loc.latLng, query}, promise )
   })
 })
 
-function findAndDisplayMapResults( context, promise ){
-
+function findAndDisplayMapResults( context, promise ) {
   Places
-    .search({ query: context.query, centeredAt: context.center })
-    .then( places => {
-
-      var results = places.map( place => otherchat.types.mapChatComplete({
+    .search({query: context.query, centeredAt: context.center})
+    .then( (places) => {
+      const results = places.map( (place) => otherchat.types.mapChatComplete({
         text: place.name,
         rating: place.rating,
-        location: place.latLng
+        location: place.latLng,
       }) )
 
       // When a single map chat complete object is passed to done the map chat
@@ -54,9 +52,7 @@ function findAndDisplayMapResults( context, promise ){
       // items on the map
 
       promise.resolve( results )
-
-    }).catch( reason => promise.reject(reason) )
-
+    }).catch( (reason) => promise.reject(reason) )
 }
 
 
@@ -71,14 +67,13 @@ function findAndDisplayMapResults( context, promise ){
 // as a member of the context object.
 //
 
-var etaCmd = feature.command({
+const etaCmd = feature.command({
   tokens: ['eta'],
   version: 'eta.0.1',
-  accepts: { user: otherchat.types.user, place: Place, query: String }
+  accepts: {user: otherchat.types.user, place: Place, query: String},
 })
 
 etaCmd.on('didQuery', (context, promise) => {
-
   if ( !context.user && !context.place ) {
     return promise.reject( 'Get an eta to a person or place...' )
   }
@@ -86,7 +81,7 @@ etaCmd.on('didQuery', (context, promise) => {
   promise.resolve( oc.types.mapChatComplete({
     from: otherchat.client.me,
     to: context.user || context.place,
-    showTravelTime: true
+    showTravelTime: true,
   }))
 
   // There's some behind-the-scenes magic going on here with permissioning:
@@ -100,7 +95,6 @@ etaCmd.on('didQuery', (context, promise) => {
   //
   // Another implementation of the command might not show a map, but do a single
   // line chat complete with just the estimated time/distance.
-
 })
 
 
@@ -117,40 +111,36 @@ etaCmd.on('didQuery', (context, promise) => {
 // wit.ai has some inspiration, and perhaps the Place library can handle this
 // kind of parsing
 
-var findCommand = feature.command({
+const findCommand = feature.command({
   tokens: ['find'],
   version: 'find.0.1',
-  accepts: { place: Place, query: String }
+  accepts: {place: Place, query: String},
 })
 
 // @bs: Haha, yay! And I thought it was just me!
 // Also ... yeah. Github really needs comments.
-var Parser = require('other-parser') // maaaaaaggggiiiiccccc
+const Parser = require('other-parser') // maaaaaaggggiiiiccccc
 
 findCommand.on('didQuery', (context, promise) => {
-
   // Some magic that parses out specific types
 
   const parsed = Parser.parse(context.query, {for: {
     query: String,
     time: Time,
-    near: Place.withDefault( otherchat.client.me )
+    near: Place.withDefault( otherchat.client.me ),
   }})
 
-  Places.search({ query:parsed.query, centeredAt: parsed.near, openAt: parsed.time }).then( places => {
-
-    var results = places.map( place => ({
+  Places.search({query: parsed.query, centeredAt: parsed.near, openAt: parsed.time}).then( (places) => {
+    const results = places.map( (place) => ({
       text: place.name,
       detail: `${place.distance} ${place.vicinity}`,
       rating: place.rating,
-      info: { href: place.href },
-      action: 'more'
+      info: {href: place.href},
+      action: 'more',
     }) )
 
     promise.resolve( results )
-
-  }).catch(reason => promise.reject( reason ) )
-
+  }).catch((reason) => promise.reject( reason ) )
 })
 
 findCommand.on('didAction', (context, promise) => {
