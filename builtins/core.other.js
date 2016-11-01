@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.5.0',
+  version: '0.5.1',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -33,6 +33,7 @@ feature.listen({
       return Object.keys(entities)
           .filter((id) => {
             const entity = entities[id]
+            if (!lowerQuery && !requireOnlyIdentities && entity.isIdentity) return false
             return (!requireOnlyIdentities ||
                     entity.isIdentity ||
                     entity.parentId && (entities[entity.parentId] || {}).isIdentity) &&
