@@ -170,6 +170,74 @@ describe('core', () => {
       })
     })
 
+    it('completes all identities and identity subchannels for @', (done) => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '234',
+            name: 'Archer',
+            isIdentity: true,
+          },
+          {
+            id: '345',
+            name: 'cheryl',
+            isIdentity: true,
+          },
+          {
+            id: '456',
+            name: 'cyril',
+            isIdentity: true,
+          },
+          {
+            id: '567',
+            name: 'krieger',
+            isIdentity: true,
+          },
+          {
+            id: '678',
+            name: 'krieger',
+            isIdentity: true,
+          },
+          {
+            id: '901',
+            name: 'dangerzone',
+            parentId: '234',
+          },
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
+    it('completes all channels and subchannels for #', (done) => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '#'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
+          {
+            id: '789',
+            name: 'isis',
+          },
+          {
+            id: '890',
+            name: 'espionage',
+            parentId: '789',
+          },
+          {
+            id: '901',
+            name: 'dangerzone',
+            parentId: '234',
+          },
+          {
+            id: '987',
+            name: 'kgb',
+          },
+        ], layout: 'column', replyTag: 123})
+        done()
+      })
+    })
+
     it('completes multiple with different names', (done) => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '@c'}, tag: 123})
       setImmediate(() => {
