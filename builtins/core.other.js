@@ -10,7 +10,7 @@ const feature = new Feature({
 
 // Format commands
 feature.listen({
-  to: {commands: ['quote', 'caption', 'code', 'h1', 'h2', 'h3', 'p', 'small']},
+  to: {commands: ['quote', 'caption', 'code', 'h1', 'h2', 'h3', 'p', 'small', 'system']},
   on({command, args}) {
     return {stagedMessage: {format: command}}
   },
