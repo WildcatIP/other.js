@@ -10,10 +10,9 @@ const feature = new Feature({
 
 // Format commands
 feature.listen({
-  to: {commands: ['blockquote', 'caption', 'code', 'h1', 'h2', 'h3', 'p', 'small']},
+  to: {commands: ['caption', 'code', 'h1', 'h2', 'h3', 'p', 'quote', 'small', 'system']},
   on({command, args}) {
-    // TODO: Remove this small -> system hack once the iOS client understands small.
-    return {stagedMessage: {format: command === 'small' ? 'system' : command}}
+    return {stagedMessage: {format: command}}
   },
 })
 
