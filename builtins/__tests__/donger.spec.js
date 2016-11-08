@@ -25,6 +25,17 @@ describe('donger', () => {
     })
   })
 
+  it('recognizes Donger', (done) => {
+    donger.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'Donger'}, tag: 123})
+    setImmediate(() => {
+      expect(donger.userAgent.emit.calls.count()).toEqual(2)
+      const {layout, results} = donger.userAgent.emit.calls.argsFor(1)[1]
+      expect(results.length).toEqual(484)
+      expect(layout).toEqual('tile')
+      done()
+    })
+  })
+
   it('replaces whole message with donger', (done) => {
     donger.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {text: 'ᵔᴥᵔ'}, message: {text: 'hello donger goodbye'}, tag: 123})
     setImmediate(() => {

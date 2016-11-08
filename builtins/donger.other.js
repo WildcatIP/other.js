@@ -3,14 +3,14 @@ const {Feature} = require('other')
 const dongers = getDongers()
 module.exports = new Feature({
   name: 'Donger',
-  version: '0.0.4',
+  version: '0.0.5',
   dependencies: {
     otherjs: '3.x',
   },
   listeners: [{
     to: {words: ['donger']},
     on({word, rest}) {
-      const query = rest.replace(word, '').trim()
+      const query = rest.toLowerCase().replace(word, '').trim()
       let shuffledDongers = dongers.sort(() => 0.5 - Math.random())
       if (query.length) {
         const sampleSize = Math.round(dongers.length / Math.pow(query.length, 2))
