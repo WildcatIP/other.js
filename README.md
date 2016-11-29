@@ -1,4 +1,4 @@
-# <img src="https://other.chat/images/favicon.png" height="18" width="18" /> other.js [![Build Status](https://travis-ci.com/other-xyz/other.js.svg?token=96rqAKq1wuu7waxjVyTg&branch=master)](https://travis-ci.com/other-xyz/other.js) [![Coverage Status](https://coveralls.io/repos/github/other-xyz/other.js/badge.svg?t=lVKytd)](https://coveralls.io/github/other-xyz/other.js?branch=master) [![chat](https://img.shields.io/badge/chat-%23otherjs-919cff.svg)](https://other.chat/#/channel/740c2b85b3ad45509a59168891a58f74)
+# <img src="https://other.chat/images/favicon.png" height="18" width="18" /> other.js [![Build Status](https://travis-ci.com/other-xyz/other.js.svg?token=96rqAKq1wuu7waxjVyTg&branch=master)](https://travis-ci.com/other-xyz/other.js) [![Coverage Status](https://coveralls.io/repos/github/other-xyz/other.js/badge.svg?t=lVKytd)](https://coveralls.io/github/other-xyz/other.js?branch=master) [![chat](https://img.shields.io/badge/chat-%23otherjs-919cff.svg)](https://other.chat/otherjs/JL555P)
 
 A JavaScript library for building Chatternet features.
 
