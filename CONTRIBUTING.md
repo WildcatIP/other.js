@@ -25,7 +25,7 @@ These instructions assume you're running macOS and using the [Homebrew](http://b
    npm start
    ```
 
-1. Start an Other Chat client using `http://localhost:8888` as its otherjs host. [Web client instructions](https://github.com/other-xyz/other-chat-web/blob/master/README.md#otherjs)
+1. Start an Other Chat client using `https://localhost:8888` as its otherjs host. [Web client instructions](https://github.com/other-xyz/other-chat-web/blob/master/README.md#otherjs)
 
 ## Testing
 

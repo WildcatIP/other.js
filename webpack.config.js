@@ -37,6 +37,7 @@ module.exports = validate({
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
+    https: true,
     historyApiFallback: {
       rewrites: [
         {from: /^\/otherjs\/[0-9x~.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`},
