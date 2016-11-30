@@ -179,31 +179,37 @@ describe('core', () => {
             id: '234',
             name: 'Archer',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '345',
             name: 'cheryl',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '456',
             name: 'cyril',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '567',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '678',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '901',
             name: 'dangerzone',
             parentId: '234',
+            actions: ['default', 'go'],
           },
         ], layout: 'column', replyTag: 123})
         done()
@@ -218,20 +224,24 @@ describe('core', () => {
           {
             id: '789',
             name: 'isis',
+            actions: ['default', 'go'],
           },
           {
             id: '890',
             name: 'espionage',
             parentId: '789',
+            actions: ['default', 'go'],
           },
           {
             id: '901',
             name: 'dangerzone',
             parentId: '234',
+            actions: ['default', 'go'],
           },
           {
             id: '987',
             name: 'kgb',
+            actions: ['default', 'go'],
           },
         ], layout: 'column', replyTag: 123})
         done()
@@ -247,11 +257,13 @@ describe('core', () => {
             id: '345',
             name: 'cheryl',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '456',
             name: 'cyril',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
         ], layout: 'column', replyTag: 123})
         done()
@@ -267,11 +279,13 @@ describe('core', () => {
             id: '567',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '678',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
         ], layout: 'column', replyTag: 123})
         done()
@@ -287,11 +301,13 @@ describe('core', () => {
             id: '567',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '678',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
         ], layout: 'column', replyTag: 123})
         done()
@@ -307,15 +323,18 @@ describe('core', () => {
             id: '567',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '678',
             name: 'krieger',
             isIdentity: true,
+            actions: ['default', 'go', 'whisper'],
           },
           {
             id: '987',
             name: 'kgb',
+            actions: ['default', 'go'],
           },
         ], layout: 'column', replyTag: 123})
         done()
@@ -363,7 +382,18 @@ describe('core', () => {
     })
 
     it('applies selected completion', (done) => {
-      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {action: 'default', result: {id: '678', name: 'krieger', isIdentity: true}, message: {text: 'The clone is @krieg'}, tag: 123})
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {
+        action: 'default',
+        result: {
+          id: '678',
+          name: 'krieger',
+          isIdentity: true,
+        },
+        message: {
+          text: 'The clone is @krieg',
+        },
+        tag: 123,
+      })
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
         expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {
@@ -371,6 +401,46 @@ describe('core', () => {
           entities: [{id: '678', isIdentity: true, start: 13, length: 8}],
         }, replyTag: 123})
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
+        done()
+      })
+    })
+
+    it('navigates to identity channels', (done) => {
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {
+        action: 'go',
+        result: {
+          id: '576',
+          name: 'krieger',
+          isIdentity: true,
+        },
+        message: {
+          text: 'The clone is @krieg',
+        },
+        tag: 123,
+      })
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('NAVIGATE', {to: '576', replyTag: 123})
+        done()
+      })
+    })
+
+    it('navigates to whisper channels', (done) => {
+      core.userAgent.emit('ACTIVATE_CHAT_COMPLETE_RESULT', {
+        action: 'whisper',
+        result: {
+          id: '576',
+          name: 'krieger',
+          isIdentity: true,
+        },
+        message: {
+          text: 'The clone is @krieg',
+        },
+        tag: 123,
+      })
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        expect(core.userAgent.emit).toHaveBeenCalledWith('NAVIGATE', {to: ':576', replyTag: 123})
         done()
       })
     })
@@ -427,6 +497,7 @@ describe('core', () => {
           {
             id: '890',
             name: 'isis/espionage',
+            actions: ['default', 'go'],
           },
         ], layout: 'column', replyTag: 123})
         done()
