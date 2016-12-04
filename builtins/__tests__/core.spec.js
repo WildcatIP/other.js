@@ -520,10 +520,22 @@ describe('core', () => {
 
   describe('emoji tokens', () => {
     it('recognizes smile', (done) => {
-      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: 'hello :smile:'}, tag: 123})
+      core.userAgent.emit('SET_STAGED_MESSAGE', {
+        message: {
+          entities: [{id: '234', isIdentity: true, start: 6, length: 7}],
+          text: 'hello @Archer :smile:',
+        },
+        tag: 123,
+      })
       setImmediate(() => {
         expect(core.userAgent.emit.calls.count()).toEqual(3)
-        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {message: {text: 'hello 😄'}, replyTag: 123})
+        expect(core.userAgent.emit).toHaveBeenCalledWith('UPDATE_STAGED_MESSAGE', {
+          message: {
+            entities: [{id: '234', isIdentity: true, start: 6, length: 7}],
+            text: 'hello @Archer 😄',
+          },
+          replyTag: 123,
+        })
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [], replyTag: 123})
         done()
       })
