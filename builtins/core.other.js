@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.5.1',
+  version: '0.6.0',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -10,7 +10,7 @@ const feature = new Feature({
 
 // Format commands
 feature.listen({
-  to: {commands: ['caption', 'code', 'h1', 'h2', 'h3', 'p', 'quote', 'small', 'system']},
+  to: {commands: ['caption', 'code', 'divider', 'h1', 'h2', 'h3', 'p', 'quote', 'small', 'system']},
   on({command, args}) {
     return {stagedMessage: {format: command}}
   },
