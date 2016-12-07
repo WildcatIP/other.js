@@ -38,9 +38,9 @@
     "git-revision-webpack-plugin": "^2.4.0",
     "jest-cli": "^17.0.3",
     "jsdoc": "^3.4.3",
-    "webpack": "^1.13.3",
+    "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2",
-    "webpack-validator": "^2.2.9"
+    "webpack-validator": "^2.2.11"
   },
   "eslintConfig": {
     "env": {
