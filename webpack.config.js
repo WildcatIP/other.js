@@ -46,6 +46,7 @@ module.exports = validate({
   },
   devtool: isProd ? 'source-map' : 'eval-source-map',
   entry: {
+    embedder: './embedder.js',
     other: './index.js',
   },
   module: {
