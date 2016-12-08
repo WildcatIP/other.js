@@ -9,54 +9,6 @@ const otherchat = new Otherchat( feature )
 const Places = require('other-places') // our extended-local place search
 
 //
-// MAP COMMAND
-// map me, map sushi, map active club
-//
-
-const mapCmd = feature.command({
-  tokens: ['map'],
-  version: 'map.0.2', // can be separately versioned from the feature,
-  accepts: {place: Place, query: String},
-})
-
-mapCmd.on('didQuery', (context, promise) => {
-  const query = context.query
-
-  // "map me" displays the map of where you are
-  // "map sushi" displays a list of sushi places
-
-  if( ['me', 'here'].contains(query) ) {
-    // Centering on a user object continually updates the map with the
-    // user's location
-    const map = otherchat.types.mapChatComplete({center: client.me, zoom: 17})
-    return promise.resolve( map )
-  }
-
-  otherchat.client.location().then( (loc) => {
-    findAndDisplayMapResults({center: loc.latLng, query}, promise )
-  })
-})
-
-function findAndDisplayMapResults( context, promise ) {
-  Places
-    .search({query: context.query, centeredAt: context.center})
-    .then( (places) => {
-      const results = places.map( (place) => otherchat.types.mapChatComplete({
-        text: place.name,
-        rating: place.rating,
-        location: place.latLng,
-      }) )
-
-      // When a single map chat complete object is passed to done the map chat
-      // complete shows just that item. When a list is passed, it shows all
-      // items on the map
-
-      promise.resolve( results )
-    }).catch( (reason) => promise.reject(reason) )
-}
-
-
-//
 // ETA COMMAND
 // eta @alien, eta active club
 //
@@ -78,7 +30,7 @@ etaCmd.on('didQuery', (context, promise) => {
     return promise.reject( 'Get an eta to a person or place...' )
   }
 
-  promise.resolve( oc.types.mapChatComplete({
+  return promise.resolve( oc.types.mapChatComplete({
     from: otherchat.client.me,
     to: context.user || context.place,
     showTravelTime: true,
