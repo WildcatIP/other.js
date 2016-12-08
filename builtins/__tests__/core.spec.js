@@ -3,7 +3,90 @@ import {default as core} from '../core.other'
 describe('core', () => {
   beforeEach(() => {
     spyOn(core.userAgent, 'emit').and.callThrough()
+    spyOn(core.chatternet, 'emit').and.callThrough()
     spyOn(core.environment, 'emit').and.callThrough()
+  })
+
+  it('allows deleting messages you own', (done) => {
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 123,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [{
+        id: 789,
+        identity: 123,
+      }],
+      tag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(3)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: ['delete'], replyTag: 987})
+      done()
+    })
+  })
+
+  it('disallows deleting messages you do not own', (done) => {
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 123,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [{
+        id: 789,
+        identity: 321,
+      }],
+      tag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(3)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: [], replyTag: 987})
+      done()
+    })
+  })
+
+  it('allows deleting messages in channels you own', (done) => {
+    done()
+  })
+
+  it('deletes a message', (done) => {
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 123,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [{
+        id: 789,
+        identity: 123,
+      }],
+      tag: 987,
+    })
+    core.userAgent.emit('ACTIVATE_MESSAGE_ACTION', {
+      action: 'delete',
+      messages: [{
+        channelId: 654,
+        id: 789,
+        identity: 123,
+      }],
+      replyTag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(4)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: ['delete'], replyTag: 987})
+      expect(core.chatternet.emit.calls.count()).toEqual(1)
+      expect(core.chatternet.emit).toHaveBeenCalledWith('REMOVE_MESSAGE', 654, {
+        channelId: 654,
+        id: 789,
+        identity: 123,
+      })
+      done()
+    })
   })
 
   it('clears chat complete for empty messages', (done) => {
