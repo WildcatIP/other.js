@@ -2,30 +2,24 @@
 // CALCULATE
 //
 
-var calcCommand = feature.command({
+const calcCommand = feature.command({
   tokens: ['='],
   version: 'calc.0.1',
   accepts: {query: String},
 })
 
-var Maths = require('...') // some 3rd party math library
+const Maths = require('...') // some 3rd party math library
 
 calcCommand.on('didQuery', (context, promise) => {
-
-  try{
-    
-    var answer = Maths.calc( context.query ),
-    
+  try {
+    const answer = Maths.calc(context.query)
     return promise.resolve({
       text: `${context.query} = ${answer}`,
-      info: {value: answer, equation: context.query}
+      info: {value: answer, equation: context.query},
     })
-    
+  } catch( error ) {
+    return promise.reject( error )
   }
-  catch( error ) promise.reject( error )
-
-  promise.resolve( "Keep typing..." )
-
 })
 
 // Chat Complete types have sensible defaults for what they do when selected.
@@ -36,7 +30,7 @@ calcCommand.on('didQuery', (context, promise) => {
 calcCommand.on('didSelect', (selected, promise) => {
   otherchat.client.post({
     type: 'extension',
-    text: `The answer to ${selected.info.equation} is ${selected.info.value}`
+    text: `The answer to ${selected.info.equation} is ${selected.info.value}`,
   })
 
   // If wanted to insert something into the input field
