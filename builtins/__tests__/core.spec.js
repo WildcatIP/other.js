@@ -17,7 +17,7 @@ describe('core', () => {
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
         id: 789,
-        identity: 123,
+        identityId: 123,
       }],
       tag: 987,
     })
@@ -38,7 +38,7 @@ describe('core', () => {
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
         id: 789,
-        identity: 321,
+        identityId: 321,
       }],
       tag: 987,
     })
@@ -63,7 +63,7 @@ describe('core', () => {
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
         id: 789,
-        identity: 123,
+        identityId: 123,
       }],
       tag: 987,
     })
@@ -72,7 +72,7 @@ describe('core', () => {
       messages: [{
         channelId: 654,
         id: 789,
-        identity: 123,
+        identityId: 123,
       }],
       replyTag: 987,
     })
@@ -83,7 +83,7 @@ describe('core', () => {
       expect(core.chatternet.emit).toHaveBeenCalledWith('REMOVE_MESSAGE', 654, {
         channelId: 654,
         id: 789,
-        identity: 123,
+        identityId: 123,
       })
       done()
     })

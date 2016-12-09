@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.6.0',
+  version: '0.6.1',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -30,7 +30,7 @@ function canDeleteMessages(messages) {
   const {chatternet, userAgent} = feature
   const activeIdentityId = userAgent.identity.id
   return messages.every((m) => {
-    return m.identity === activeIdentityId ||
+    return m.identityId === activeIdentityId ||
            chatternet.channel({id: m.channelId}).isOwner(activeIdentityId)
   })
 }
