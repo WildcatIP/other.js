@@ -8,6 +8,33 @@ const feature = new Feature({
   },
 })
 
+// Message actions
+if (feature.provideActions) {  // TODO: Remove this guard when clients support 3.8+.
+  feature.provideActions({
+    to: 'messages',
+    on({messages}) {
+      if (!canDeleteMessages(messages)) return []
+      return [
+        {
+          label: 'delete',
+          on({messages}) {
+            messages.forEach((m) => feature.chatternet.channel({id: m.channelId}).delete(m))
+          },
+        },
+      ]
+    },
+  })
+}
+
+function canDeleteMessages(messages) {
+  const {chatternet, userAgent} = feature
+  const activeIdentityId = userAgent.identity.id
+  return messages.every((m) => {
+    return m.identity === activeIdentityId ||
+           chatternet.channel({id: m.channelId}).isOwner(activeIdentityId)
+  })
+}
+
 // Format commands
 feature.listen({
   to: {commands: ['caption', 'code', 'divider', 'h1', 'h2', 'h3', 'p', 'quote', 'small', 'system']},
