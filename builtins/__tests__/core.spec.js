@@ -39,6 +39,7 @@ describe('core', () => {
       messages: [{
         id: 789,
         identityId: 321,
+        channelId: 901,
       }],
       tag: 987,
     })
@@ -50,7 +51,37 @@ describe('core', () => {
   })
 
   it('allows deleting messages in channels you own', (done) => {
-    done()
+    core.chatternet.emit('UPDATE_ENTITIES', {
+      entities: {
+        901: {
+          identities: {
+            123: {
+              roles: ['owner'],
+            },
+          },
+          name: 'dangerzone',
+        },
+      },
+    })
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 123,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [{
+        id: 789,
+        identityId: 321,
+        channelId: 901,
+      }],
+      tag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(3)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: ['delete'], replyTag: 987})
+      done()
+    })
   })
 
   it('deletes a message', (done) => {
