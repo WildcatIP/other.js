@@ -89,6 +89,18 @@ describe('core', () => {
     })
   })
 
+  it('clears message actions for empty message selection', (done) => {
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [],
+      tag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(2)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: [], replyTag: 987})
+      done()
+    })
+  })
+
   it('clears chat complete for empty messages', (done) => {
     core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: ''}, tag: 123})
     setImmediate(() => {

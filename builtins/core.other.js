@@ -29,6 +29,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
 function canDeleteMessages(messages) {
   const {chatternet, userAgent} = feature
   const activeIdentityId = userAgent.identity.id
+  if (!messages.length) return false
   return messages.every((m) => {
     return m.identityId === activeIdentityId ||
            chatternet.channel({id: m.channelId}).isOwner(activeIdentityId)
