@@ -28,6 +28,31 @@ describe('core', () => {
     })
   })
 
+  it('allows viewing feature source', (done) => {
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 123,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [{
+        id: 789,
+        identityId: 123,
+        attachments: [{
+          type: 'feature',
+          url: 'https://apps.other.chat/examples/map.other.js',
+        }],
+      }],
+      tag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(3)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: ['view source', 'delete'], replyTag: 987})
+      done()
+    })
+  })
+
   it('disallows deleting messages you do not own', (done) => {
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
