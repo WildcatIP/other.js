@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.6.2',
+  version: '0.7.0',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -13,17 +13,35 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
   feature.provideActions({
     to: 'messages',
     on({messages}) {
-      if (!canDeleteMessages(messages)) return []
-      return [
-        {
+      const actions = []
+      const features = getFeatures(messages)
+      if (features.length) {
+        const firstFeature = features[0] // TODO: Handle multiple.
+        actions.push({
+          label: 'view source',
+          on() {
+            feature.userAgent.navigate({to: firstFeature.url})
+          },
+        })
+      }
+      if (canDeleteMessages(messages)) {
+        actions.push({
           label: 'delete',
           on({messages}) {
             messages.forEach((m) => feature.chatternet.channel({id: m.channelId}).delete(m))
           },
-        },
-      ]
+        })
+      }
+      return actions
     },
   })
+}
+
+function getFeatures(messages) {
+  return messages.reduce((result, message) => {
+    if (!message.attachments) return result
+    return result.concat(message.attachments.filter((attachment) => attachment.type === 'feature'))
+  }, [])
 }
 
 function canDeleteMessages(messages) {
