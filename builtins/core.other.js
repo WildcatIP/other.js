@@ -2,21 +2,51 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.7.0',
+  version: '0.8.0',
   dependencies: {
     otherjs: '^3.2.x',
   },
 })
 
 // Message actions
-if (feature.provideActions) {  // TODO: Remove this guard when clients support 3.8+.
+if (feature.provideActions) {  // TODO: Remove this guard when clients support 3.10+.
   feature.provideActions({
     to: 'messages',
     on({messages}) {
       const actions = []
       const features = getFeatures(messages)
       if (features.length) {
-        const firstFeature = features[0] // TODO: Handle multiple.
+        const firstFeature = feature.userAgent.featureMetadata(features[0].url) // TODO: Handle multiple.
+        // TODO: Check if it's already installed and display uninstall options.
+        const isChannelOwner = feature.chatternet.channel({id: feature.userAgent.channel.id}).isOwner(feature.userAgent.identity.id)
+        if (isChannelOwner) {
+          // TODO: Test this.
+          actions.push({
+            label: `install for this channel`,
+            on() {
+              const installArgs = firstFeature.isCloudEmbeddable ? {
+                entityId: feature.userAgent.channel.id,
+                featureIdentity: firstFeature.identity,
+              } : {
+                entityId: feature.userAgent.channel.id,
+                featureUrl: firstFeature.url,
+              }
+              feature.chatternet.installFeature(installArgs)
+            },
+          })
+        }
+        if (firstFeature.isUserAgentEmbeddable) {
+          const activeIdentity = feature.chatternet.entities[feature.userAgent.identity.id]
+          actions.push({
+            label: `install for @${activeIdentity.name}`,
+            on() {
+              feature.chatternet.installFeature({
+                entityId: feature.userAgent.identity.id,
+                featureUrl: firstFeature.url,
+              })
+            },
+          })
+        }
         actions.push({
           label: 'view source',
           on() {

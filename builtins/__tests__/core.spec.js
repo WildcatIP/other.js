@@ -29,16 +29,36 @@ describe('core', () => {
   })
 
   it('allows viewing feature source', (done) => {
-    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
-      identity: {
-        id: 123,
+    core.userAgent.emit('SET_ACTIVE_CHANNEL', {
+      channel: {
+        id: 234,
       },
       tag: 456,
+    })
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 234,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('UPDATE_FEATURE_METADATA', {
+      metadata: {
+        'https://apps.other.chat/examples/map.other.js': {},
+      },
+      tag: 456,
+    })
+    core.chatternet.emit('UPDATE_ENTITIES', {
+      entities: {
+        234: {
+          name: 'Archer',
+          isIdentity: true,
+        },
+      },
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
         id: 789,
-        identityId: 123,
+        identityId: 234,
         attachments: [{
           type: 'feature',
           url: 'https://apps.other.chat/examples/map.other.js',
@@ -47,8 +67,10 @@ describe('core', () => {
       tag: 987,
     })
     setImmediate(() => {
-      expect(core.userAgent.emit.calls.count()).toEqual(3)
-      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: ['view source', 'delete'], replyTag: 987})
+      expect(core.userAgent.emit.calls.count()).toEqual(5)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {
+        actions: ['install for @Archer', 'view source', 'delete'],
+        replyTag: 987})
       done()
     })
   })
