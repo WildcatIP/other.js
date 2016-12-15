@@ -14,7 +14,7 @@ While it requires more care, it's also possible to interact directly with
 [UserAgent](https://apps.other.chat/docs/UserAgent.html) or [Chatternet](https://apps.other.chat/docs/Chatternet.html) events. For example, an incomplete implementation of the above might look roughly like:
 ```js
 const feature = new Feature({name: 'Teh hotnezz'})
-feature.userAgent.on(Events.SET_STAGED_MESSAGE, event => {
+feature.userAgent.on(SET_STAGED_MESSAGE, event => {
   const {message, tag} = event
   if (message.text.indexOf('The') !== -1) {
     feature.userAgent.emit(UPDATE_STAGED_MESSAGE, {
