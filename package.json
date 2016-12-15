@@ -1,11 +1,10 @@
 {
   "name": "other",
   "version": "3.11.1",
-  "description": "The Chatternet feature platform",
-  "author": "Tony Gentilcore <tony@other.xyz>",
+  "description": "other.js - the chatternet platform",
+  "author": "Post Social, inc. <root@other.xyz>",
   "repository": "other-xyz/other.js",
-  "private": true,
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0",
   "scripts": {
     "build": "webpack && babel -d dist lib",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
