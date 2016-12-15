@@ -40,19 +40,22 @@ fetch('https://example.com/endpoint').then(response => response.json()).then(jso
 
 * [Core](https://github.com/other-xyz/other.js/blob/master/builtins/core.other.js) &mdash; start here
 * [Donger](https://github.com/other-xyz/other.js/blob/master/builtins/donger.other.js) &mdash; (⊙_☉)
+* [Rechat Simple](https://github.com/other-xyz/other.js/blob/master/builtins/rechat.other.js) &mdash; a simplified rechat implementation that doesn't require selecting a message
 
 **Toy examples**
 
 * [Echo](https://github.com/other-xyz/other.js/blob/master/examples/echo.other.js) &mdash; a trivial example of a feature that runs on the server.
+* [Map](https://github.com/other-xyz/other.js/blob/master/examples/map.other.js) &mdash; display a map chat completion when "map" is typed
+* [Search](https://github.com/other-xyz/other.js/blob/master/examples/search.other.js) &mdash; display a search results when "search" is typed
+* [Translate](https://github.com/other-xyz/other.js/blob/master/examples/translate.other.js) &mdash; display translations of user input
 
 **Pseudo** non functioning inspiration that will be ported to other.js as functionality is implemented.
 
 * [Base Behaviors](https://github.com/other-xyz/other.js/blob/master/pseudo/core/base.pseudo.js) &mdash; start here
 * [Channel Mentions](https://github.com/other-xyz/other.js/blob/master/pseudo/core/channel-mentions.pseudo.js) &mdash; link-back posted to channels are mentioned in another channels
 * [Kick](https://github.com/other-xyz/other.js/blob/master/pseudo/core/kick.pseudo.js) &mdash; kicks a user from a channel for 1 minute, uses data stored on channels and runAsServer
-* [Map, ETA, Find](https://github.com/other-xyz/other.js/blob/master/pseudo/core/map.pseudo.js) &mdash; maps and places
+* [ETA, Find](https://github.com/other-xyz/other.js/blob/master/pseudo/core/map.pseudo.js) &mdash; maps and places
 * [Points](https://github.com/other-xyz/other.js/blob/master/pseudo/extras/points.pseudo.js) &mdash; explores how new social features are added and self-teach, uses data stored on users
 * [Rechat](https://github.com/other-xyz/other.js/blob/master/pseudo/core/rechat.pseudo.js) &mdash; the core command! also: selecting a message
-* [Rechat Simple](https://github.com/other-xyz/other.js/blob/master/pseudo/core/rechat-simple.pseudo.js) &mdash; an implementation that doesn't require selecting a message
 * [Twitter](https://github.com/other-xyz/other.js/blob/master/pseudo/apps/twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
 * [Web](https://github.com/other-xyz/other.js/blob/master/pseudo/core/web.pseudo.js)
