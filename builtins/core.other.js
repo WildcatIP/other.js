@@ -70,7 +70,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
 function getFeatures(messages) {
   return messages.reduce((result, message) => {
     if (!message.attachments) return result
-    return result.concat(message.attachments.filter((attachment) => attachment.type === 'feature'))
+    return result.concat(Object.values(message.attachments).filter((attachment) => attachment.type === 'feature'))
   }, [])
 }
 

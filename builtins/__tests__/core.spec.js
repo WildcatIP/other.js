@@ -59,10 +59,12 @@ describe('core', () => {
       messages: [{
         id: 789,
         identityId: 234,
-        attachments: [{
-          type: 'feature',
-          url: 'https://apps.other.chat/examples/map.other.js',
-        }],
+        attachments: {
+          '654': {
+            type: 'feature',
+            url: 'https://apps.other.chat/examples/map.other.js',
+          },
+        },
       }],
       tag: 987,
     })
