@@ -7,5 +7,6 @@ if (global.__forcePromisePolyfill) {
 
 import 'babel-polyfill'
 import FeatureHost from './lib/embedder/FeatureHost'
+import fetch from './lib/fetch'
 
-export {FeatureHost}
+export {FeatureHost, fetch}
