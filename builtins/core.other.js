@@ -25,9 +25,12 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
             on() {
               const installArgs = firstFeature.isCloudEmbeddable ? {
                 entityId: feature.userAgent.channel.id,
+                entityType: 'channel',
                 featureIdentity: firstFeature.identity,
+                featureUrl: firstFeature.url,
               } : {
                 entityId: feature.userAgent.channel.id,
+                entityType: 'channel',
                 featureUrl: firstFeature.url,
               }
               feature.chatternet.installFeature(installArgs)
@@ -41,6 +44,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
             on() {
               feature.chatternet.installFeature({
                 entityId: feature.userAgent.identity.id,
+                entityType: 'identity',
                 featureUrl: firstFeature.url,
               })
             },
