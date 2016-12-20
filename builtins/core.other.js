@@ -20,7 +20,6 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
         // TODO: Check if it's already installed and display uninstall options.
         const isChannelOwner = feature.chatternet.channel({id: feature.userAgent.channel.id}).isOwner(feature.userAgent.identity.id)
         if (isChannelOwner) {
-          // TODO: Test this.
           actions.push({
             label: `install for this channel`,
             on() {
