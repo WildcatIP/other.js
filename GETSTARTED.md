@@ -4,9 +4,20 @@
 
 From there, nearly all features will want to use its high level API to listen and respond to events. For example, to automatically replace the word "The" with "Teh" in all user input, one could write:
 ```js
-new Feature({name: 'Teh hotnezz'}).listen({
-  to: {words: ['The']},
-  on() => ({stagedMessage: {text: 'Teh'}})
+const {Feature} = require('other')
+
+module.exports = new Feature({
+  name: 'Teh',
+  version: '0.0.1',
+  dependencies: {
+    otherjs: '3.12.x',
+  },
+  listeners: [{
+    to: {words: ['The']},
+    on() {
+      return {stagedMessage: {text: 'Teh'}}
+    },
+  }],
 })
 ```
 
