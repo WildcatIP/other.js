@@ -257,6 +257,16 @@ describe('core', () => {
       })
     })
 
+    it('autocompletes all commands after slash', (done) => {
+      core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '/'}, tag: 123})
+      setImmediate(() => {
+        expect(core.userAgent.emit.calls.count()).toEqual(2)
+        const {results} = core.userAgent.emit.calls.argsFor(1)[1]
+        expect(results.length).toEqual(10)
+        done()
+      })
+    })
+
     it('autocompletes heading commands', (done) => {
       core.userAgent.emit('SET_STAGED_MESSAGE', {message: {text: '/h'}, tag: 123})
       setImmediate(() => {
