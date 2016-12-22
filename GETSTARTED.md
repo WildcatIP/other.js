@@ -1,29 +1,38 @@
 ## Writing a Feature
 
-[Feature](https://apps.other.chat/docs/Feature.html) is the base unit of other.js. Perhaps unsurprisingly, a Chatternet features is simply an ES6 module that exports an instance of the Feature class.
+[Feature](https://apps.other.chat/docs/Feature.html) is the base unit of other.js. Perhaps unsurprisingly, a Chatternet feature is simply an ES6 module that exports an instance of the Feature class.
 
 From there, nearly all features will want to use its high level API to listen and respond to events. For example, to automatically replace the word "The" with "Teh" in all user input, one could write:
 ```js
-new Feature({name: 'Teh hotnezz'}).listen({
-  to: {words: ['The']},
-  on() => ({stagedMessage: {text: 'Teh'}})
+const {Feature} = require('other')
+
+module.exports = new Feature({
+  name: 'Teh',
+  version: '0.0.1',
+  dependencies: {
+    otherjs: '3.12.x',
+  },
+  listeners: [{
+    to: {words: ['The']},
+    on() {
+      return {stagedMessage: {text: 'Teh'}}
+    },
+  }],
 })
 ```
 
-While it requires more care, it's also possible to interact directly with
-[UserAgent](https://apps.other.chat/docs/UserAgent.html) or [Chatternet](https://apps.other.chat/docs/Chatternet.html) events. For example, an incomplete implementation of the above might look roughly like:
-```js
-const feature = new Feature({name: 'Teh hotnezz'})
-feature.userAgent.on(SET_STAGED_MESSAGE, event => {
-  const {message, tag} = event
-  if (message.text.indexOf('The') !== -1) {
-    feature.userAgent.emit(UPDATE_STAGED_MESSAGE, {
-      replyTag: tag,
-      message: message.replace('The', 'Teh')
-    })
-  }
-})
-```
+### Installing
+
+1. To start developing, send a [gist](https://gist.github.com/) link to any https://other.chat/ channel. The file must end in `.other.js`. Recommended: If you want it to update with new commits, use a link of the form `https://gist.githubusercontent.com/{user}/{gist}/raw/{file}.other.js`. To pin it, use `https://gist.githubusercontent.com/{user}/{gist}/raw/{commit}/{file}.other.js`
+1. Tap the link to install it. Use it! Share it!
+
+### Development cycle
+
+A quick dev loop is currently under development. For now,
+
+1. Ensure you're using a gist link that isn't pinned to a specific commit (see installing above).
+1. Commit changes to your gist.
+1. Tap the link to reload it.
 
 ### Using the network
 
@@ -59,3 +68,20 @@ fetch('https://example.com/endpoint').then(response => response.json()).then(jso
 * [Rechat](https://github.com/other-xyz/other.js/blob/master/pseudo/core/rechat.pseudo.js) &mdash; the core command! also: selecting a message
 * [Twitter](https://github.com/other-xyz/other.js/blob/master/pseudo/apps/twitter.pseudo.js) &mdash; putting it all together, channels as app, identity creation
 * [Web](https://github.com/other-xyz/other.js/blob/master/pseudo/core/web.pseudo.js)
+
+## Under the hood
+
+While it requires more care, it's also possible to interact directly with
+[UserAgent](https://apps.other.chat/docs/UserAgent.html) or [Chatternet](https://apps.other.chat/docs/Chatternet.html) events. For example, an incomplete implementation of the above might look roughly like:
+```js
+const feature = new Feature({name: 'Teh hotnezz'})
+feature.userAgent.on(SET_STAGED_MESSAGE, event => {
+  const {message, tag} = event
+  if (message.text.indexOf('The') !== -1) {
+    feature.userAgent.emit(UPDATE_STAGED_MESSAGE, {
+      replyTag: tag,
+      message: message.replace('The', 'Teh')
+    })
+  }
+})
+```
