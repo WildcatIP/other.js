@@ -18,6 +18,7 @@ new Feature({name: 'Teh hotnezz'}).listen({
 ### Development cycle
 
 A quick dev loop is currently under development. For now,
+
 1. Ensure you're using a gist link that isn't pinned to a specific commit (see installing above).
 1. Commit changes to your gist.
 1. Tap the link to reload it.
