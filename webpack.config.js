@@ -40,7 +40,7 @@ module.exports = {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    https: true,
+    inline: false,
     historyApiFallback: {
       rewrites: [
         {from: /^\/otherjs\/[0-9x~.]+\/other.min.js$/, to: `/otherjs/${version}/other.min.js`},
