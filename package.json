@@ -6,7 +6,7 @@
   "repository": "other-xyz/other.js",
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "webpack && babel -d dist lib",
+    "build": "webpack --progress && babel -d dist lib",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "deploy": "./deploy.sh",
     "dist": "NODE_ENV=production npm run build && jsdoc ./index.js lib/*.js -c ./jsdoc/conf.json -R ./GETSTARTED.md",
@@ -38,9 +38,8 @@
     "git-revision-webpack-plugin": "^2.4.0",
     "jest-cli": "^18.0.0",
     "jsdoc": "^3.4.3",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-validator": "^2.3.0"
+    "webpack": "^2.2.0-rc.2",
+    "webpack-dev-server": "^2.2.0-rc.0"
   },
   "eslintConfig": {
     "env": {

@@ -1,7 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const path = require('path')
-const validate = require('webpack-validator').validateRoot
 const webpack = require('webpack')
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -20,19 +19,23 @@ function getPlugins() {
     ]),
   ]
   if (isProd) {
+    plugins.push(new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }))
     plugins.push(new webpack.optimize.UglifyJsPlugin({
       compress: {warnings: false},
+      sourceMap: true,
       // TODO: Mangling reduces bundle size by 20%, but breaks things.
       // Need to figure out the right set of exceptions.
       // mangle: {props: true}
     }))
-    plugins.push(new webpack.optimize.DedupePlugin())
     plugins.push(new webpack.optimize.AggressiveMergingPlugin())
   }
   return plugins
 }
 
-module.exports = validate({
+module.exports = {
   devServer: {
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -50,11 +53,11 @@ module.exports = validate({
     other: './index.js',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel'],
+        use: ['babel-loader'],
       },
     ],
   },
@@ -70,4 +73,4 @@ module.exports = validate({
     },
   },
   plugins: getPlugins(),
-})
+}
