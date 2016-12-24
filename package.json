@@ -1,12 +1,12 @@
 {
   "name": "other",
-  "version": "3.12.3",
+  "version": "3.12.4",
   "description": "other.js - the chatternet platform",
   "author": "Post Social, inc. <root@other.xyz>",
   "repository": "other-xyz/other.js",
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "webpack --progress && babel -d dist lib",
+    "build": "webpack --progress && babel --presets es2015 -d dist lib",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "deploy": "./deploy.sh",
     "dist": "NODE_ENV=production npm run build && jsdoc ./index.js lib/*.js -c ./jsdoc/conf.json -R ./GETSTARTED.md",
