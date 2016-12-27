@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.8.0',
+  version: '0.8.1',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -39,16 +39,30 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
         }
         if (firstFeature.isUserAgentEmbeddable) {
           const activeIdentity = feature.chatternet.entities[feature.userAgent.identity.id]
-          actions.push({
-            label: `install for @${activeIdentity.name}`,
-            on() {
-              feature.chatternet.installFeature({
-                entityId: feature.userAgent.identity.id,
-                entityType: 'identity',
-                featureUrl: firstFeature.url,
-              })
-            },
-          })
+          const isInstalled = (activeIdentity.featureUrls || []).includes(firstFeature.url)
+          if (isInstalled) {
+            actions.push({
+              label: `uninstall for @${activeIdentity.name}`,
+              on() {
+                feature.chatternet.uninstallFeature({
+                  entityId: feature.userAgent.identity.id,
+                  entityType: 'identity',
+                  featureUrl: firstFeature.url,
+                })
+              },
+            })
+          } else {
+            actions.push({
+              label: `install for @${activeIdentity.name}`,
+              on() {
+                feature.chatternet.installFeature({
+                  entityId: feature.userAgent.identity.id,
+                  entityType: 'identity',
+                  featureUrl: firstFeature.url,
+                })
+              },
+            })
+          }
         }
         actions.push({
           label: 'view source',
