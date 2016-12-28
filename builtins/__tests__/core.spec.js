@@ -157,9 +157,9 @@ describe('core', () => {
       entities: {
         234: {
           name: 'Archer',
-          featureUrls: [
-            'https://apps.other.chat/examples/map.other.js',
-          ],
+          features: {
+            111: {url: 'https://apps.other.chat/examples/map.other.js'},
+          },
           isIdentity: true,
         },
       },

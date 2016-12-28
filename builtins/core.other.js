@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.8.2',
+  version: '0.8.3',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -39,15 +39,15 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
         }
         if (firstFeature.isUserAgentEmbeddable) {
           const activeIdentity = feature.chatternet.entities[feature.userAgent.identity.id]
-          const isInstalled = (activeIdentity.featureUrls || []).includes(firstFeature.url)
-          if (isInstalled) {
+          const installedFeatureId = getInstalledFeatureId(activeIdentity, firstFeature.url)
+          if (installedFeatureId) {
             actions.push({
               label: `uninstall for @${activeIdentity.name}`,
               on() {
                 feature.chatternet.uninstallFeature({
                   entityId: feature.userAgent.identity.id,
                   entityType: 'identity',
-                  featureId: firstFeature.id,
+                  featureId: installedFeatureId,
                 })
               },
             })
@@ -82,6 +82,14 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
       return actions
     },
   })
+}
+
+function getInstalledFeatureId(entity, featureUrl) {
+  console.log(entity, featureUrl)
+  for (const [id, val] of Object.entries(entity.features || {})) {
+    if (val.url === featureUrl) return id
+  }
+  return null
 }
 
 function getFeatures(messages) {
