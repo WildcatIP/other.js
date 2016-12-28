@@ -131,7 +131,12 @@ feature.listen({
                     entity.parentId && (entities[entity.parentId] || {}).isIdentity) &&
                    entity.name.toLowerCase().startsWith(lowerQuery)
           })
-          .map((id) => Object.assign({id}, entities[id]))
+          .map((id) => ({
+            id,
+            name: entities[id].name,
+            isIdentity: Boolean(entities[id].isIdentity),
+            parentId: entities[id].parentId,
+          }))
     }
 
     if (queryParts.length < 1 || queryParts.length > 2) return null

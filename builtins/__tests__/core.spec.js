@@ -77,58 +77,6 @@ describe('core', () => {
     })
   })
 
-  it('allows uninstalling identity features', (done) => {
-    core.userAgent.emit('SET_ACTIVE_CHANNEL', {
-      channel: {
-        id: 234,
-      },
-      tag: 456,
-    })
-    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
-      identity: {
-        id: 234,
-      },
-      tag: 456,
-    })
-    core.userAgent.emit('UPDATE_FEATURE_METADATA', {
-      metadata: {
-        'https://apps.other.chat/examples/map.other.js': {},
-      },
-      tag: 456,
-    })
-    core.chatternet.emit('UPDATE_ENTITIES', {
-      entities: {
-        234: {
-          name: 'Archer',
-          featureUrls: [
-            'https://apps.other.chat/examples/map.other.js',
-          ],
-          isIdentity: true,
-        },
-      },
-    })
-    core.userAgent.emit('SET_SELECTED_MESSAGES', {
-      messages: [{
-        id: 789,
-        identityId: 234,
-        attachments: {
-          '654': {
-            type: 'feature',
-            url: 'https://apps.other.chat/examples/map.other.js',
-          },
-        },
-      }],
-      tag: 987,
-    })
-    setImmediate(() => {
-      expect(core.userAgent.emit.calls.count()).toEqual(5)
-      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {
-        actions: ['uninstall for @Archer', 'view source', 'delete'],
-        replyTag: 987})
-      done()
-    })
-  })
-
   it('allows installing channel features', (done) => {
     core.userAgent.emit('SET_ACTIVE_CHANNEL', {
       channel: {
@@ -181,6 +129,58 @@ describe('core', () => {
       expect(core.userAgent.emit.calls.count()).toEqual(5)
       expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {
         actions: ['install for this channel', 'install for @Archer', 'view source', 'delete'],
+        replyTag: 987})
+      done()
+    })
+  })
+
+  it('allows uninstalling identity features', (done) => {
+    core.userAgent.emit('SET_ACTIVE_CHANNEL', {
+      channel: {
+        id: 234,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('SET_ACTIVE_IDENTITY', {
+      identity: {
+        id: 234,
+      },
+      tag: 456,
+    })
+    core.userAgent.emit('UPDATE_FEATURE_METADATA', {
+      metadata: {
+        'https://apps.other.chat/examples/map.other.js': {},
+      },
+      tag: 456,
+    })
+    core.chatternet.emit('UPDATE_ENTITIES', {
+      entities: {
+        234: {
+          name: 'Archer',
+          featureUrls: [
+            'https://apps.other.chat/examples/map.other.js',
+          ],
+          isIdentity: true,
+        },
+      },
+    })
+    core.userAgent.emit('SET_SELECTED_MESSAGES', {
+      messages: [{
+        id: 789,
+        identityId: 234,
+        attachments: {
+          '654': {
+            type: 'feature',
+            url: 'https://apps.other.chat/examples/map.other.js',
+          },
+        },
+      }],
+      tag: 987,
+    })
+    setImmediate(() => {
+      expect(core.userAgent.emit.calls.count()).toEqual(5)
+      expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {
+        actions: ['uninstall for @Archer', 'view source', 'delete'],
         replyTag: 987})
       done()
     })
@@ -502,6 +502,7 @@ describe('core', () => {
           {
             id: '901',
             name: 'dangerzone',
+            isIdentity: false,
             parentId: '234',
             actions: ['default', 'go'],
           },
@@ -517,23 +518,27 @@ describe('core', () => {
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
           {
             id: '789',
+            isIdentity: false,
             name: 'isis',
             actions: ['default', 'go'],
           },
           {
             id: '890',
+            isIdentity: false,
             name: 'espionage',
             parentId: '789',
             actions: ['default', 'go'],
           },
           {
             id: '901',
+            isIdentity: false,
             name: 'dangerzone',
             parentId: '234',
             actions: ['default', 'go'],
           },
           {
             id: '987',
+            isIdentity: false,
             name: 'kgb',
             actions: ['default', 'go'],
           },
@@ -627,6 +632,7 @@ describe('core', () => {
           },
           {
             id: '987',
+            isIdentity: false,
             name: 'kgb',
             actions: ['default', 'go'],
           },
@@ -790,6 +796,7 @@ describe('core', () => {
         expect(core.userAgent.emit).toHaveBeenCalledWith('SET_CHAT_COMPLETE_RESULTS', {results: [
           {
             id: '890',
+            isIdentity: false,
             name: 'isis/espionage',
             actions: ['default', 'go'],
           },
