@@ -85,7 +85,6 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
 }
 
 function getInstalledFeatureId(entity, featureUrl) {
-  console.log(entity, featureUrl)
   for (const [id, val] of Object.entries(entity.features || {})) {
     if (val.url === featureUrl) return id
   }
