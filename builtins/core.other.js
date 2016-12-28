@@ -2,7 +2,7 @@ const {fetch, Feature} = require('other')
 
 const feature = new Feature({
   name: 'Core',
-  version: '0.8.1',
+  version: '0.8.2',
   dependencies: {
     otherjs: '^3.2.x',
   },
@@ -47,7 +47,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
                 feature.chatternet.uninstallFeature({
                   entityId: feature.userAgent.identity.id,
                   entityType: 'identity',
-                  featureUrl: firstFeature.url,
+                  featureId: firstFeature.id,
                 })
               },
             })
