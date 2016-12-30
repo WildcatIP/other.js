@@ -73,7 +73,7 @@ header {
 }
 
 tt, code, kbd, samp {
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .class-description {
@@ -135,7 +135,7 @@ nav ul {
 }
 
 nav ul a, nav ul a:visited, nav ul a:active {
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 90%;
   line-height: 18px;
   color: var(--theme-medium-text-color);
@@ -256,7 +256,8 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
 }
 
 .name, .signature, .param-type {
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 95%;
 }
 
 dt {
@@ -354,8 +355,8 @@ dt {
 
 .params .name, .props .name, .name code {
   color: var(--theme-medium-text-color);
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
-  font-size: 80%;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 95%;
 }
 
 .params td.description > p:first-child,
