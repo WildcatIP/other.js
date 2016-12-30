@@ -109,10 +109,11 @@ section {
 }
 
 .signature-attributes {
-  font-size: 60%;
+  font-size: 67%;
   color: var(--theme-ultralight-text-color);
   font-style: italic;
   font-weight: lighter;
+  padding-left: 5px;
 }
 
 nav {
@@ -195,10 +196,11 @@ h4 {
 }
 
 h5, .container-overview .subsection-title {
-  font-size: 100%;
+  color: var(--theme-light-text-color);
+  font-size: 12px;
   font-weight: bold;
   letter-spacing: -0.01em;
-  margin: 8px 0 3px 0;
+  margin: 8px 0;
   text-transform: lowercase;
 }
 
@@ -213,6 +215,7 @@ table {
   border-spacing: 0;
   border: 0;
   border-collapse: collapse;
+  width: 100%;
 }
 
 td, th {
@@ -229,8 +232,17 @@ thead tr {
   font-weight: bold;
 }
 
-th { border-right: 1px solid var(--theme-border-color); }
-tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
+th {
+  border-right: 1px solid var(--theme-border-color);
+  color: var(--theme-light-text-color);
+  font-size: 12px;
+  text-transform: lowercase;
+}
+
+tr > th:last-child {
+  border-right: 1px solid var(--theme-border-color);
+  width: 100%;
+}
 
 .ancestors { color: var(--theme-light-text-color); }
 .ancestors a {
@@ -251,13 +263,13 @@ tr > th:last-child { border-right: 1px solid var(--theme-border-color); }
   text-indent: -1000px;
 }
 
-.type-signature {
-  color: var(--theme-ultralight-text-color);
-}
-
 .name, .signature, .param-type {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 95%;
+}
+
+h4.name {
+  font-size: 110%;
 }
 
 dt {
