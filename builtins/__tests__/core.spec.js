@@ -10,14 +10,14 @@ describe('core', () => {
   it('allows deleting messages you own', (done) => {
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 123,
+        id: '123',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 123,
+        id: '789',
+        identityId: '123',
       }],
       tag: 987,
     })
@@ -31,25 +31,29 @@ describe('core', () => {
   it('allows installing identity features', (done) => {
     core.userAgent.emit('SET_ACTIVE_CHANNEL', {
       channel: {
-        id: 234,
+        id: '234',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 234,
+        id: '234',
       },
       tag: 456,
     })
     core.userAgent.emit('UPDATE_FEATURE_METADATA', {
       metadata: {
-        'https://apps.other.chat/examples/map.other.js': {},
+        'https://apps.other.chat/examples/map.other.js': {
+          name: 'Map',
+          url: 'https://apps.other.chat/examples/map.other.js',
+          version: '0.0.1',
+        },
       },
       tag: 456,
     })
     core.chatternet.emit('UPDATE_ENTITIES', {
       entities: {
-        234: {
+        '234': {
           name: 'Archer',
           isIdentity: true,
         },
@@ -57,8 +61,8 @@ describe('core', () => {
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 234,
+        id: '789',
+        identityId: '234',
         attachments: {
           '654': {
             type: 'feature',
@@ -80,31 +84,35 @@ describe('core', () => {
   it('allows installing channel features', (done) => {
     core.userAgent.emit('SET_ACTIVE_CHANNEL', {
       channel: {
-        id: 901,
+        id: '901',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 234,
+        id: '234',
       },
       tag: 456,
     })
     core.userAgent.emit('UPDATE_FEATURE_METADATA', {
       metadata: {
-        'https://apps.other.chat/examples/map.other.js': {},
+        'https://apps.other.chat/examples/map.other.js': {
+          name: 'Map',
+          url: 'https://apps.other.chat/examples/map.other.js',
+          version: '0.0.1',
+        },
       },
       tag: 456,
     })
     core.chatternet.emit('UPDATE_ENTITIES', {
       entities: {
-        234: {
+        '234': {
           name: 'Archer',
           isIdentity: true,
         },
-        901: {
+        '901': {
           identities: {
-            234: {
+            '234': {
               roles: ['owner'],
             },
           },
@@ -114,8 +122,8 @@ describe('core', () => {
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 234,
+        id: '789',
+        identityId: '234',
         attachments: {
           '654': {
             type: 'feature',
@@ -137,28 +145,32 @@ describe('core', () => {
   it('allows uninstalling identity features', (done) => {
     core.userAgent.emit('SET_ACTIVE_CHANNEL', {
       channel: {
-        id: 234,
+        id: '234',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 234,
+        id: '234',
       },
       tag: 456,
     })
     core.userAgent.emit('UPDATE_FEATURE_METADATA', {
       metadata: {
-        'https://apps.other.chat/examples/map.other.js': {},
+        'https://apps.other.chat/examples/map.other.js': {
+          name: 'Map',
+          url: 'https://apps.other.chat/examples/map.other.js',
+          version: '0.0.1',
+        },
       },
       tag: 456,
     })
     core.chatternet.emit('UPDATE_ENTITIES', {
       entities: {
-        234: {
+        '234': {
           name: 'Archer',
           features: {
-            111: {url: 'https://apps.other.chat/examples/map.other.js'},
+            '111': {url: 'https://apps.other.chat/examples/map.other.js'},
           },
           isIdentity: true,
         },
@@ -166,8 +178,8 @@ describe('core', () => {
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 234,
+        id: '789',
+        identityId: '234',
         attachments: {
           '654': {
             type: 'feature',
@@ -189,15 +201,15 @@ describe('core', () => {
   it('disallows deleting messages you do not own', (done) => {
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 123,
+        id: '123',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 321,
-        channelId: 901,
+        id: '789',
+        identityId: '321',
+        channelId: '901',
       }],
       tag: 987,
     })
@@ -211,9 +223,9 @@ describe('core', () => {
   it('allows deleting messages in channels you own', (done) => {
     core.chatternet.emit('UPDATE_ENTITIES', {
       entities: {
-        901: {
+        '901': {
           identities: {
-            123: {
+            '123': {
               roles: ['owner'],
             },
           },
@@ -223,15 +235,15 @@ describe('core', () => {
     })
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 123,
+        id: '123',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 321,
-        channelId: 901,
+        id: '789',
+        identityId: '321',
+        channelId: '901',
       }],
       tag: 987,
     })
@@ -245,23 +257,23 @@ describe('core', () => {
   it('deletes a message', (done) => {
     core.userAgent.emit('SET_ACTIVE_IDENTITY', {
       identity: {
-        id: 123,
+        id: '123',
       },
       tag: 456,
     })
     core.userAgent.emit('SET_SELECTED_MESSAGES', {
       messages: [{
-        id: 789,
-        identityId: 123,
+        id: '789',
+        identityId: '123',
       }],
       tag: 987,
     })
     core.userAgent.emit('ACTIVATE_MESSAGE_ACTION', {
       action: 'delete',
       messages: [{
-        channelId: 654,
-        id: 789,
-        identityId: 123,
+        channelId: '654',
+        id: '789',
+        identityId: '123',
       }],
       replyTag: 987,
     })
@@ -269,10 +281,10 @@ describe('core', () => {
       expect(core.userAgent.emit.calls.count()).toEqual(4)
       expect(core.userAgent.emit).toHaveBeenCalledWith('SET_MESSAGE_ACTIONS', {actions: ['delete'], replyTag: 987})
       expect(core.chatternet.emit.calls.count()).toEqual(1)
-      expect(core.chatternet.emit).toHaveBeenCalledWith('REMOVE_MESSAGE', 654, {
-        channelId: 654,
-        id: 789,
-        identityId: 123,
+      expect(core.chatternet.emit).toHaveBeenCalledWith('REMOVE_MESSAGE', '654', {
+        channelId: '654',
+        id: '789',
+        identityId: '123',
       })
       done()
     })
@@ -378,38 +390,38 @@ describe('core', () => {
   describe('mentions', () => {
     beforeEach(() => {
       const entities = {
-        234: {
+        '234': {
           name: 'Archer',
           isIdentity: true,
         },
-        345: {
+        '345': {
           name: 'cheryl',
           isIdentity: true,
         },
-        456: {
+        '456': {
           name: 'cyril',
           isIdentity: true,
         },
-        567: {
+        '567': {
           name: 'krieger',
           isIdentity: true,
         },
-        678: {
+        '678': {
           name: 'krieger',
           isIdentity: true,
         },
-        789: {
+        '789': {
           name: 'isis',
         },
-        890: {
+        '890': {
           name: 'espionage',
           parentId: '789',
         },
-        901: {
+        '901': {
           name: 'dangerzone',
           parentId: '234',
         },
-        987: {
+        '987': {
           name: 'kgb',
         },
       }
