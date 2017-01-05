@@ -2,7 +2,7 @@
 
 [Feature](https://apps.other.chat/docs/Feature.html) is the base unit of other.js. Perhaps unsurprisingly, a Chatternet feature is simply an ES6 module that exports an instance of the Feature class.
 
-From there, nearly all features will want to use its high level API to listen and respond to events. For example, to automatically replace the word "The" with "Teh" in all user input, one could write:
+From there, most features will want to use its high level API to listen and respond to events. For example, to automatically replace the word "The" with "Teh" in all user input:
 ```js
 const {Feature} = require('other')
 
@@ -21,18 +21,16 @@ module.exports = new Feature({
 })
 ```
 
-### Installing
+### Fork a feature
 
-1. To start developing, send a [gist](https://gist.github.com/) link to any https://other.chat/ channel. The file must end in `.other.js`. Recommended: If you want it to update with new commits, use a link of the form `https://gist.githubusercontent.com/{user}/{gist}/raw/{file}.other.js`. To pin it, use `https://gist.githubusercontent.com/{user}/{gist}/raw/{commit}/{file}.other.js`
+1. The easiest way to get started is to fork an existing feature. Do so by clicking any feature in https://other.chat/ and then `view source`. The [#otherjsexamples](https://other.chat/otherjsexamples/Uph42Y) channel has several starting points.
+1. Here you may edit and run the feature ephemerally via the big `run feature` button. Upon reload, your changes will be gone.
+1. To save your edits, click `connect to GitHub` in the upper right (first time only). Then `fork to gist`. This will create a gist and give you its URL to share in a channel.
+
+### Install it
+
+1. Send a [gist](https://gist.github.com/) link to any https://other.chat/ channel. The file must end in `.other.js`. Recommended: If you want it to update with new commits, use a link of the form `https://gist.githubusercontent.com/{user}/{gist}/raw/{file}.other.js`. To pin it, use `https://gist.githubusercontent.com/{user}/{gist}/raw/{commit}/{file}.other.js`
 1. Tap the link to install it. Use it! Share it!
-
-### Development cycle
-
-A quick dev loop is currently under development. For now,
-
-1. Ensure you're using a gist link that isn't pinned to a specific commit (see installing above).
-1. Commit changes to your gist.
-1. Tap the link to reload it.
 
 ### Using the network
 
