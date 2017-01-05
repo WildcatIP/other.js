@@ -19,7 +19,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
         const firstFeature = feature.userAgent.featureMetadata(features[0].url) // TODO: Handle multiple.
         // TODO: Check if it's already installed and display uninstall options.
         const isChannelOwner = feature.chatternet.channel({id: feature.userAgent.channel.id}).isOwner(feature.userAgent.identity.id)
-        if (isChannelOwner) {
+        if (firstFeature && isChannelOwner) {
           actions.push({
             label: `install for this channel`,
             on() {
@@ -37,7 +37,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
             },
           })
         }
-        if (firstFeature.isUserAgentEmbeddable) {
+        if (firstFeature && firstFeature.isUserAgentEmbeddable) {
           const activeIdentity = feature.chatternet.entities[feature.userAgent.identity.id]
           const installedFeatureId = getInstalledFeatureId(activeIdentity, firstFeature.url)
           if (installedFeatureId) {
@@ -67,7 +67,7 @@ if (feature.provideActions) {  // TODO: Remove this guard when clients support 3
         actions.push({
           label: 'view source',
           on() {
-            feature.userAgent.navigate({to: firstFeature.url})
+            feature.userAgent.navigate({to: features[0].url})
           },
         })
       }
