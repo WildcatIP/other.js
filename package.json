@@ -37,7 +37,7 @@
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-no-unsafe-regex": "^1.0.0",
-    "git-revision-webpack-plugin": "^2.4.0",
+    "git-revision-webpack-plugin": "^2.4.1",
     "jest-cli": "^18.1.0",
     "jsdoc": "^3.4.3",
     "webpack": "^2.2.0-rc.2",
